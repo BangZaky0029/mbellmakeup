@@ -11,6 +11,7 @@ import FlowerBackground from './components/ui/FlowerBackground';
 import MusicPlayer from './components/ui/MusicPlayer';
 import Button from './components/ui/Button';
 import logo from './assets/logoBrand.png';
+import React, { useState } from 'react';
 
 
 function App() {
