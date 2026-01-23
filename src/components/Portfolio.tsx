@@ -1,3 +1,4 @@
+
   // C:\codingVibes\myPortfolio\mbell\mbell\src\components\Portfolio.tsx
 
   import React, { useState, useRef, useEffect } from 'react';
@@ -349,24 +350,35 @@
         onClick={onClick}
       >
         <div className="
-          w-[200px] h-[260px] md:w-[320px] md:h-[420px]
-          bg-white p-2 md:p-4 pb-8 md:pb-14
+          w-[230px] h-[320px] md:w-[320px] md:h-[440px]
+          bg-white p-3 md:p-5 pb-20 md:pb-24
           shadow-[0_10px_20px_rgba(0,0,0,0.1),0_3px_6px_rgba(0,0,0,0.05)]
           group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.15),0_10px_20px_rgba(212,165,165,0.3)]
           transition-shadow duration-500 ease-out
         ">
-          <div className="w-full h-full relative overflow-hidden bg-gray-100">
+          <div className="w-full h-full relative overflow-hidden bg-gray-50 border border-gray-100">
             <img 
               src={item.imageUrl} 
               alt={item.title} 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 saturate-[0.9] group-hover:saturate-100 select-none pointer-events-none"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 saturate-[0.95] group-hover:saturate-100 select-none pointer-events-none"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-overlay"></div>
           </div>
-          <div className="absolute bottom-2 left-3 md:bottom-4 md:left-5 text-left">
-            <h3 className="font-serif text-lg md:text-xl text-textMain/90 truncate max-w-[180px] md:max-w-[280px]">{item.title}</h3>
-            <p className="font-sans text-[10px] md:text-xs text-textMain/50 tracking-widest uppercase">{item.category}</p>
+          
+          <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 text-left w-[calc(100%-2rem)]">
+             {/* Title with better contrast and weight */}
+            <h3 className="font-serif text-xl md:text-2xl font-semibold text-textMain truncate leading-tight mb-2">
+              {item.title}
+            </h3>
+            
+            {/* Category with decorative line and better visibility */}
+            <div className="flex items-center gap-3">
+               <span className="w-6 h-[1px] bg-primary/80"></span>
+               <p className="font-sans text-xs md:text-sm text-textMain/70 font-bold tracking-widest uppercase truncate">
+                 {item.category}
+               </p>
+            </div>
           </div>
         </div>
       </motion.div>
