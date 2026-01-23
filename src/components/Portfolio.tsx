@@ -144,6 +144,7 @@
               onClick={handleItemClick} 
               parallaxX={parallax1} 
               onInteraction={() => playSound('slide')} 
+              activeCategory={activeCategory}
             />
             
             {/* Spacing between rows */}
@@ -155,6 +156,7 @@
               onClick={handleItemClick} 
               parallaxX={parallax2} 
               onInteraction={() => playSound('slide')} 
+              activeCategory={activeCategory}
             />
 
           </div>
@@ -228,12 +230,22 @@
     onClick: (item: PortfolioItem) => void;
     parallaxX: MotionValue<string>;
     onInteraction: () => void;
+    activeCategory: string;
   }
 
-  const InteractiveRow: React.FC<InteractiveRowProps> = ({ items, onClick, parallaxX, onInteraction }) => {
+  const InteractiveRow: React.FC<InteractiveRowProps> = ({ items, onClick, parallaxX, onInteraction, activeCategory }) => {
     const x = useMotionValue(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const [dragLimits, setDragLimits] = useState({ left: 0, right: 0 });
+
+    useEffect(() => {
+      // Reset position when category changes
+      animate(x, 0, {
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      });
+    }, [activeCategory, x]);
 
     useEffect(() => {
       if (containerRef.current) {
