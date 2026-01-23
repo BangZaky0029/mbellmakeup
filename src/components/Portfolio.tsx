@@ -203,7 +203,7 @@ const Portfolio: React.FC = () => {
         .perspective-container {
           perspective: 1500px;
           overflow: visible; 
-          touch-action: none; 
+          touch-action: pan-y; /* CHANGED from none to pan-y to allow vertical scrolling */
         }
         .transform-style-3d {
           transform-style: preserve-3d;
@@ -296,6 +296,7 @@ const InteractiveRow: React.FC<InteractiveRowProps> = ({ items, onClick, paralla
             INNER WRAPPER FOR DRAG
             This inner motion.div handles the manual swipe interactions
             Added cursor-grab and active:cursor-grabbing for hand gesture
+            ADDED touch-pan-y to explicit allow vertical scroll
          */}
          <motion.div 
             ref={containerRef}
@@ -305,7 +306,7 @@ const InteractiveRow: React.FC<InteractiveRowProps> = ({ items, onClick, paralla
             onDragStart={() => onInteraction()} // Play sound on drag start
             style={{ x }}
             whileTap={{ cursor: "grabbing" }}
-            className="flex gap-4 md:gap-8 w-max px-[5vw] md:px-[20vw] cursor-grab active:cursor-grabbing"
+            className="flex gap-4 md:gap-8 w-max px-[5vw] md:px-[20vw] cursor-grab active:cursor-grabbing touch-pan-y"
          >
             {items.map((item, index) => (
                <MoodboardCard key={item.id} item={item} index={index} onClick={() => onClick(item)} />
