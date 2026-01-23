@@ -1,5 +1,7 @@
+// C:\codingVibes\myPortfolio\mbell\mbell\src\types.ts
+
 export interface PortfolioItem {
-  id: string;
+  id: number;
   title: string;
   category: string;
   imageUrl: string;
@@ -8,19 +10,22 @@ export interface PortfolioItem {
 }
 
 // Semua kategori sesuai button dan folder
+// src/types.ts
 export type Category = 
   | 'All'
-  | 'Akad Tanpa Siger'
-  | 'Akad'
-  | 'Beauty Shoot'
-  | 'Pesta'
-  | 'Wisuda'
-  | 'Pre Wedding'
-  | 'Siraman'
+  | 'akadTanpaSiger'
+  | 'akad'
+  | 'BeautyShoot'
+  | 'pesta'
+  | 'wisuda'
+  | 'preWedding'
+  | 'siraman'
   | 'Lamaran'
   | 'Bridesmaid'
-  | 'Kelas Makeup'
-  | 'Makeup Tari';
+  | 'kelas_makeup'
+  | 'MakeupTari';
+
+
 
 export interface NavLink {
   name: string;
@@ -28,7 +33,7 @@ export interface NavLink {
 }
 
 export interface Testimonial {
-  id: string;
+  id: number;
   name: string;
   role: string;
   content: string;

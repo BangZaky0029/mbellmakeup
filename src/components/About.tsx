@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import me from '../assets/bella_1.webp';
+import me from '../assets/bella_1.png';
 
 const About: React.FC = () => {
   return (
