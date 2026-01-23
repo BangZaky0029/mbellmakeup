@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 // Menggunakan new URL untuk memuat aset gambar secara robust
-const price1 = new URL('../assets/price_01.png', import.meta.url).href;
-const price2 = new URL('../assets/price_02.png', import.meta.url).href;
+const price1 = new URL('../assets/price_01.webp', import.meta.url).href;
+const price2 = new URL('../assets/price_02.webp', import.meta.url).href;
 
 const PriceList: React.FC = () => {
   return (

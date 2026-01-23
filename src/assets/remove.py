@@ -1,11 +1,9 @@
 import os
 
 # --- CONFIG ---
-BASE_DIR = r"C:\codingVibes\myPortfolio\mbell\mbell\src\assets"  # root folder assets
+BASE_DIR = r"C:\codingVibes\myPortfolio\mbell\mbell\src"  # root folder assets
 FOLDERS = [
-    "akad", "akadTanpaSiger", "BeautyShoot", "Bridesmaid", "kelas_makeup",
-    "Lamaran", "MakeupTari", "pesta", "photo_grid", "preWedding",
-    "siraman", "wisuda"
+    "assets"
 ]
 
 # --- FUNCTION TO DELETE NON-WEBP FILES ---

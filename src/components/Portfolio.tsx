@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, animate, useScroll, useTransform, MotionValue, useSpring } from 'framer-motion';
 import { CATEGORIES} from '../constants';
-import type { Category, PortfolioItem } from '../types';
+import type { Category } from '../types';
 import Modal from './ui/Modal';
 import Button from './ui/Button';
-import { generatePortfolio } from "../utils/getPortfolio";
-
-const PORTFOLIO_ITEMS = generatePortfolio();
-
+import PORTFOLIO_ITEMS from "../data/portfolio.json";
+import type { PortfolioItem } from '../types';
 
 // Sound Assets (Paper ASMR)
 const SOUNDS = {
@@ -19,18 +17,18 @@ const SOUNDS = {
 const Portfolio: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null)
+
 
   // Audio Refs
   const slideAudio = useRef<HTMLAudioElement | null>(null);
   const openAudio = useRef<HTMLAudioElement | null>(null);
-
   useEffect(() => {
     slideAudio.current = new Audio(SOUNDS.slide);
     openAudio.current = new Audio(SOUNDS.open);
     
-    if(slideAudio.current) slideAudio.current.volume = 0.4;
-    if(openAudio.current) openAudio.current.volume = 0.5;
+    if(slideAudio.current) slideAudio.current.volume = 0.7;
+    if(openAudio.current) openAudio.current.volume = 0.7;
   }, []);
 
   const playSound = (type: 'slide' | 'open') => {

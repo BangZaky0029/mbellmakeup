@@ -2,11 +2,9 @@ from PIL import Image
 import os
 
 # --- CONFIG ---
-BASE_DIR = r"C:\codingVibes\myPortfolio\mbell\mbell\src\assets"  # root folder assets
+BASE_DIR = r"C:\codingVibes\myPortfolio\mbell\mbell\src"  # root folder assets
 FOLDERS = [
-    "akad", "akadTanpaSiger", "BeautyShoot", "Bridesmaid", "kelas_makeup",
-    "Lamaran", "MakeupTari", "pesta", "photo_grid", "preWedding",
-    "siraman", "wisuda"
+    "assets"
 ]
 MAX_SIZE = 1280      # max width/height
 QUALITY = 70         # WebP quality
