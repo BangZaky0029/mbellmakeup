@@ -102,7 +102,7 @@ const FullGalleryOverlay: React.FC<FullGalleryOverlayProps> = ({ items, category
                {/* Grid */}
                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 mb-16 min-h-[50vh]">
                   <AnimatePresence mode="popLayout">
-                    {visibleItems.map((item, index) => (
+                    {visibleItems.map((item,) => (
                         <motion.div 
                         key={`${item.id}-grid`}
                         initial={{ opacity: 0, scale: 0.9 }}
