@@ -177,22 +177,70 @@
   },
   {
     "id": 23,
-    "title": "preWedding_01",
+    "title": "BeautyShoot_01",
     "category": "BeautyShoot",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/preWedding_01.webp",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_01.webp",
     "description": "",
     "details": ""
   },
   {
     "id": 24,
-    "title": "preWedding_02",
+    "title": "BeautyShoot_02",
     "category": "BeautyShoot",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/preWedding_02.webp",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_02.webp",
     "description": "",
     "details": ""
   },
   {
     "id": 25,
+    "title": "BeautyShoot_03",
+    "category": "BeautyShoot",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_03.webp",
+    "description": "",
+    "details": ""
+  },
+  {
+    "id": 26,
+    "title": "BeautyShoot_04",
+    "category": "BeautyShoot",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_04.webp",
+    "description": "",
+    "details": ""
+  },
+  {
+    "id": 27,
+    "title": "BeautyShoot_05",
+    "category": "BeautyShoot",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_05.webp",
+    "description": "",
+    "details": ""
+  },
+  {
+    "id": 28,
+    "title": "BeautyShoot_06",
+    "category": "BeautyShoot",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_06.webp",
+    "description": "",
+    "details": ""
+  },
+  {
+    "id": 29,
+    "title": "BeautyShoot_07",
+    "category": "BeautyShoot",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_07.webp",
+    "description": "",
+    "details": ""
+  },
+  {
+    "id": 30,
+    "title": "BeautyShoot_08",
+    "category": "BeautyShoot",
+    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/BeautyShoot/BeautyShoot_08.webp",
+    "description": "",
+    "details": ""
+  },
+  {
+    "id": 31,
     "title": "Bridesmaid_02",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_02.webp",
@@ -200,7 +248,7 @@
     "details": ""
   },
   {
-    "id": 26,
+    "id": 32,
     "title": "Bridesmaid_03",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_03.webp",
@@ -208,7 +256,7 @@
     "details": ""
   },
   {
-    "id": 27,
+    "id": 33,
     "title": "Bridesmaid_04",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_04.webp",
@@ -216,7 +264,7 @@
     "details": ""
   },
   {
-    "id": 28,
+    "id": 34,
     "title": "Bridesmaid_05",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_05.webp",
@@ -224,7 +272,7 @@
     "details": ""
   },
   {
-    "id": 29,
+    "id": 35,
     "title": "Bridesmaid_06",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_06.webp",
@@ -232,7 +280,7 @@
     "details": ""
   },
   {
-    "id": 30,
+    "id": 36,
     "title": "Bridesmaid_07",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_07.webp",
@@ -240,7 +288,7 @@
     "details": ""
   },
   {
-    "id": 31,
+    "id": 37,
     "title": "Bridesmaid_08",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_08.webp",
@@ -248,7 +296,7 @@
     "details": ""
   },
   {
-    "id": 32,
+    "id": 38,
     "title": "Bridesmaid_09",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_09.webp",
@@ -256,7 +304,7 @@
     "details": ""
   },
   {
-    "id": 33,
+    "id": 39,
     "title": "Bridesmaid_10",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_10.webp",
@@ -264,7 +312,7 @@
     "details": ""
   },
   {
-    "id": 34,
+    "id": 40,
     "title": "Bridesmaid_14",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_14.webp",
@@ -272,7 +320,7 @@
     "details": ""
   },
   {
-    "id": 35,
+    "id": 41,
     "title": "Bridesmaid_15",
     "category": "Bridesmaid",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Bridesmaid/Bridesmaid_15.webp",
@@ -280,7 +328,7 @@
     "details": ""
   },
   {
-    "id": 36,
+    "id": 42,
     "title": "kelas_makeup_01",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_01.webp",
@@ -288,7 +336,7 @@
     "details": ""
   },
   {
-    "id": 37,
+    "id": 43,
     "title": "kelas_makeup_02",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_02.webp",
@@ -296,7 +344,7 @@
     "details": ""
   },
   {
-    "id": 38,
+    "id": 44,
     "title": "kelas_makeup_03",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_03.webp",
@@ -304,7 +352,7 @@
     "details": ""
   },
   {
-    "id": 39,
+    "id": 45,
     "title": "kelas_makeup_04",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_04.webp",
@@ -312,7 +360,7 @@
     "details": ""
   },
   {
-    "id": 40,
+    "id": 46,
     "title": "kelas_makeup_05",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_05.webp",
@@ -320,7 +368,7 @@
     "details": ""
   },
   {
-    "id": 41,
+    "id": 47,
     "title": "kelas_makeup_06",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_06.webp",
@@ -328,7 +376,7 @@
     "details": ""
   },
   {
-    "id": 42,
+    "id": 48,
     "title": "kelas_makeup_07",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_07.webp",
@@ -336,7 +384,7 @@
     "details": ""
   },
   {
-    "id": 43,
+    "id": 49,
     "title": "kelas_makeup_08",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_08.webp",
@@ -344,7 +392,7 @@
     "details": ""
   },
   {
-    "id": 44,
+    "id": 50,
     "title": "kelas_makeup_09",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_09.webp",
@@ -352,7 +400,7 @@
     "details": ""
   },
   {
-    "id": 45,
+    "id": 51,
     "title": "kelas_makeup_10",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_10.webp",
@@ -360,7 +408,7 @@
     "details": ""
   },
   {
-    "id": 46,
+    "id": 52,
     "title": "kelas_makeup_11",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_11.webp",
@@ -368,7 +416,7 @@
     "details": ""
   },
   {
-    "id": 47,
+    "id": 53,
     "title": "kelas_makeup_12",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/kelas_makeup_12.webp",
@@ -376,7 +424,7 @@
     "details": ""
   },
   {
-    "id": 48,
+    "id": 54,
     "title": "siraman_13",
     "category": "kelas_makeup",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/kelas_makeup/siraman_13.webp",
@@ -384,7 +432,7 @@
     "details": ""
   },
   {
-    "id": 49,
+    "id": 55,
     "title": "Lamaran_03",
     "category": "Lamaran",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Lamaran/Lamaran_03.webp",
@@ -392,7 +440,7 @@
     "details": ""
   },
   {
-    "id": 50,
+    "id": 56,
     "title": "Lamaran_04",
     "category": "Lamaran",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Lamaran/Lamaran_04.webp",
@@ -400,7 +448,7 @@
     "details": ""
   },
   {
-    "id": 51,
+    "id": 57,
     "title": "Lamaran_06",
     "category": "Lamaran",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/Lamaran/Lamaran_06.webp",
@@ -408,7 +456,7 @@
     "details": ""
   },
   {
-    "id": 52,
+    "id": 58,
     "title": "MakeUpTari_01",
     "category": "MakeupTari",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/MakeupTari/MakeUpTari_01.webp",
@@ -416,7 +464,7 @@
     "details": ""
   },
   {
-    "id": 53,
+    "id": 59,
     "title": "MakeUpTari_02",
     "category": "MakeupTari",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/MakeupTari/MakeUpTari_02.webp",
@@ -424,7 +472,7 @@
     "details": ""
   },
   {
-    "id": 54,
+    "id": 60,
     "title": "MakeUpTari_03",
     "category": "MakeupTari",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/MakeupTari/MakeUpTari_03.webp",
@@ -432,7 +480,7 @@
     "details": ""
   },
   {
-    "id": 55,
+    "id": 61,
     "title": "MakeUpTari_04",
     "category": "MakeupTari",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/MakeupTari/MakeUpTari_04.webp",
@@ -440,7 +488,7 @@
     "details": ""
   },
   {
-    "id": 56,
+    "id": 62,
     "title": "MakeUpTari_05",
     "category": "MakeupTari",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/MakeupTari/MakeUpTari_05.webp",
@@ -448,7 +496,7 @@
     "details": ""
   },
   {
-    "id": 57,
+    "id": 63,
     "title": "pesta_02",
     "category": "pesta",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/pesta/pesta_02.webp",
@@ -456,7 +504,7 @@
     "details": ""
   },
   {
-    "id": 58,
+    "id": 64,
     "title": "pesta_04",
     "category": "pesta",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/pesta/pesta_04.webp",
@@ -464,7 +512,7 @@
     "details": ""
   },
   {
-    "id": 59,
+    "id": 65,
     "title": "pesta_06",
     "category": "pesta",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/pesta/pesta_06.webp",
@@ -472,7 +520,7 @@
     "details": ""
   },
   {
-    "id": 60,
+    "id": 66,
     "title": "pesta_11",
     "category": "pesta",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/pesta/pesta_11.webp",
@@ -480,7 +528,7 @@
     "details": ""
   },
   {
-    "id": 61,
+    "id": 67,
     "title": "pesta_12",
     "category": "pesta",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/pesta/pesta_12.webp",
@@ -488,58 +536,10 @@
     "details": ""
   },
   {
-    "id": 62,
+    "id": 68,
     "title": "pesta_13",
     "category": "pesta",
     "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/pesta/pesta_13.webp",
-    "description": "",
-    "details": ""
-  },
-  {
-    "id": 63,
-    "title": "bella_01",
-    "category": "photo_grid",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/photo_grid/bella_01.webp",
-    "description": "",
-    "details": ""
-  },
-  {
-    "id": 64,
-    "title": "bella_02",
-    "category": "photo_grid",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/photo_grid/bella_02.webp",
-    "description": "",
-    "details": ""
-  },
-  {
-    "id": 65,
-    "title": "bella_06",
-    "category": "photo_grid",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/photo_grid/bella_06.webp",
-    "description": "",
-    "details": ""
-  },
-  {
-    "id": 66,
-    "title": "bella_07",
-    "category": "photo_grid",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/photo_grid/bella_07.webp",
-    "description": "",
-    "details": ""
-  },
-  {
-    "id": 67,
-    "title": "bella_08",
-    "category": "photo_grid",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/photo_grid/bella_08.webp",
-    "description": "",
-    "details": ""
-  },
-  {
-    "id": 68,
-    "title": "bella_09",
-    "category": "photo_grid",
-    "imageUrl": "https://raw.githubusercontent.com/BangZaky29/mbell-portfolio-assets/main/assets/photo_grid/bella_09.webp",
     "description": "",
     "details": ""
   },

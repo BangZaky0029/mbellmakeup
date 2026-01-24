@@ -1,7 +1,5 @@
-// C:\codingVibes\myPortfolio\mbell\mbell\src\types.ts
-
 export interface PortfolioItem {
-  id: number;
+  id: string | number;
   title: string;
   category: string;
   imageUrl: string;
@@ -9,10 +7,7 @@ export interface PortfolioItem {
   details?: string;
 }
 
-// Semua kategori sesuai button dan folder
-// src/types.ts
 export type Category = 
-  | 'All'
   | 'akadTanpaSiger'
   | 'akad'
   | 'BeautyShoot'
@@ -23,9 +18,7 @@ export type Category =
   | 'Lamaran'
   | 'Bridesmaid'
   | 'kelas_makeup'
-  | 'MakeupTari';
-
-
+  | 'MakeupTari'
 
 export interface NavLink {
   name: string;
@@ -33,7 +26,7 @@ export interface NavLink {
 }
 
 export interface Testimonial {
-  id: number;
+  id: string;
   name: string;
   role: string;
   content: string;

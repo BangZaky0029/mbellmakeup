@@ -1,9 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '../constants';
 import logo from '../assets/logoBrand.png'; // ✅ import benar
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  isOverlay?: boolean;
+  onLinkClick?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ isOverlay = false, onLinkClick }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -17,14 +23,38 @@ const Navbar: React.FC = () => {
 
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    
+    // If inside overlay, trigger the callback (which closes overlay)
+    if (onLinkClick) {
+      onLinkClick();
+      // Allow a small delay for the overlay to unmount before scrolling the main body
+      setTimeout(() => {
+         const targetId = href.replace('#', '');
+         const element = document.getElementById(targetId);
+         if (element) {
+           const offset = 80;
+           const bodyRect = document.body.getBoundingClientRect().top;
+           const elementRect = element.getBoundingClientRect().top;
+           const elementPosition = elementRect - bodyRect;
+           const offsetPosition = elementPosition - offset;
+
+           window.scrollTo({
+             top: offsetPosition,
+             behavior: 'smooth'
+           });
+           window.history.pushState(null, '', href);
+         }
+      }, 100);
+      return;
+    }
+
+    // Normal behavior
     const targetId = href.replace('#', '');
     const element = document.getElementById(targetId);
     
     if (element) {
-      // Close mobile menu if open
       setIsMobileMenuOpen(false);
       
-      // Calculate offset position (header height ~80px)
       const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
@@ -36,7 +66,6 @@ const Navbar: React.FC = () => {
         behavior: 'smooth'
       });
       
-      // Update URL hash smoothly
       window.history.pushState(null, '', href);
     }
   };
@@ -46,12 +75,16 @@ const Navbar: React.FC = () => {
     const text = "Halo MBELL Makeup, saya ingin melakukan reservasi untuk appointment makeup. Boleh info pricelist dan availability?";
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
     setIsMobileMenuOpen(false);
+    if (onLinkClick) onLinkClick();
   };
+
+  // If isOverlay is true, force the 'scrolled' style (white background)
+  const showBackground = isScrolled || isMobileMenuOpen || isOverlay;
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${
-        isScrolled || isMobileMenuOpen
+      className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${
+        showBackground
           ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' 
           : 'bg-transparent py-6'
       }`}
@@ -65,13 +98,11 @@ const Navbar: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           className="flex items-center gap-3 text-2xl font-serif font-semibold tracking-wider text-textMain relative group"
         >
-          {/* Logo Icon */}
-          {/* Logo Icon */}
-          <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-            <img src={logo} alt="Logo" className="w-20 h-25" />
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary border border-primary/30">
+            <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+              <img src={logo} alt="Logo" className="w-20 h-25" />
+            </div>
           </div>
-
-
           
           <span>
             MBell MakeUp

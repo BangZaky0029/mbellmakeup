@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -30,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+            className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
           >
             {/* Modal Content */}
             <motion.div

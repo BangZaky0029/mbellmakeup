@@ -1,6 +1,26 @@
+
 import React from 'react';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  onLinkClick?: () => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onLinkClick }) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Only intercept local links (starting with #)
+    if (href.startsWith('#') && onLinkClick) {
+      e.preventDefault();
+      onLinkClick();
+      setTimeout(() => {
+        const targetId = href.replace('#', '');
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
+
   return (
     <footer className="bg-white pt-20 pb-10 relative z-10 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-6">
@@ -8,7 +28,11 @@ const Footer: React.FC = () => {
         {/* Connect With Me Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-20">
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
-             <a href="#home" className="text-3xl font-serif font-bold text-textMain block mb-6">
+             <a 
+               href="#home" 
+               onClick={(e) => handleLinkClick(e, '#home')}
+               className="text-3xl font-serif font-bold text-textMain block mb-6"
+             >
                 MBell MakeUp<span className="text-primary">.</span>
              </a>
              <p className="text-textMain/60 font-sans leading-relaxed">
