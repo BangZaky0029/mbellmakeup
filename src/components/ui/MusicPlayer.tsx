@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -6,30 +7,59 @@ const MusicPlayer: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [volume, setVolume] = useState(0.4);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Set volume whenever it changes
+  // Menggunakan path audio .mp3 sesuai instruksi
+  const musicSrc = '/music/sound_01.mp3';
+
+  // Handle volume changes
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
   }, [volume]);
 
-  // Play / Pause based on user click
+  // Handle click/touch outside to close volume/controls on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsHovered(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, []);
+
+  // Logic manual useEffect untuk autoplay ditiadakan sesuai request.
+  // Gantinya menggunakan prop autoPlay pada elemen <audio> yang akan
+  // berfungsi karena komponen ini dirender setelah interaksi user (klik "Enter Experience").
+
   const togglePlay = () => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
-      setIsPlaying(false);
     } else {
       audioRef.current
         .play()
-        .then(() => setIsPlaying(true))
         .catch((e) => console.log("Audio play failed:", e));
     }
   };
 
-  // Handle slider change
+  // Fungsi manual untuk memastikan loop terjadi jika atribut loop gagal
+  const handleEnded = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(e => console.log("Loop replay failed:", e));
+    }
+  };
+
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -37,18 +67,27 @@ const MusicPlayer: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-6 left-6 z-[100] flex items-end"
+      ref={containerRef}
+      className="fixed bottom-6 left-6 z-[9999] flex items-end"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Audio element (MP3 format recommended) */}
+      {/* 
+          1. 'loop': Atribut standar HTML5 agar musik berulang otomatis.
+          2. 'autoPlay': Memulai musik otomatis saat komponen di-mount (setelah interaksi user di App.tsx).
+          3. 'onPlay' & 'onPause': Sinkronisasi state isPlaying dengan status audio asli.
+      */}
       <audio
         ref={audioRef}
-        src="/music/sound_01.mp3" // ganti ke mp3 agar kompatibel browser
-        loop
+        src={musicSrc}
+        loop={true} 
+        autoPlay={true}
+        onEnded={handleEnded}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
       />
 
-      {/* Volume Slider */}
+      {/* Volume Slider Container */}
       <AnimatePresence>
         {isHovered && (
           <motion.div
@@ -100,7 +139,7 @@ const MusicPlayer: React.FC = () => {
           ${isPlaying ? 'bg-primary text-white' : 'bg-white/80 text-primary'}
         `}
       >
-        {/* Animated Rings */}
+        {/* Animated Rings when playing */}
         {isPlaying && (
           <>
             <motion.div
@@ -121,6 +160,7 @@ const MusicPlayer: React.FC = () => {
         {/* Icons */}
         <div className="relative z-10">
           {isPlaying ? (
+            // Equalizer Icon
             <div className="flex items-end gap-[2px] h-4">
               <motion.div animate={{ height: [4, 12, 6, 14, 4] }} transition={{ duration: 0.8, repeat: Infinity }} className="w-[3px] bg-white rounded-full" />
               <motion.div animate={{ height: [10, 5, 16, 8, 10] }} transition={{ duration: 0.6, repeat: Infinity }} className="w-[3px] bg-white rounded-full" />
@@ -128,6 +168,7 @@ const MusicPlayer: React.FC = () => {
               <motion.div animate={{ height: [12, 6, 10, 4, 12] }} transition={{ duration: 0.7, repeat: Infinity }} className="w-[3px] bg-white rounded-full" />
             </div>
           ) : (
+            // Play Icon
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
               <path d="M8 5v14l11-7z" />
             </svg>

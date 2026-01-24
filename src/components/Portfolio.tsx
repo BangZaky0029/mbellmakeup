@@ -15,7 +15,8 @@ const SOUNDS = {
   hover: "https://assets.mixkit.co/sfx/preview/mixkit-paper-dragging-1002.mp3"
 };
 
-const BATCH_SIZE = 20;
+// Changed from 20 to 5 to limit initial view as requested
+const BATCH_SIZE = 5;
 
 interface PortfolioProps {
   onOpenGallery: (items: PortfolioItem[], category: string) => void;
@@ -62,7 +63,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
     return portfolioData.filter(item => item.category === activeCategory);
   }, [activeCategory, portfolioData]);
 
-  // Main View: Only show first batch (e.g. 20) in the 3D view for performance
+  // Main View: Only show first batch (e.g. 5) in the 3D view for performance and cleaner look
   const visibleItems = useMemo(() => {
     return filteredItems.slice(0, BATCH_SIZE);
   }, [filteredItems]);
@@ -89,8 +90,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
 
   const handleOpenGallery = () => {
     playSound('slide');
-    // Change: Pass ALL portfolioData instead of filteredItems to show the full collection
-    onOpenGallery(portfolioData, "All Moments Collection");
+    // Change: Pass ALL portfolioData and the current ACTIVE CATEGORY to the overlay
+    onOpenGallery(portfolioData, activeCategory);
   };
 
   return (
