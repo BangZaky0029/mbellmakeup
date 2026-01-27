@@ -19,3 +19,4 @@ View your app in AI Studio: https://ai.studio/apps/drive/1RKm5pnxoTt0EzpCqy2BD0o
 3. Run the app:
    `npm run dev`
 "# mbell-makeup" 
+"# mbellmakeup" 
