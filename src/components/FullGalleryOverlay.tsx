@@ -1,4 +1,4 @@
-
+// C:\codingVibes\myPortfolio\mbell\mbell\src\components\FullGalleryOverlay.tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './ui/Button';
@@ -27,12 +27,27 @@ const FullGalleryOverlay: React.FC<FullGalleryOverlayProps> = ({ items, category
     return () => {
       document.body.style.overflow = 'unset';
     };
+
   }, []);
 
+  console.log(
+      items.map(i => i.category),
+      'ACTIVE:',
+      activeCategory
+    );
+
   // Filter Logic: Filter all items based on activeCategory
+  const normalize = (val: string) =>
+    val
+      .toLowerCase()
+      .replace(/[\s_-]/g, '');
+
   const filteredItems = useMemo(() => {
-    return items.filter(item => item.category === activeCategory);
+    return items.filter(item =>
+      normalize(item.category) === normalize(activeCategory)
+    );
   }, [items, activeCategory]);
+
 
   const visibleItems = useMemo(() => filteredItems.slice(0, displayCount), [filteredItems, displayCount]);
   const hasMore = filteredItems.length > displayCount;

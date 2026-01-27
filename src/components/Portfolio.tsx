@@ -1,4 +1,5 @@
-
+// UPDATED Portfolio.tsx - Supabase Integration
+// Replace your existing Portfolio.tsx with this file
 // C:\codingVibes\myPortfolio\mbell\mbell\src\components\Portfolio.tsx
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
@@ -6,7 +7,7 @@ import { motion, useMotionValue, animate, useScroll, useTransform, MotionValue, 
 import { CATEGORIES, CATEGORY_LABELS } from '../constants';
 import type { Category, PortfolioItem } from '../types';
 import Button from './ui/Button';
-import PORTFOLIO_ITEMS from '../data/portfolio.json';
+import { supabase } from '../lib/supabase';
 
 // Sound Assets
 const SOUNDS = {
@@ -15,7 +16,6 @@ const SOUNDS = {
   hover: "https://assets.mixkit.co/sfx/preview/mixkit-paper-dragging-1002.mp3"
 };
 
-// Changed from 20 to 5 to limit initial view as requested
 const BATCH_SIZE = 5;
 
 interface PortfolioProps {
@@ -24,18 +24,49 @@ interface PortfolioProps {
 }
 
 const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => {
-  // Use imported data directly
-  const portfolioData: PortfolioItem[] = PORTFOLIO_ITEMS as unknown as PortfolioItem[];
+  // 🔥 PERUBAHAN UTAMA: State untuk data dari Supabase
+  const [portfolioData, setPortfolioData] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
-  // Set initial category
   const [activeCategory, setActiveCategory] = useState<Category>(CATEGORIES[0]);
-  
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Audio Refs
   const slideAudio = useRef<HTMLAudioElement | null>(null);
   const openAudio = useRef<HTMLAudioElement | null>(null);
   
+  // 🔥 FETCH DATA DARI SUPABASE
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        setLoading(true);
+        const { data, error: fetchError } = await supabase
+          .from('images')
+          .select('*')
+          .order('id', { ascending: true });
+        
+        console.log('SUPABASE DATA:', data);
+        console.log('SUPABASE ERROR:', error);
+
+        if (fetchError) {
+          console.error('Supabase fetch error:', fetchError);
+          setError('Failed to load portfolio. Please try again later.');
+        } else {
+          setPortfolioData(data as PortfolioItem[]);
+          setError(null);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setError('An unexpected error occurred.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPortfolio();
+  }, []);
+
   useEffect(() => {
     slideAudio.current = new Audio(SOUNDS.slide);
     openAudio.current = new Audio(SOUNDS.open);
@@ -58,12 +89,16 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
     }
   };
 
-  // Filter Logic
+  // Filter Logic (TIDAK BERUBAH)
   const filteredItems = useMemo(() => {
-    return portfolioData.filter(item => item.category === activeCategory);
+    return portfolioData.filter(
+      item =>
+        item.category.trim().toLowerCase() ===
+        activeCategory.trim().toLowerCase()
+    );
   }, [activeCategory, portfolioData]);
 
-  // Main View: Only show first batch (e.g. 5) in the 3D view for performance and cleaner look
+
   const visibleItems = useMemo(() => {
     return filteredItems.slice(0, BATCH_SIZE);
   }, [filteredItems]);
@@ -71,7 +106,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
   const firstRow = visibleItems.slice(0, Math.ceil(visibleItems.length / 2));
   const secondRow = visibleItems.slice(Math.ceil(visibleItems.length / 2));
 
-  // --- PARALLAX SETUP ---
+  // Parallax Setup (TIDAK BERUBAH)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
@@ -90,9 +125,45 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
 
   const handleOpenGallery = () => {
     playSound('slide');
-    // Change: Pass ALL portfolioData and the current ACTIVE CATEGORY to the overlay
     onOpenGallery(portfolioData, activeCategory);
   };
+
+  // 🔥 LOADING STATE
+  if (loading) {
+    return (
+      <section id="portfolio" className="py-24 relative z-10 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mb-4"></div>
+          <p className="font-sans text-textMain/60 tracking-widest uppercase text-sm">Loading Portfolio...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // 🔥 ERROR STATE
+  if (error) {
+    return (
+      <section id="portfolio" className="py-24 relative z-10 min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md px-6">
+          <p className="font-serif text-2xl text-red-500 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()} variant="outline">
+            Retry
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
+  // 🔥 EMPTY STATE
+  if (portfolioData.length === 0) {
+    return (
+      <section id="portfolio" className="py-24 relative z-10 min-h-screen flex items-center justify-center">
+        <p className="font-sans text-textMain/60 tracking-widest uppercase text-sm">
+          No portfolio items found
+        </p>
+      </section>
+    );
+  }
 
   return (
     <section id="portfolio" ref={containerRef} className="py-24 relative z-10 overflow-hidden min-h-screen flex flex-col justify-center bg-transparent">
@@ -140,9 +211,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
         </div>
       </div>
 
-      {/* 
-        MOODBOARD 3D AREA 
-      */}
+      {/* MOODBOARD 3D AREA */}
       <div className="relative w-full perspective-container min-h-[50vh] flex items-center justify-center">
         
         <div className="relative w-full transform-style-3d rotate-x-[20deg] rotate-z-[-5deg] md:rotate-x-[25deg] md:rotate-z-[-8deg] scale-90 md:scale-100 origin-center">
@@ -156,7 +225,6 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
             activeCategory={activeCategory}
           />
           
-          {/* Spacing between rows */}
           <div className="h-4 md:h-12"></div>
 
           {/* Row 2 */}
@@ -171,7 +239,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
         </div>
       </div>
 
-      {/* Load More / View All Button - Always visible at bottom */}
+      {/* Browse Full Gallery Button */}
       <div className="flex justify-center mt-12 relative z-20">
         <Button onClick={handleOpenGallery} variant="outline" className="bg-white/80 backdrop-blur-md">
            Browse Full Gallery
@@ -198,7 +266,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
   );
 };
 
-// --- INTERACTIVE ROW COMPONENT ---
+// --- INTERACTIVE ROW COMPONENT (TIDAK BERUBAH) ---
 interface InteractiveRowProps {
   items: PortfolioItem[];
   onClick: (item: PortfolioItem) => void;
@@ -216,7 +284,6 @@ const InteractiveRow: React.FC<InteractiveRowProps> = ({ items, onClick, paralla
     animate(x, 0, { type: "spring", stiffness: 300, damping: 30 });
   }, [activeCategory, x]);
 
-  // Recalculate drag limits when items change
   useEffect(() => {
     if (containerRef.current) {
       const updateLimits = () => {
