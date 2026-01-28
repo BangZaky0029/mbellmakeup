@@ -4,45 +4,27 @@ import type { Variants } from 'framer-motion'
 import Button from './ui/Button'
 
 const Hero: React.FC = () => {
-  // Animation variants
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0, 
-      scale: 1,
-      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } 
+      transition: { duration: 0.6, ease: "easeOut" } 
     },
-  };
-
-  const wordVariants: Variants = {
-     hidden: { opacity: 0, y: 50 },
-     visible: { 
-       opacity: 1, 
-       y: 0,
-       transition: { duration: 0.8, ease: "easeOut" }
-     }
   };
 
   const handleBooking = () => {
     const phoneNumber = "6288293473765";
-    const text = "Halo MBELL Makeup, saya ingin melakukan reservasi untuk appointment makeup. Boleh info pricelist dan availability?";
+    const text = "Halo MBELL Makeup, saya ingin reservasi.";
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
-  };
-
-  const handleViewPortfolio = () => {
-    document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -53,87 +35,45 @@ const Hero: React.FC = () => {
         animate="visible"
         className="relative z-10 max-w-5xl mx-auto px-6 text-center"
       >
-        
-        {/* Intro Tag */}
-        <motion.div variants={itemVariants} className="mb-6 inline-block">
-          <span className="py-1 px-4 border border-textMain/20 rounded-full text-xs font-sans tracking-[0.2em] text-textMain/70 uppercase bg-white/30 backdrop-blur-sm">
+        <motion.div variants={itemVariants} className="mb-6">
+          <span className="py-1 px-4 border border-textMain/10 rounded-full text-[10px] font-sans tracking-[0.2em] text-textMain/60 uppercase bg-white/50 backdrop-blur-sm">
             Professional Makeup Artist
           </span>
         </motion.div>
 
-        {/* Main Headline */}
-        <div className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.1] mb-8 text-textMain flex flex-col items-center">
-          {/* Line 1 */}
-          <div className="flex gap-4 overflow-hidden">
-             <motion.span variants={wordVariants} className="inline-block origin-bottom">
-               Enhancing
-             </motion.span>
-             <motion.span variants={wordVariants} className="inline-block origin-bottom">
-               Your
-             </motion.span>
-          </div>
-          
-          {/* Line 2 (Italic & Gradient) */}
-          <div className="flex gap-4 overflow-hidden py-2"> {/* Added py-2 to prevent italic clip */}
-             <motion.span 
-               variants={wordVariants} 
-               className="inline-block origin-bottom italic text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary bg-300% animate-gradient"
-             >
-               Natural
-             </motion.span>
-             <motion.span 
-               variants={wordVariants} 
-               className="inline-block origin-bottom italic text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary bg-300% animate-gradient"
-             >
-               Beauty
-             </motion.span>
-          </div>
+        <div className="font-serif text-5xl md:text-7xl lg:text-8xl leading-tight mb-8 text-textMain">
+          <motion.div variants={itemVariants}>Enhancing Your</motion.div>
+          <motion.div variants={itemVariants} className="italic text-primary">Natural Beauty</motion.div>
         </div>
 
-        {/* Subtitle */}
         <motion.p
           variants={itemVariants}
-          className="max-w-xl mx-auto font-sans text-lg text-textMain/70 mb-10 leading-relaxed"
+          className="max-w-lg mx-auto font-sans text-base text-textMain/70 mb-10 leading-relaxed"
         >
-          Curating timeless looks for weddings, special events, and editorial shoots. 
-          Experience the touch of luxury and elegance.
+          Curating timeless looks for your special moments. Experience the touch of luxury and elegance.
         </motion.p>
 
-        {/* Buttons */}
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button variant="primary" onClick={handleBooking}>Book Appointment</Button>
-          <Button variant="outline" onClick={handleViewPortfolio}>View Portfolio</Button>
+          <Button variant="outline" onClick={() => document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' })}>View Portfolio</Button>
         </motion.div>
       </motion.div>
 
-      {/* Decorative Image Elements (Floating) */}
+      {/* Decorative Images - Simplified animation */}
       <motion.div
-        initial={{ opacity: 0, x: 100, rotate: 5 }}
-        animate={{ opacity: 0.8, x: 0, rotate: 0 }}
-        transition={{ duration: 1.5, delay: 1, ease: "easeOut" }}
-        className="absolute right-0 top-1/3 w-64 h-80 hidden lg:block opacity-80"
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 0.4, x: 0 }}
+        className="absolute right-0 top-1/4 w-48 h-72 hidden lg:block gpu-accelerated"
       >
-        <img 
-            src="https://picsum.photos/id/106/400/600" 
-            alt="Decoration" 
-            className="w-full h-full object-cover rounded-l-full shadow-2xl sepia-[0.3]"
-        />
+        <img src="https://picsum.photos/id/106/400/600" alt="Decoration" className="w-full h-full object-cover rounded-l-full" />
       </motion.div>
       
       <motion.div
-        initial={{ opacity: 0, x: -100, rotate: -5 }}
-        animate={{ opacity: 0.8, x: 0, rotate: 0 }}
-        transition={{ duration: 1.5, delay: 1, ease: "easeOut" }}
-        className="absolute left-0 bottom-20 w-48 h-64 hidden lg:block opacity-80"
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 0.4, x: 0 }}
+        className="absolute left-0 bottom-1/4 w-32 h-56 hidden lg:block gpu-accelerated"
       >
-        <img 
-            src="https://picsum.photos/id/129/300/500" 
-            alt="Decoration" 
-            className="w-full h-full object-cover rounded-r-full shadow-2xl sepia-[0.3]"
-        />
+        <img src="https://picsum.photos/id/129/300/500" alt="Decoration" className="w-full h-full object-cover rounded-r-full" />
       </motion.div>
     </section>
   );

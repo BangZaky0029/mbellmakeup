@@ -36,9 +36,11 @@ export const NAV_LINKS: NavLink[] = [
   { name: 'Home', href: '#home' },
   { name: 'About', href: '#about' },
   { name: 'Portfolio', href: '#portfolio' },
+  { name: 'Price List', href: '#pricelist' },
   { name: 'Testimonials', href: '#testimonials' },
   { name: 'Contact', href: '#contact' },
 ];
+
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: '1',
