@@ -151,7 +151,7 @@ const InteractiveRow = ({ items, onClick, parallaxX, activeCategory }: any) => {
           style={{ x }}
           className="flex gap-4 md:gap-10 w-max px-[2vw] md:px-[5vw] cursor-grab active:cursor-grabbing justify-center items-center py-4"
       >
-          {items.map((item: any,  number) => (
+          {items.map((item: any,  i : number) => (
             <MoodboardCard key={item.id} item={item} onClick={() => onClick(item)} />
           ))}
       </motion.div>
