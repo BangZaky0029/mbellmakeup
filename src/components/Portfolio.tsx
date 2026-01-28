@@ -1,4 +1,4 @@
-
+// C:\codingVibes\myPortfolio\mbell\mbell-1\src\components\Portfolio.tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, useMotionValue, animate, useScroll, useTransform } from 'framer-motion';
 import { CATEGORIES, CATEGORY_LABELS } from '../constants';
@@ -151,15 +151,15 @@ const InteractiveRow = ({ items, onClick, parallaxX, activeCategory }: any) => {
           style={{ x }}
           className="flex gap-4 md:gap-10 w-max px-[2vw] md:px-[5vw] cursor-grab active:cursor-grabbing justify-center items-center py-4"
       >
-          {items.map((item: any, i: number) => (
-            <MoodboardCard key={item.id} item={item} index={i} onClick={() => onClick(item)} />
+          {items.map((item: any,  number) => (
+            <MoodboardCard key={item.id} item={item} onClick={() => onClick(item)} />
           ))}
       </motion.div>
     </motion.div>
   );
 }
 
-const MoodboardCard = ({ item, index, onClick }: any) => {
+const MoodboardCard = ({ item, onClick }: any) => {
   return (
     <motion.div
       whileHover={{ y: -20, scale: 1.03, transition: { duration: 0.4, ease: "easeOut" } }}
