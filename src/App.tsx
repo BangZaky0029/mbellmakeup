@@ -116,7 +116,6 @@ function App() {
         >
           <FlowerBackground />
           <MusicPlayer />
-          <Navbar onOpenTestimonials={handleOpenTestimonials} />
           
           <main className="relative">
             <Hero />
@@ -132,8 +131,6 @@ function App() {
             <Contact />
             <div className="h-20"></div>
           </main>
-
-          <Footer onOpenTestimonials={handleOpenTestimonials} />
 
           <AnimatePresence>
             {galleryData && (
