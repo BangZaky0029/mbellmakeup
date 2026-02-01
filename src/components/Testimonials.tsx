@@ -6,7 +6,11 @@ import TestimonialCard from './TestimonialCard';
 import TestimonialForm from './TestimonialForm';
 import Button from './ui/Button';
 
-const Testimonials: React.FC = () => {
+interface TestimonialsProps {
+  onSeeFullGallery?: () => void;
+}
+
+const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -18,7 +22,8 @@ const Testimonials: React.FC = () => {
       const { data, error } = await supabase
         .from('testimonials')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(10); // Updated: Only show top 10 on home preview
 
       if (error) throw error;
       setTestimonials(data || []);
@@ -43,6 +48,7 @@ const Testimonials: React.FC = () => {
 
   const handleSuccess = () => {
     fetchTestimonials();
+    setShowForm(false);
   };
 
   return (
@@ -68,7 +74,6 @@ const Testimonials: React.FC = () => {
       </div>
 
       <div className="relative w-full max-w-[1600px] mx-auto group px-4">
-        {/* Gradients for smooth scroll edges */}
         <div className="absolute top-0 left-0 w-8 md:w-32 h-full bg-gradient-to-r from-surface to-transparent z-20 pointer-events-none"></div>
         <div className="absolute top-0 right-0 w-8 md:w-32 h-full bg-gradient-to-l from-surface to-transparent z-20 pointer-events-none"></div>
 
@@ -76,7 +81,6 @@ const Testimonials: React.FC = () => {
           <button 
             onClick={() => scroll('left')}
             className="w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-gray-50"
-            aria-label="Previous testimonial"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
@@ -94,12 +98,6 @@ const Testimonials: React.FC = () => {
                   <div className="flex-1 p-10 flex flex-col">
                     <div className="h-6 bg-gray-100 rounded w-1/2 mb-6"></div>
                     <div className="h-4 bg-gray-100 rounded w-full mb-3"></div>
-                    <div className="h-4 bg-gray-100 rounded w-full mb-3"></div>
-                    <div className="h-4 bg-gray-100 rounded w-2/3 mb-3"></div>
-                    <div className="mt-auto">
-                      <div className="h-4 bg-gray-100 rounded w-1/3 mb-2"></div>
-                      <div className="h-2 bg-gray-100 rounded w-1/4"></div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -111,38 +109,42 @@ const Testimonials: React.FC = () => {
           ) : (
             <div className="w-full text-center py-24 bg-white/30 backdrop-blur-sm rounded-[3rem] border border-dashed border-primary/20">
               <p className="font-serif text-3xl text-textMain/20 italic">"Goresan kuas adalah bahasa cinta..." ✨</p>
-              <p className="font-sans text-textMain/40 mt-2 text-sm">Belum ada testimoni. Bagikan momen spesial Anda.</p>
             </div>
           )}
-          
-          <div className="w-1 md:w-24 flex-shrink-0"></div>
         </div>
 
         <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button 
             onClick={() => scroll('right')}
             className="w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-gray-50"
-            aria-label="Next testimonial"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 mt-12 text-center">
+      <div className="max-w-7xl mx-auto px-6 mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
+         <Button 
+           onClick={onSeeFullGallery} 
+           variant="primary"
+           className="px-12 py-5 shadow-xl transform hover:scale-105 min-w-[240px]"
+         >
+           View Full Gallery
+         </Button>
+         
          {!showForm ? (
            <Button 
             onClick={() => setShowForm(true)} 
             variant="outline"
-            className="px-12 py-5 bg-white shadow-lg border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-105"
+            className="px-12 py-5 bg-white shadow-xl border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-105 min-w-[240px]"
            >
              Tulis Testimoni Anda
            </Button>
          ) : (
-           <div className="relative pt-10">
+           <div className="relative w-full max-w-3xl pt-10">
              <button 
                 onClick={() => setShowForm(false)}
-                className="absolute top-4 right-4 md:right-10 z-20 w-12 h-12 rounded-full bg-white/50 backdrop-blur-md flex items-center justify-center text-textMain/40 hover:text-primary transition-all shadow-sm hover:bg-white"
+                className="absolute top-4 right-4 md:right-10 z-20 w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-textMain/40 hover:text-primary transition-all shadow-lg border border-white"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
              </button>

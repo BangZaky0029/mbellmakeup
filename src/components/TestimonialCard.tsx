@@ -8,7 +8,7 @@ interface TestimonialCardProps {
 }
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
-  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=D4A5A5&color=fff`;
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=FCE7F3&color=DB2777`;
 
   return (
     <motion.div 
@@ -20,16 +20,29 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
     >
       <div className="bg-white rounded-[2rem] shadow-[0_15px_50px_-15px_rgba(0,0,0,0.08)] border border-gray-100 h-full flex flex-col sm:flex-row overflow-hidden group hover:shadow-[0_30px_60px_-15px_rgba(212,165,165,0.25)] transition-all duration-500">
         
-        {/* Left Side: Portrait Image 9:16 */}
-        <div className="w-full sm:w-[40%] md:w-[35%] aspect-[3/4] sm:aspect-[9/16] bg-gray-50 overflow-hidden relative">
-          <img 
-            src={item.image_url || fallbackAvatar} 
-            alt={item.name} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = fallbackAvatar;
-            }}
-          />
+        {/* Left Side: Portrait Image 9:16 or Placeholder */}
+        <div className="w-full sm:w-[40%] md:w-[35%] aspect-[3/4] sm:aspect-[9/16] bg-gray-50 overflow-hidden relative flex items-center justify-center">
+          {item.image_url ? (
+            <img 
+              src={item.image_url} 
+              alt={item.name} 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = fallbackAvatar;
+              }}
+            />
+          ) : (
+            <div className="w-full h-full p-8 flex flex-col items-center justify-center text-center bg-gradient-to-br from-pink-50 to-primary/5">
+              <div className="mb-4 transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4A5A5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60">
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+                </svg>
+              </div>
+              <p className="font-serif italic text-primary/60 text-sm leading-relaxed">
+                "Yah... kenapa fotonya malu-malu? 🥺 Lain kali upload ya kak!"
+              </p>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
 
