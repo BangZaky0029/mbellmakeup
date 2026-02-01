@@ -1,6 +1,6 @@
 // C:\codingVibes\myPortfolio\mbell\mbell\src\constants.ts
 
-import type { Category, NavLink, Testimonial } from './types';
+import type { Category, NavLink } from './types';
 
 // Kategori “logika” = sesuai JSON/folder
 export const CATEGORIES: Category[] = [
@@ -39,42 +39,4 @@ export const NAV_LINKS: NavLink[] = [
   { name: 'Price List', href: '#pricelist' },
   { name: 'Testimonials', href: '#testimonials' },
   { name: 'Contact', href: '#contact' },
-];
-
-export const TESTIMONIALS: Testimonial[] = [
-  {
-    id: '1',
-    name: 'Sarah Amalia',
-    role: 'Bride',
-    content: 'Kak Bella bener-bener magician! Makeup akad aku tahan seharian padahal nangis haru. Super flawless dan ringan banget di muka.',
-    image: 'https://randomuser.me/api/portraits/women/1.jpg'
-  },
-  {
-    id: '2',
-    name: 'Putri Indah',
-    role: 'Graduation',
-    content: 'Suka banget sama look wisuda aku. Natural tapi tetep kelihatan pangling. Temen-temen banyak yang nanyain makeup dimana!',
-    image: 'https://randomuser.me/api/portraits/women/2.jpg'
-  },
-  {
-    id: '3',
-    name: 'Dinda Kirana',
-    role: 'Pre-Wedding',
-    content: 'The best MUA! Ramah banget dan detail banget ngerjainnya. Hasil fotonya jadi bagus banget karena makeupnya on point.',
-    image: 'https://randomuser.me/api/portraits/women/3.jpg'
-  },
-  {
-    id: '4',
-    name: 'Rina Nose',
-    role: 'Photoshoot',
-    content: 'Professional banget. Datang on time, alat-alatnya bersih, dan hasilnya sesuai banget sama request aku. Highly recommended!',
-    image: 'https://randomuser.me/api/portraits/women/4.jpg'
-  },
-  {
-    id: '5',
-    name: 'Tiara Andini',
-    role: 'Engagement',
-    content: 'Makeup lamaran yang super soft dan dreamy. Kak Bella ngerti banget tone warna yang cocok buat kulit aku. Makasih banyak kak!',
-    image: 'https://randomuser.me/api/portraits/women/5.jpg'
-  },
 ];
