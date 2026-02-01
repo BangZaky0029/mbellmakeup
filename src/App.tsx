@@ -2,14 +2,12 @@
 // C:\codingVibes\myPortfolio\mbell\mbell\src\App.tsx
 import { useState} from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Portfolio from './components/Portfolio';
 import Testimonials from './components/Testimonials';
 import PriceList from './components/PriceList';
 import Contact from './components/Contact';
-import Footer from './components/Footer';
 import FlowerBackground from './components/ui/FlowerBackground';
 import MusicPlayer from './components/ui/MusicPlayer';
 import Button from './components/ui/Button';
