@@ -1,111 +1,154 @@
-
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { TESTIMONIALS } from '../constants';
+import { supabase } from '../lib/supabase';
+import type { Testimonial } from '../types';
+import TestimonialCard from './TestimonialCard';
+import TestimonialForm from './TestimonialForm';
+import Button from './ui/Button';
 
 const Testimonials: React.FC = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const fetchTestimonials = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setTestimonials(data || []);
+    } catch (err) {
+      console.error('Error fetching testimonials:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, [fetchTestimonials]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (containerRef.current) {
       const { current } = containerRef;
-      // Scroll by approximately one card width + gap (300px width + 32px gap)
-      const scrollAmount = direction === 'left' ? -340 : 340;
+      const scrollAmount = direction === 'left' ? -500 : 500;
       current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
+  const handleSuccess = () => {
+    fetchTestimonials();
+  };
+
   return (
     <section id="testimonials" className="py-24 overflow-hidden relative z-10">
-      <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
+      <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
         <motion.span 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-primary font-sans font-bold tracking-widest uppercase text-sm mb-4 block"
+          initial={{ opacity: 0 } as any}
+          whileInView={{ opacity: 1 } as any}
+          viewport={{ once: true } as any}
+          className="text-primary font-sans font-bold tracking-[0.3em] uppercase text-xs mb-4 block"
         >
           Love Notes
         </motion.span>
         <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-serif text-4xl md:text-5xl text-textMain"
+          initial={{ opacity: 0, y: 20 } as any}
+          whileInView={{ opacity: 1, y: 0 } as any}
+          viewport={{ once: true } as any}
+          className="font-serif text-5xl md:text-6xl text-textMain"
         >
-          Client Testimonials
+          Client Stories
         </motion.h2>
+        <div className="h-[1px] w-12 bg-primary mx-auto mt-6 opacity-30"></div>
       </div>
 
-      <div className="relative w-full max-w-[1400px] mx-auto group">
-        {/* Gradient Masks for Fade Effect (Sides) */}
-        <div className="absolute top-0 left-0 w-12 md:w-32 h-full bg-gradient-to-r from-surface to-transparent z-20 pointer-events-none"></div>
-        <div className="absolute top-0 right-0 w-12 md:w-32 h-full bg-gradient-to-l from-surface to-transparent z-20 pointer-events-none"></div>
+      <div className="relative w-full max-w-[1600px] mx-auto group px-4">
+        {/* Gradients for smooth scroll edges */}
+        <div className="absolute top-0 left-0 w-8 md:w-32 h-full bg-gradient-to-r from-surface to-transparent z-20 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-8 md:w-32 h-full bg-gradient-to-l from-surface to-transparent z-20 pointer-events-none"></div>
 
-        {/* Navigation Button: Prev (Hidden on Mobile) */}
-        <div className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button 
             onClick={() => scroll('left')}
-            className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md shadow-lg flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-white"
+            className="w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-gray-50"
             aria-label="Previous testimonial"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
         </div>
 
-        {/* Scrollable Container */}
-        {/* 
-            - overflow-x-auto: Enables native scrolling (touch swipe).
-            - no-scrollbar: Hides the scrollbar (utility class).
-            - snap-x snap-mandatory: Ensures cards snap to center.
-        */}
         <div 
           ref={containerRef}
-          className="flex gap-6 md:gap-8 overflow-x-auto px-6 md:px-12 py-10 pb-12 snap-x snap-mandatory no-scrollbar scroll-smooth"
+          className="flex gap-8 md:gap-12 overflow-x-auto px-4 md:px-24 py-12 pb-16 snap-x snap-mandatory no-scrollbar scroll-smooth"
         >
-          {TESTIMONIALS.map((item, index) => (
-            <motion.div 
-              key={`${item.id}-${index}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="snap-center w-[300px] md:w-[400px] flex-shrink-0"
-            >
-              <div className="bg-white p-8 rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border border-gray-50 h-full flex flex-col relative group hover:shadow-[0_20px_40px_-10px_rgba(212,165,165,0.2)] transition-all duration-300 hover:-translate-y-2">
-                {/* Quote Icon */}
-                <div className="text-primary/20 text-6xl font-serif absolute top-4 right-6 opacity-50">"</div>
-                
-                <p className="font-sans text-textMain/70 italic leading-relaxed mb-6 relative z-10">
-                  "{item.content}"
-                </p>
-                
-                <div className="mt-auto flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 border border-gray-100">
-                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h4 className="font-serif text-lg text-textMain font-bold">{item.name}</h4>
-                    <span className="text-xs font-sans text-primary uppercase tracking-widest">{item.role}</span>
+          {loading && testimonials.length === 0 ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="snap-center w-[320px] md:w-[650px] flex-shrink-0 animate-pulse">
+                <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 h-[450px] flex flex-col md:flex-row overflow-hidden">
+                  <div className="w-full md:w-[35%] h-full bg-gray-100"></div>
+                  <div className="flex-1 p-10 flex flex-col">
+                    <div className="h-6 bg-gray-100 rounded w-1/2 mb-6"></div>
+                    <div className="h-4 bg-gray-100 rounded w-full mb-3"></div>
+                    <div className="h-4 bg-gray-100 rounded w-full mb-3"></div>
+                    <div className="h-4 bg-gray-100 rounded w-2/3 mb-3"></div>
+                    <div className="mt-auto">
+                      <div className="h-4 bg-gray-100 rounded w-1/3 mb-2"></div>
+                      <div className="h-2 bg-gray-100 rounded w-1/4"></div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </motion.div>
-          ))}
+            ))
+          ) : testimonials.length > 0 ? (
+            testimonials.map((item, index) => (
+              <TestimonialCard key={item.id} item={item} index={index} />
+            ))
+          ) : (
+            <div className="w-full text-center py-24 bg-white/30 backdrop-blur-sm rounded-[3rem] border border-dashed border-primary/20">
+              <p className="font-serif text-3xl text-textMain/20 italic">"Goresan kuas adalah bahasa cinta..." ✨</p>
+              <p className="font-sans text-textMain/40 mt-2 text-sm">Belum ada testimoni. Bagikan momen spesial Anda.</p>
+            </div>
+          )}
           
-          {/* Spacer for right padding in flex container */}
-          <div className="w-4 md:w-8 flex-shrink-0"></div>
+          <div className="w-1 md:w-24 flex-shrink-0"></div>
         </div>
 
-        {/* Navigation Button: Next (Hidden on Mobile) */}
-        <div className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button 
             onClick={() => scroll('right')}
-            className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md shadow-lg flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-white"
+            className="w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-gray-50"
             aria-label="Next testimonial"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 mt-12 text-center">
+         {!showForm ? (
+           <Button 
+            onClick={() => setShowForm(true)} 
+            variant="outline"
+            className="px-12 py-5 bg-white shadow-lg border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-105"
+           >
+             Tulis Testimoni Anda
+           </Button>
+         ) : (
+           <div className="relative pt-10">
+             <button 
+                onClick={() => setShowForm(false)}
+                className="absolute top-4 right-4 md:right-10 z-20 w-12 h-12 rounded-full bg-white/50 backdrop-blur-md flex items-center justify-center text-textMain/40 hover:text-primary transition-all shadow-sm hover:bg-white"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+             </button>
+             <TestimonialForm onSuccess={handleSuccess} />
+           </div>
+         )}
       </div>
     </section>
   );

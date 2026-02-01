@@ -28,7 +28,10 @@ export interface NavLink {
 export interface Testimonial {
   id: string;
   name: string;
-  role: string;
+  role?: string;
   content: string;
-  image?: string;
+  image_url?: string;
+  rating: number;
+  created_at: string;
+  is_approved?: boolean;
 }
