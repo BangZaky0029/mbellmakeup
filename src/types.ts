@@ -35,3 +35,19 @@ export interface Testimonial {
   created_at: string;
   is_approved?: boolean;
 }
+
+export interface Booking {
+  id: string;
+  client_name: string;
+  service: string;
+  booking_date: string; // format: 'YYYY-MM-DD'
+  address?: string;
+  message?: string;
+  status: 'confirmed' | 'cancelled';
+  created_at: string;
+}
+
+export interface BookedDay {
+  date: string;   // format: 'YYYY-MM-DD'
+  service: string;
+}

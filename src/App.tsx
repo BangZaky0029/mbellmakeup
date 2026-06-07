@@ -12,6 +12,7 @@ import FlowerBackground from './components/ui/FlowerBackground';
 import MusicPlayer from './components/ui/MusicPlayer';
 import Button from './components/ui/Button';
 import logo from './assets/logoBrand.png';
+import SiteGuard from './components/SiteGuard';
 
 // Import Overlays and Types
 import FullGalleryOverlay from './components/FullGalleryOverlay';
@@ -52,6 +53,7 @@ function App() {
   };
 
   return (
+    <SiteGuard>
     <div className="relative min-h-screen">
       <AnimatePresence>
         {!soundEnabled && (
@@ -171,6 +173,7 @@ function App() {
         </motion.div>
       )}
     </div>
+    </SiteGuard>
   );
 }
 
