@@ -31,6 +31,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   const [direction, setDirection] = useState<1 | -1>(1); // for slide animation
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [termsZoom, setTermsZoom] = useState(100); // 100% baseline
+  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
 
   // Build a map: 'YYYY-MM-DD' -> service
   const bookedMap = useMemo(() => {
@@ -415,11 +416,27 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
               </div>
 
               {/* Modal Body: Scrollable Image via Native CSS */}
-              <div className="flex-1 overflow-auto p-4 sm:p-6 bg-gray-50 flex flex-col items-center justify-start relative">
-
+              <div 
+                className="flex-1 overflow-auto p-4 sm:p-6 bg-gray-50 flex flex-col items-center justify-start relative"
+                onTouchMove={(e) => {
+                  if (e.touches.length === 2) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                    if (lastTouchDistance !== null) {
+                      const delta = dist - lastTouchDistance;
+                      // Sensitivity multiplier (e.g. 0.5)
+                      setTermsZoom(z => Math.min(Math.max(z + delta * 0.5, 50), 300));
+                    }
+                    setLastTouchDistance(dist);
+                  }
+                }}
+                onTouchEnd={() => setLastTouchDistance(null)}
+                onTouchCancel={() => setLastTouchDistance(null)}
+              >
                 <div 
                   className={`w-full flex origin-top pb-10 ${termsZoom <= 100 ? 'justify-center' : 'justify-start'}`}
-                  style={{ touchAction: 'pan-x pan-y pinch-zoom' }}
+                  style={{ touchAction: 'pan-x pan-y' }}
                 >
                   <img
                     src={termConditionImg}
@@ -429,7 +446,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       width: `${termsZoom}%`, 
                       maxWidth: 'none', 
                       height: 'auto', 
-                      transition: 'width 0.2s ease-out' 
+                      transition: lastTouchDistance ? 'none' : 'width 0.2s ease-out' 
                     }}
                   />
                 </div>

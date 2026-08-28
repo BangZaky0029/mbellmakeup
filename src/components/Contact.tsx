@@ -42,6 +42,7 @@ const Contact: React.FC = () => {
   const [showTermsConfirmModal, setShowTermsConfirmModal] = useState(false);
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
   const [termsZoom, setTermsZoom] = useState(100); // 100% baseline
+  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
 
   // ── Fetch booked dates from Supabase ──────────────────────────────
   const fetchBookedDates = useCallback(async () => {
@@ -136,7 +137,7 @@ const Contact: React.FC = () => {
     }
 
     if (!formData.time) {
-      setDateError('Silakan masukkan jam / waktu acara.');
+      setDateError('Silakan masukkan jam / waktu mulai makeup.');
       return;
     }
 
@@ -193,9 +194,9 @@ const Contact: React.FC = () => {
 • Nama Lengkap: ${formData.name}
 • Jenis Layanan: ${formData.service}
 
-*Jadwal & Waktu Acara:*
+*Jadwal & Waktu Makeup:*
 • Tanggal: ${formattedDate}
-• Jam / Waktu Acara: ${formattedTime}
+• Jam / Waktu Mulai Makeup: ${formattedTime}
 
 *Lokasi & Catatan:*
 • Alamat / Lokasi Event: ${formData.address}
@@ -371,7 +372,7 @@ Terima kasih!`;
                         <circle cx="12" cy="12" r="10" />
                         <polyline points="12 6 12 12 16 14" />
                       </svg>
-                      Jam / Waktu Acara *
+                      Jam / Waktu Mulai Makeup *
                     </label>
                     <span className="text-[10px] text-textMain/40 font-sans italic">Format 24 Jam / WIB</span>
                   </div>
@@ -588,11 +589,27 @@ Terima kasih!`;
               </div>
 
               {/* Modal Body: Scrollable Image via Native CSS */}
-              <div className="flex-1 overflow-auto p-4 sm:p-6 bg-gray-50 flex flex-col items-center justify-start relative">
-
+              <div 
+                className="flex-1 overflow-auto p-4 sm:p-6 bg-gray-50 flex flex-col items-center justify-start relative"
+                onTouchMove={(e) => {
+                  if (e.touches.length === 2) {
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+                    if (lastTouchDistance !== null) {
+                      const delta = dist - lastTouchDistance;
+                      // Sensitivity multiplier (e.g. 0.5)
+                      setTermsZoom(z => Math.min(Math.max(z + delta * 0.5, 50), 300));
+                    }
+                    setLastTouchDistance(dist);
+                  }
+                }}
+                onTouchEnd={() => setLastTouchDistance(null)}
+                onTouchCancel={() => setLastTouchDistance(null)}
+              >
                 <div 
                   className={`w-full flex origin-top pb-10 ${termsZoom <= 100 ? 'justify-center' : 'justify-start'}`}
-                  style={{ touchAction: 'pan-x pan-y pinch-zoom' }}
+                  style={{ touchAction: 'pan-x pan-y' }}
                 >
                   <img
                     src={termConditionImg}
@@ -602,7 +619,7 @@ Terima kasih!`;
                       width: `${termsZoom}%`, 
                       maxWidth: 'none', 
                       height: 'auto', 
-                      transition: 'width 0.2s ease-out' 
+                      transition: lastTouchDistance ? 'none' : 'width 0.2s ease-out' 
                     }}
                   />
                 </div>
