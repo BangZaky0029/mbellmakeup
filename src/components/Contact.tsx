@@ -651,13 +651,20 @@ Terima kasih!`;
                     type="button"
                     disabled={!isTermsAgreed}
                     onClick={handleConfirmBooking}
-                    className="flex-1 sm:flex-initial px-6 py-2.5 bg-[#B56576] hover:bg-[#9D8189] disabled:opacity-40 disabled:cursor-not-allowed text-white font-sans font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition-all flex items-center justify-center gap-2"
+                    className="flex-1 sm:flex-initial px-6 py-2 bg-[#B56576] hover:bg-[#9D8189] disabled:opacity-40 disabled:cursor-not-allowed text-white font-sans rounded-full shadow-md transition-all flex flex-col items-center justify-center gap-0.5 min-w-[200px]"
                   >
-                    <span>Setuju & Kirim WA</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 2L11 13" />
-                      <path d="M22 2l-7 20-4-9-9-4 20-7z" />
-                    </svg>
+                    <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider">
+                      <span>Kirim Via WhatsApp</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 2L11 13" />
+                        <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+                      </svg>
+                    </div>
+                    {formData.date && (
+                      <span className="text-[10px] font-medium text-white/90 capitalize tracking-wide">
+                        {new Date(formData.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                      </span>
+                    )}
                   </button>
                 </div>
               </div>
