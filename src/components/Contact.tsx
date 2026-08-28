@@ -37,6 +37,7 @@ const Contact: React.FC = () => {
   const [bookedDays, setBookedDays] = useState<BookedDay[]>([]);
   const [isCalendarLoading, setIsCalendarLoading] = useState(true);
   const [dateError, setDateError] = useState<string | null>(null);
+  const [timeError, setTimeError] = useState<string | null>(null);
 
   // Terms & Conditions confirmation modal state
   const [showTermsConfirmModal, setShowTermsConfirmModal] = useState(false);
@@ -100,11 +101,16 @@ const Contact: React.FC = () => {
 
     if (name === 'date') {
       setDateError(null);
+      setTimeError(null);
       // Check if selected date is already booked
       const alreadyBooked = bookedDays.find((b) => b.date === value);
       if (alreadyBooked) {
         setDateError(`Tanggal ini sudah dipesan untuk ${alreadyBooked.service}. Silakan pilih tanggal lain.`);
       }
+    }
+    
+    if (name === 'time') {
+      setTimeError(null);
     }
   };
 
@@ -112,11 +118,7 @@ const Contact: React.FC = () => {
   const handleCalendarSelectDate = (dateStr: string) => {
     setFormData((prev) => ({ ...prev, date: dateStr }));
     setDateError(null); // calendar already prevents booked/past dates
-    
-    // Auto-clear or auto-set error if current time becomes invalid
-    if (!isTimeAllowed(formData.time, dateStr)) {
-      setDateError('Untuk reservasi hari ini, mohon pilih waktu minimal 3 jam dari sekarang.');
-    }
+    setTimeError(null);
   };
 
   const handleGetLocation = () => {
@@ -161,12 +163,12 @@ const Contact: React.FC = () => {
     }
 
     if (!formData.time) {
-      setDateError('Silakan masukkan jam / waktu mulai makeup.');
+      setTimeError('Silakan masukkan jam / waktu mulai makeup.');
       return;
     }
 
     if (!isTimeAllowed(formData.time, formData.date)) {
-      setDateError('Untuk reservasi hari ini, mohon pilih waktu minimal 3 jam dari sekarang agar kami dapat mengatur jadwal.');
+      setTimeError('Untuk reservasi hari ini, mohon pilih waktu minimal 3 jam dari sekarang.');
       return;
     }
 
@@ -420,31 +422,38 @@ Terima kasih!`;
 
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-[10px] text-textMain/50 font-bold uppercase tracking-wider mr-1">Preset:</span>
-                      {TIME_PRESETS.map((t) => {
-                        const allowed = isTimeAllowed(t, formData.date);
-                        return (
-                          <button
-                            key={t}
-                            type="button"
-                            disabled={!allowed}
-                            onClick={() => {
-                              setFormData((prev) => ({ ...prev, time: t }));
-                              setDateError(null);
-                            }}
-                            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                              !allowed
-                                ? 'bg-gray-100 text-gray-400 opacity-50 cursor-not-allowed'
-                                : formData.time === t
-                                ? 'bg-[#B56576] text-white shadow-sm'
-                                : 'bg-gray-100 text-textMain/70 hover:bg-gray-200'
-                            }`}
-                          >
-                            {t}
-                          </button>
-                        );
-                      })}
+                      {TIME_PRESETS.map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => {
+                            setFormData((prev) => ({ ...prev, time: t }));
+                            setTimeError(null);
+                          }}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                            formData.time === t
+                              ? 'bg-[#B56576] text-white shadow-sm'
+                              : 'bg-gray-100 text-textMain/70 hover:bg-gray-200'
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
                     </div>
                   </div>
+                  
+                  <AnimatePresence>
+                    {timeError && (
+                      <motion.p 
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="text-[10px] text-red-500 font-sans italic mt-1.5"
+                      >
+                        * {timeError}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </div>
