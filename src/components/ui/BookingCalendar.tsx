@@ -295,14 +295,23 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+                        className={`absolute bottom-full mb-1 z-50 pointer-events-none flex flex-col ${
+                          idx % 7 >= 5
+                            ? 'right-[-8px] items-end'
+                            : idx % 7 <= 1
+                            ? 'left-[-8px] items-start'
+                            : 'left-1/2 -translate-x-1/2 items-center'
+                        }`}
                       >
                         <div className="bg-[#4A403A] text-white text-[10px] font-sans rounded-lg px-2.5 py-1.5 whitespace-nowrap shadow-xl">
                           <div className="font-semibold">🌸 Sudah Dipesan</div>
                           <div className="opacity-75 mt-0.5">{bookedMap[dateStr]}</div>
-                          {/* Arrow */}
-                          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#4A403A]" />
                         </div>
+                        <div 
+                          className={`w-0 h-0 border-l-[5px] border-r-[5px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#4A403A] ${
+                            idx % 7 >= 5 ? 'mr-6' : idx % 7 <= 1 ? 'ml-6' : ''
+                          }`} 
+                        />
                       </motion.div>
                     )}
 
@@ -311,12 +320,22 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                       <motion.div
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+                        className={`absolute bottom-full mb-1 z-50 pointer-events-none flex flex-col ${
+                          idx % 7 >= 5
+                            ? 'right-[-8px] items-end'
+                            : idx % 7 <= 1
+                            ? 'left-[-8px] items-start'
+                            : 'left-1/2 -translate-x-1/2 items-center'
+                        }`}
                       >
                         <div className="bg-[#9D8189] text-white text-[10px] font-sans rounded-lg px-2 py-1.5 whitespace-nowrap shadow-xl">
                           Tanggal sudah lewat
-                          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#9D8189]" />
                         </div>
+                        <div 
+                          className={`w-0 h-0 border-l-[5px] border-r-[5px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#9D8189] ${
+                            idx % 7 >= 5 ? 'mr-6' : idx % 7 <= 1 ? 'ml-6' : ''
+                          }`} 
+                        />
                       </motion.div>
                     )}
                   </div>
