@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import type { Testimonial } from '../types';
 import TestimonialCard from './TestimonialCard';
@@ -14,7 +14,27 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  
+  const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // ── Parallax Scroll Effect ──
+  // Track vertical scroll progress of this section
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Add a spring physics wrapper to smooth out abrupt scroll stops!
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 20,
+    restDelta: 0.001
+  });
+  
+  // Map vertical scroll progress to a horizontal shift (e.g., from 150px right to -150px left)
+  // This creates the visual cue that the container is horizontally scrollable!
+  const xTransform = useTransform(smoothProgress, [0, 1], ["150px", "-150px"]);
 
   const fetchTestimonials = useCallback(async () => {
     try {
@@ -23,7 +43,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
         .from('testimonials')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(10); // Updated: Only show top 10 on home preview
+        .limit(10);
 
       if (error) throw error;
       setTestimonials(data || []);
@@ -52,7 +72,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
   };
 
   return (
-    <section id="testimonials" className="py-24 overflow-hidden relative z-10">
+    <section ref={sectionRef} id="testimonials" className="py-24 overflow-hidden relative z-10">
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
         <motion.span 
           initial={{ opacity: 0 } as any}
@@ -88,29 +108,34 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
 
         <div 
           ref={containerRef}
-          className="flex gap-8 md:gap-12 overflow-x-auto px-4 md:px-24 py-12 pb-16 snap-x snap-mandatory no-scrollbar scroll-smooth"
+          className="overflow-x-auto px-4 md:px-24 py-12 pb-16 no-scrollbar scroll-smooth"
         >
-          {loading && testimonials.length === 0 ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="snap-center w-[320px] md:w-[650px] flex-shrink-0 animate-pulse">
-                <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 h-[450px] flex flex-col md:flex-row overflow-hidden">
-                  <div className="w-full md:w-[35%] h-full bg-gray-100"></div>
-                  <div className="flex-1 p-10 flex flex-col">
-                    <div className="h-6 bg-gray-100 rounded w-1/2 mb-6"></div>
-                    <div className="h-4 bg-gray-100 rounded w-full mb-3"></div>
+          <motion.div 
+            style={{ x: xTransform }} 
+            className="flex gap-8 md:gap-12 w-max"
+          >
+            {loading && testimonials.length === 0 ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="w-[320px] sm:w-[500px] md:w-[650px] flex-shrink-0 animate-pulse">
+                  <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 h-[450px] flex flex-col sm:flex-row overflow-hidden">
+                    <div className="w-full sm:w-[35%] h-full bg-gray-100"></div>
+                    <div className="flex-1 p-10 flex flex-col">
+                      <div className="h-6 bg-gray-100 rounded w-1/2 mb-6"></div>
+                      <div className="h-4 bg-gray-100 rounded w-full mb-3"></div>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : testimonials.length > 0 ? (
+              testimonials.map((item, index) => (
+                <TestimonialCard key={item.id} item={item} index={index} />
+              ))
+            ) : (
+              <div className="w-[320px] md:w-[650px] text-center py-24 bg-white/30 backdrop-blur-sm rounded-[3rem] border border-dashed border-primary/20">
+                <p className="font-serif text-3xl text-textMain/20 italic">"Goresan kuas adalah bahasa cinta..." ✨</p>
               </div>
-            ))
-          ) : testimonials.length > 0 ? (
-            testimonials.map((item, index) => (
-              <TestimonialCard key={item.id} item={item} index={index} />
-            ))
-          ) : (
-            <div className="w-full text-center py-24 bg-white/30 backdrop-blur-sm rounded-[3rem] border border-dashed border-primary/20">
-              <p className="font-serif text-3xl text-textMain/20 italic">"Goresan kuas adalah bahasa cinta..." ✨</p>
-            </div>
-          )}
+            )}
+          </motion.div>
         </div>
 
         <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

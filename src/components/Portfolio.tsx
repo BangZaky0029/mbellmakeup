@@ -1,7 +1,7 @@
 // C:\codingVibes\myPortfolio\mbell\mbell-1\src\components\Portfolio.tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, useMotionValue, animate, useScroll, useTransform } from 'framer-motion';
-import { CATEGORIES, CATEGORY_LABELS } from '../constants';
+import { CATEGORIES, CATEGORY_LABELS, SHOW_PORTFOLIO_PHOTOS } from '../constants';
 import type { Category, PortfolioItem } from '../types';
 import Button from './ui/Button';
 import { supabase } from '../lib/supabase';
@@ -90,37 +90,76 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
           </p>
         </div>
 
-        <div className="mb-16 flex justify-center flex-wrap gap-2 md:gap-3 max-w-5xl mx-auto">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[9px] md:text-[10px] uppercase tracking-[0.1em] md:tracking-[0.15em] transition-all duration-300 font-sans border font-bold ${
-                  activeCategory === cat 
-                    ? 'bg-textMain border-textMain text-white shadow-lg' 
-                    : 'bg-white/40 border-gray-100 text-textMain/60 hover:bg-white hover:border-primary hover:text-primary'
-                }`}
-              >
-                {CATEGORY_LABELS[cat]}
-              </button>
-            ))}
-        </div>
+        {SHOW_PORTFOLIO_PHOTOS && (
+          <div className="mb-16 flex justify-center flex-wrap gap-2 md:gap-3 max-w-5xl mx-auto">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[9px] md:text-[10px] uppercase tracking-[0.1em] md:tracking-[0.15em] transition-all duration-300 font-sans border font-bold ${
+                    activeCategory === cat 
+                      ? 'bg-textMain border-textMain text-white shadow-lg' 
+                      : 'bg-white/40 border-gray-100 text-textMain/60 hover:bg-white hover:border-primary hover:text-primary'
+                  }`}
+                >
+                  {CATEGORY_LABELS[cat]}
+                </button>
+              ))}
+          </div>
+        )}
       </div>
 
-      {/* MOODBOARD COLLAGE */}
-      <div className="relative w-full perspective-container min-h-[50vh] flex flex-col items-center justify-center overflow-visible px-4">
-        <div className="relative w-full max-w-[1600px] transform-style-3d rotate-x-[5deg] scale-[1.02] origin-center gpu-accelerated flex flex-col items-center">
-          <InteractiveRow items={firstRow} onClick={onItemClick} parallaxX={parallax1} activeCategory={activeCategory} />
-          <div className="h-6 md:h-12"></div>
-          <InteractiveRow items={secondRow} onClick={onItemClick} parallaxX={parallax2} activeCategory={activeCategory} />
+      {/* MOODBOARD COLLAGE OR CLIENT-FACING COMING SOON NOTICE */}
+      {!SHOW_PORTFOLIO_PHOTOS ? (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-2xl mx-auto px-8 py-16 text-center bg-white/60 backdrop-blur-xl rounded-[3rem] border border-dashed border-primary/20 shadow-xl relative z-20"
+        >
+          <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6 border border-primary/20 shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A5A5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/>
+              <path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <h3 className="font-serif text-3xl md:text-4xl text-textMain mb-3">
+            New Portfolio Coming Soon ✨
+          </h3>
+          <p className="font-sans text-xs md:text-sm text-textMain/70 italic leading-relaxed max-w-lg mx-auto mb-6">
+            Kami sedang memperbarui galeri dengan karya-karya riasan terbaru yang memukau. Tertarik melihat katalog lengkap atau ingin berkonsultasi mengenai inspirasi look Anda?
+          </p>
+          <div className="flex justify-center">
+            <a
+              href="https://wa.me/6288293473765?text=Halo%20MBELL%20Makeup%2C%20saya%20tertarik%20melihat%20katalog%20portfolio%20terbaru."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-sans font-bold text-xs uppercase tracking-wider shadow-md hover:bg-secondary transition-all transform hover:scale-105"
+            >
+              <span>Tanya Katalog via WhatsApp</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 2L11 13"/>
+                <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+              </svg>
+            </a>
+          </div>
+        </motion.div>
+      ) : (
+        <div className="relative w-full perspective-container min-h-[50vh] flex flex-col items-center justify-center overflow-visible px-4">
+          <div className="relative w-full max-w-[1600px] transform-style-3d rotate-x-[5deg] scale-[1.02] origin-center gpu-accelerated flex flex-col items-center">
+            <InteractiveRow items={firstRow} onClick={onItemClick} parallaxX={parallax1} activeCategory={activeCategory} />
+            <div className="h-6 md:h-12"></div>
+            <InteractiveRow items={secondRow} onClick={onItemClick} parallaxX={parallax2} activeCategory={activeCategory} />
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex justify-center mt-20 relative z-20">
-        <Button onClick={() => onOpenGallery(portfolioData, activeCategory)} variant="outline" className="bg-white/80 shadow-sm border-textMain/10 text-textMain/80 px-12 py-4">
-           Browse Full Experience
-        </Button>
-      </div>
+      {SHOW_PORTFOLIO_PHOTOS && (
+        <div className="flex justify-center mt-20 relative z-20">
+          <Button onClick={() => onOpenGallery(portfolioData, activeCategory)} variant="outline" className="bg-white/80 shadow-sm border-textMain/10 text-textMain/80 px-12 py-4">
+             Browse Full Experience
+          </Button>
+        </div>
+      )}
 
       <style>{`
         .perspective-container { perspective: 2000px; }

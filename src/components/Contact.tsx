@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Button from './ui/Button';
 import BookingCalendar from './ui/BookingCalendar';
 import { supabase } from '../lib/supabase';
 import type { BookedDay } from '../types';
+import termConditionImg from '../assets/term&Condition.jpeg';
 
 const SERVICES = [
   'Wedding / Akad',
@@ -15,11 +17,14 @@ const SERVICES = [
   'Makeup Course'
 ];
 
+const TIME_PRESETS = ['06:00', '08:00', '10:00', '13:00', '15:00', '17:00'];
+
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     service: SERVICES[0],
     date: '',
+    time: '08:00',
     address: '',
     message: ''
   });
@@ -33,6 +38,10 @@ const Contact: React.FC = () => {
   const [bookedDays, setBookedDays] = useState<BookedDay[]>([]);
   const [isCalendarLoading, setIsCalendarLoading] = useState(true);
   const [dateError, setDateError] = useState<string | null>(null);
+
+  // Terms & Conditions confirmation modal state
+  const [showTermsConfirmModal, setShowTermsConfirmModal] = useState(false);
+  const [isTermsAgreed, setIsTermsAgreed] = useState(false);
 
   // ── Fetch booked dates from Supabase ──────────────────────────────
   const fetchBookedDates = useCallback(async () => {
@@ -106,14 +115,14 @@ const Contact: React.FC = () => {
     );
   };
 
-  // ── Submit — Dual Action: Supabase + WhatsApp ─────────────────────
-  const handleSubmit = async (e: React.FormEvent) => {
+  // ── Submit Step 1: Validate & Open S&K Modal ─────────────────────
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError(null);
 
     // Guard: date must be selected
     if (!formData.date) {
-      setDateError('Silakan pilih tanggal reservasi terlebih dahulu.');
+      setDateError('Silakan pilih tanggal reservasi pada kalender di bawah terlebih dahulu.');
       return;
     }
 
@@ -126,6 +135,21 @@ const Contact: React.FC = () => {
       return;
     }
 
+    if (!formData.time) {
+      setDateError('Silakan masukkan jam / waktu acara.');
+      return;
+    }
+
+    // Reset agreement & show modal
+    setIsTermsAgreed(false);
+    setShowTermsConfirmModal(true);
+  };
+
+  // ── Submit Step 2: User Confirmed S&K -> Save DB & Open WhatsApp ─
+  const handleConfirmBooking = async () => {
+    if (!isTermsAgreed) return;
+
+    setShowTermsConfirmModal(false);
     setIsSubmitting(true);
 
     try {
@@ -161,15 +185,26 @@ const Contact: React.FC = () => {
         day: 'numeric',
       });
 
-      const text = `Halo MBELL Makeup, saya ingin melakukan reservasi.
+      const formattedTime = formData.time ? `${formData.time} WIB` : '-';
 
-Nama: ${formData.name}
-Layanan: ${formData.service}
-Tanggal: ${formattedDate}
-Alamat/Lokasi: ${formData.address}
-Pesan: ${formData.message}
+      const text = `🌸 *RESERVASI MAKEUP — MBELL MAKEUP* 🌸
 
-Terima kasih.`;
+*Detail Klien:*
+• Nama Lengkap: ${formData.name}
+• Jenis Layanan: ${formData.service}
+
+*Jadwal & Waktu Acara:*
+• Tanggal: ${formattedDate}
+• Jam / Waktu Acara: ${formattedTime}
+
+*Lokasi & Catatan:*
+• Alamat / Lokasi Event: ${formData.address}
+• Pesan / Catatan Khusus: ${formData.message || '-'}
+
+----------------------------------
+✅ *Persetujuan S&K:* Saya telah membaca, memahami, dan menyetujui seluruh Syarat & Ketentuan Booking MBELL Makeup.
+
+Terima kasih!`;
 
       const encodedText = encodeURIComponent(text);
       window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, '_blank');
@@ -185,6 +220,7 @@ Terima kasih.`;
         name: '',
         service: SERVICES[0],
         date: '',
+        time: '08:00',
         address: '',
         message: '',
       });
@@ -277,26 +313,21 @@ Terima kasih.`;
               </div>
             </div>
 
-            {/* ── Row 2: Reservation Date + Calendar ── */}
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-textMain uppercase tracking-wider">
-                Reservation Date
-              </label>
-
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleInputChange}
-                required
-                min={new Date().toISOString().split('T')[0]}
-                className={[
-                  'w-full px-4 py-3 rounded-xl bg-gray-50 border outline-none transition-all text-textMain/70',
-                  dateError
-                    ? 'border-red-300 focus:border-red-400 focus:ring-1 focus:ring-red-300'
-                    : 'border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary',
-                ].join(' ')}
-              />
+            {/* ── Row 2: Reservation Date (via Calendar) & Time Input ── */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <label className="text-sm font-bold text-textMain uppercase tracking-wider">
+                  Pilih Tanggal Reservasi *
+                </label>
+                {formData.date && (
+                  <span className="text-xs font-semibold text-[#B56576] bg-[#FFF0F3] px-3 py-1 rounded-full border border-[#F4ACB7]/40 flex items-center gap-1.5 w-fit">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Dipilih: {new Date(formData.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                  </span>
+                )}
+              </div>
 
               {/* Date error message */}
               {dateError && (
@@ -323,8 +354,60 @@ Terima kasih.`;
               />
 
               <p className="text-xs text-textMain/40 font-sans text-center">
-                🌸 Tanggal berwarna pink menandakan sudah ada reservasi. Klik tanggal untuk memilih.
+                🌸 Tanggal berwarna pink menandakan sudah ada reservasi. Klik tanggal di atas untuk memilih.
               </p>
+
+              {/* ── Time Picker Field (Shown after Date is selected) ── */}
+              {formData.date && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: 10 }}
+                  animate={{ opacity: 1, height: 'auto', y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="pt-4 border-t border-gray-100 space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-[#4A403A] uppercase tracking-wider flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B56576" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      Jam / Waktu Acara *
+                    </label>
+                    <span className="text-[10px] text-textMain/40 font-sans italic">Format 24 Jam / WIB</span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div className="relative flex-1">
+                      <input
+                        type="time"
+                        name="time"
+                        value={formData.time}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-semibold text-textMain"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-[10px] text-textMain/50 font-bold uppercase tracking-wider mr-1">Preset:</span>
+                      {TIME_PRESETS.map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setFormData((prev) => ({ ...prev, time: t }))}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                            formData.time === t
+                              ? 'bg-[#B56576] text-white shadow-sm'
+                              : 'bg-gray-100 text-textMain/70 hover:bg-gray-200'
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* ── Row 3: Address ── */}
@@ -396,12 +479,12 @@ Terima kasih.`;
             )}
 
             {/* ── Submit button ── */}
-            <div className="pt-4">
+            <div className="pt-4 flex justify-center sm:justify-start">
               <Button
                 type="submit"
                 variant="primary"
                 disabled={isSubmitting || !!dateError}
-                className="w-full md:w-auto flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-10 py-4 shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
@@ -411,7 +494,7 @@ Terima kasih.`;
                 ) : (
                   <>
                     <span>Send via WhatsApp</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
                       <path d="M22 2L11 13" />
                       <path d="M22 2l-7 20-4-9-9-4 20-7z" />
                     </svg>
@@ -422,6 +505,141 @@ Terima kasih.`;
           </form>
         </motion.div>
       </div>
+
+      {/* ── Terms & Conditions Confirmation Modal before WhatsApp ── */}
+      <AnimatePresence>
+        {showTermsConfirmModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] bg-black/75 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+            onClick={() => setShowTermsConfirmModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="bg-white rounded-3xl max-w-2xl w-full my-auto max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-white/20"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="px-6 py-4 bg-gradient-to-r from-[#FFF0F3] to-[#FDF6F8] border-b border-[#F4ACB7]/30 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-2xl">📋</span>
+                  <div>
+                    <h3 className="font-serif text-lg md:text-xl text-[#4A403A] font-bold">
+                      Konfirmasi Syarat & Ketentuan
+                    </h3>
+                    <p className="text-[10px] text-[#9D8189] font-sans">
+                      Harap baca & menyetujui ketentuan sebelum mengirim pesanan
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTermsConfirmModal(false)}
+                  className="w-9 h-9 rounded-full bg-white text-[#9D8189] hover:bg-[#F4ACB7]/20 hover:text-[#B56576] flex items-center justify-center transition-all shadow-sm border border-gray-100"
+                  aria-label="Close modal"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Modal Body: Scrollable Image via react-zoom-pan-pinch */}
+              <TransformWrapper initialScale={1} minScale={0.5} maxScale={4} centerZoomedOut={true}>
+                {({ zoomIn, zoomOut }) => (
+                  <div className="flex-1 w-full bg-gray-50 flex flex-col relative overflow-hidden">
+                    {/* ── Floating Controls: Zoom & Download ── */}
+                    <div className="absolute top-4 right-4 z-20 flex justify-end pointer-events-none">
+                      <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm p-1.5 rounded-2xl shadow-sm border border-gray-200 pointer-events-auto">
+                        <button
+                          type="button"
+                          onClick={() => zoomOut()}
+                          className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
+                          title="Zoom Out"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => zoomIn()}
+                          className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
+                          title="Zoom In"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                        
+                        <div className="w-[1px] h-5 bg-gray-200 mx-1"></div>
+                        
+                        <a
+                          href={termConditionImg}
+                          download="Syarat-Ketentuan-MBell-Makeup.jpg"
+                          className="w-8 h-8 rounded-xl bg-[#FFF0F3] hover:bg-[#F4ACB7] text-[#B56576] hover:text-white flex items-center justify-center transition-colors"
+                          title="Download S&K"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 w-full h-full flex items-center justify-center p-4 cursor-grab active:cursor-grabbing">
+                      <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
+                        <img
+                          src={termConditionImg}
+                          alt="Syarat & Ketentuan Booking MBELL Makeup"
+                          className="max-w-full h-auto rounded-2xl shadow-md border border-gray-200 object-contain pointer-events-none"
+                        />
+                      </TransformComponent>
+                    </div>
+                  </div>
+                )}
+              </TransformWrapper>
+
+              {/* Modal Footer with Checkbox & Submit */}
+              <div className="px-6 py-4 bg-white border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+                <label className="flex items-start sm:items-center gap-3 cursor-pointer text-xs font-sans text-[#4A403A] select-none">
+                  <input
+                    type="checkbox"
+                    checked={isTermsAgreed}
+                    onChange={(e) => setIsTermsAgreed(e.target.checked)}
+                    className="w-4 h-4 mt-0.5 sm:mt-0 rounded text-[#B56576] focus:ring-[#B56576] accent-[#B56576] cursor-pointer shrink-0"
+                  />
+                  <span className="leading-snug">
+                    Saya telah membaca, memahami, dan menyetujui seluruh <strong className="text-[#B56576]">Syarat & Ketentuan</strong> di atas.
+                  </span>
+                </label>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setShowTermsConfirmModal(false)}
+                    className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-sans font-bold text-xs uppercase tracking-wider rounded-full transition-all"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!isTermsAgreed}
+                    onClick={handleConfirmBooking}
+                    className="flex-1 sm:flex-initial px-6 py-2.5 bg-[#B56576] hover:bg-[#9D8189] disabled:opacity-40 disabled:cursor-not-allowed text-white font-sans font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>Setuju & Kirim WA</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 2L11 13" />
+                      <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

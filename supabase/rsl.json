@@ -1,0 +1,200 @@
+[
+    {
+        "schema_name": "public",
+        "table_name": "bookings",
+        "policy_name": "Admin dapat melihat semua pemesanan",
+        "roles": "{authenticated}",
+        "operation": "SELECT",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "bookings",
+        "policy_name": "Admin dapat memperbarui pemesanan",
+        "roles": "{authenticated}",
+        "operation": "UPDATE",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "bookings",
+        "policy_name": "Admin dapat menghapus pemesanan",
+        "roles": "{authenticated}",
+        "operation": "DELETE",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "bookings",
+        "policy_name": "Public can insert bookings",
+        "roles": "{anon}",
+        "operation": "INSERT",
+        "using_expression": null,
+        "check_expression": "true"
+    },
+    {
+        "schema_name": "public",
+        "table_name": "bookings",
+        "policy_name": "Public can view booking dates",
+        "roles": "{anon}",
+        "operation": "SELECT",
+        "using_expression": "((status)::text = 'confirmed'::text)",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "bookings",
+        "policy_name": "Siapa saja dapat membuat pemesanan",
+        "roles": "{public}",
+        "operation": "INSERT",
+        "using_expression": null,
+        "check_expression": "true"
+    },
+    {
+        "schema_name": "public",
+        "table_name": "images",
+        "policy_name": "Admin dapat memperbarui gambar",
+        "roles": "{authenticated}",
+        "operation": "UPDATE",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "images",
+        "policy_name": "Admin dapat menambah gambar",
+        "roles": "{authenticated}",
+        "operation": "INSERT",
+        "using_expression": null,
+        "check_expression": "true"
+    },
+    {
+        "schema_name": "public",
+        "table_name": "images",
+        "policy_name": "Admin dapat menghapus gambar",
+        "roles": "{authenticated}",
+        "operation": "DELETE",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "images",
+        "policy_name": "Publik dapat melihat semua gambar",
+        "roles": "{public}",
+        "operation": "SELECT",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "images",
+        "policy_name": "mbell",
+        "roles": "{public}",
+        "operation": "SELECT",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "site_license",
+        "policy_name": "Admin dapat membaca status lisensi",
+        "roles": "{authenticated}",
+        "operation": "SELECT",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "site_license",
+        "policy_name": "Admin dapat memperbarui lisensi",
+        "roles": "{authenticated}",
+        "operation": "UPDATE",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "site_license",
+        "policy_name": "Owner can manage license",
+        "roles": "{authenticated}",
+        "operation": "ALL",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "site_license",
+        "policy_name": "Public can read license status",
+        "roles": "{anon}",
+        "operation": "SELECT",
+        "using_expression": "(id = 1)",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "testimonials",
+        "policy_name": "Admin dapat melihat semua testimonial",
+        "roles": "{authenticated}",
+        "operation": "SELECT",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "testimonials",
+        "policy_name": "Admin dapat memperbarui testimonial",
+        "roles": "{authenticated}",
+        "operation": "UPDATE",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "testimonials",
+        "policy_name": "Admin dapat menghapus testimonial",
+        "roles": "{authenticated}",
+        "operation": "DELETE",
+        "using_expression": "true",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "testimonials",
+        "policy_name": "Public can insert testimonial",
+        "roles": "{anon}",
+        "operation": "INSERT",
+        "using_expression": null,
+        "check_expression": "true"
+    },
+    {
+        "schema_name": "public",
+        "table_name": "testimonials",
+        "policy_name": "Public read approved testimonials",
+        "roles": "{anon}",
+        "operation": "SELECT",
+        "using_expression": "(is_approved = true)",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "testimonials",
+        "policy_name": "Publik hanya dapat melihat testimonial yang disetujui",
+        "roles": "{public}",
+        "operation": "SELECT",
+        "using_expression": "(is_approved = true)",
+        "check_expression": null
+    },
+    {
+        "schema_name": "public",
+        "table_name": "testimonials",
+        "policy_name": "Siapa saja dapat mengirim testimonial",
+        "roles": "{public}",
+        "operation": "INSERT",
+        "using_expression": null,
+        "check_expression": "true"
+    }
+]

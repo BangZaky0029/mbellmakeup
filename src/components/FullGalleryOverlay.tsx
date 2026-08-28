@@ -1,12 +1,11 @@
 
-// C:\codingVibes\myPortfolio\mbell\mbell\src\components\FullGalleryOverlay.tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './ui/Button';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import type { PortfolioItem, Category } from '../types';
-import { CATEGORIES, CATEGORY_LABELS } from '../constants';
+import { CATEGORIES, CATEGORY_LABELS, SHOW_PORTFOLIO_PHOTOS } from '../constants';
 
 interface FullGalleryOverlayProps {
   items: PortfolioItem[];
@@ -109,53 +108,78 @@ const FullGalleryOverlay: React.FC<FullGalleryOverlayProps> = ({ items, category
                  </p>
                </div>
 
-               {/* MASONRY COLLAGE LAYOUT */}
-               <div className="flex gap-4 md:gap-8 mb-20 justify-center">
-                 {columns.map((column, colIdx) => (
-                   <div key={`col-${colIdx}`} className="flex flex-col gap-4 md:gap-8 flex-1 max-w-[400px]">
-                     {column.map((item) => (
-                       <motion.div
-                         key={item.id}
-                         layoutId={`item-${item.id}`}
-                         initial={{ opacity: 0, y: 20 }}
-                         animate={{ opacity: 1, y: 0 }}
-                         whileHover={{ y: -8 }}
-                         onClick={() => onItemClick(item)}
-                         className="group relative cursor-pointer overflow-hidden rounded-2xl shadow-sm bg-white p-2"
-                       >
-                         <div className="aspect-auto overflow-hidden rounded-xl bg-gray-50">
-                            <img 
-                              src={item.imageUrl} 
-                              alt={item.title} 
-                              className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                              loading="lazy"
-                            />
-                         </div>
-                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"></div>
-                         <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
-                            <h4 className="text-white font-serif text-base leading-tight truncate">{item.title}</h4>
-                            <p className="text-white/70 text-[9px] uppercase tracking-widest mt-1">Details</p>
-                         </div>
-                       </motion.div>
+               {/* MASONRY COLLAGE LAYOUT OR CLIENT-FACING COMING SOON NOTICE */}
+               {!SHOW_PORTFOLIO_PHOTOS ? (
+                 <div className="py-20 text-center max-w-lg mx-auto px-8 bg-white/80 backdrop-blur-md rounded-3xl border border-dashed border-primary/20 shadow-sm">
+                   <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4A5A5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                       <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/>
+                       <path d="M12 8v4l3 3"/>
+                     </svg>
+                   </div>
+                   <h3 className="font-serif text-2xl md:text-3xl text-textMain mb-2">New Portfolio Coming Soon ✨</h3>
+                   <p className="font-sans text-xs md:text-sm text-textMain/60 italic leading-relaxed mb-6">
+                     Koleksi riasan terbaru sedang disiapkan. Silakan hubungi kami untuk melihat portofolio lengkap via WhatsApp.
+                   </p>
+                   <a
+                     href="https://wa.me/6288293473765?text=Halo%20MBELL%20Makeup%2C%20saya%20tertarik%20melihat%20katalog%20portfolio%20terbaru."
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white font-sans font-bold text-xs uppercase tracking-wider shadow-md hover:bg-secondary transition-all"
+                   >
+                     <span>Hubungi via WhatsApp</span>
+                   </a>
+                 </div>
+               ) : (
+                 <>
+                   <div className="flex gap-4 md:gap-8 mb-20 justify-center">
+                     {columns.map((column, colIdx) => (
+                       <div key={`col-${colIdx}`} className="flex flex-col gap-4 md:gap-8 flex-1 max-w-[400px]">
+                         {column.map((item) => (
+                           <motion.div
+                             key={item.id}
+                             layoutId={`item-${item.id}`}
+                             initial={{ opacity: 0, y: 20 }}
+                             animate={{ opacity: 1, y: 0 }}
+                             whileHover={{ y: -8 }}
+                             onClick={() => onItemClick(item)}
+                             className="group relative cursor-pointer overflow-hidden rounded-2xl shadow-sm bg-white p-2"
+                           >
+                             <div className="aspect-auto overflow-hidden rounded-xl bg-gray-50">
+                                <img 
+                                  src={item.imageUrl} 
+                                  alt={item.title} 
+                                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+                                  loading="lazy"
+                                />
+                             </div>
+                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"></div>
+                             <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
+                                <h4 className="text-white font-serif text-base leading-tight truncate">{item.title}</h4>
+                                <p className="text-white/70 text-[9px] uppercase tracking-widest mt-1">Details</p>
+                             </div>
+                           </motion.div>
+                         ))}
+                       </div>
                      ))}
                    </div>
-                 ))}
-               </div>
 
-               {/* Empty State */}
-               {filteredItems.length === 0 && (
-                 <div className="py-32 text-center">
-                    <p className="font-serif text-2xl text-textMain/30 italic">No captures found yet...</p>
-                 </div>
-               )}
+                   {/* Empty State */}
+                   {filteredItems.length === 0 && (
+                     <div className="py-32 text-center">
+                        <p className="font-serif text-2xl text-textMain/30 italic">No captures found yet...</p>
+                     </div>
+                   )}
 
-               {/* Load More Button */}
-               {hasMore && (
-                  <div className="flex justify-center mb-24">
-                     <Button onClick={handleLoadMore} variant="outline" className="px-12 py-4 border-textMain/10 text-textMain/70 bg-white/80 hover:bg-white hover:text-primary transition-all shadow-sm">
-                        Discover More Captures
-                     </Button>
-                  </div>
+                   {/* Load More Button */}
+                   {hasMore && (
+                      <div className="flex justify-center mb-24">
+                         <Button onClick={handleLoadMore} variant="outline" className="px-12 py-4 border-textMain/10 text-textMain/70 bg-white/80 hover:bg-white hover:text-primary transition-all shadow-sm">
+                            Discover More Captures
+                         </Button>
+                      </div>
+                   )}
+                 </>
                )}
             </div>
 

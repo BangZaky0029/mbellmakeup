@@ -1,7 +1,8 @@
 
-  // C:\codingVibes\myPortfolio\mbell\mbell\src\constants.ts
-
   import type { Category, NavLink } from './types';
+
+  // Toggle Tampilan Foto Portfolio di UI Frontend (true = tampilkan, false = sembunyikan/disable)
+  export const SHOW_PORTFOLIO_PHOTOS = false;
 
   // Kategori “logika” = sesuai JSON/folder
   export const CATEGORIES: Category[] = [

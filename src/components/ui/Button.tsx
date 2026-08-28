@@ -31,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
       className={`${baseStyles} ${variants[variant]} ${className}`}
       {...props}
     >
-      <span className="relative z-10">{children}</span>
+      <span className="relative z-10 flex items-center justify-center gap-2.5 whitespace-nowrap">{children}</span>
 
       {variant === "primary" && (
         <span className="absolute inset-0 scale-0 rounded-full transition-all duration-300 group-hover:scale-100 group-hover:bg-rose-400/20" />

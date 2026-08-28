@@ -32,7 +32,7 @@ export interface Testimonial {
   content: string;
   image_url?: string;
   rating: number;
-  created_at: string;
+  created_at?: string;
   is_approved?: boolean;
 }
 

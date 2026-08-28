@@ -7,8 +7,24 @@ interface TestimonialCardProps {
   index: number;
 }
 
+const formatDate = (dateString?: string) => {
+  if (!dateString) return null;
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null;
+    return new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
+  } catch {
+    return null;
+  }
+};
+
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
   const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=FCE7F3&color=DB2777`;
+  const formattedDate = formatDate(item.created_at);
 
   return (
     <motion.div 
@@ -16,7 +32,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
       whileInView={{ opacity: 1, y: 0 } as any}
       viewport={{ once: true } as any}
       transition={{ delay: index * 0.1 } as any}
-      className="snap-center w-[320px] sm:w-[500px] md:w-[650px] flex-shrink-0"
+      className="w-[320px] sm:w-[500px] md:w-[650px] flex-shrink-0"
     >
       <div className="bg-white rounded-[2rem] shadow-[0_15px_50px_-15px_rgba(0,0,0,0.08)] border border-gray-100 h-full flex flex-col sm:flex-row overflow-hidden group hover:shadow-[0_30px_60px_-15px_rgba(212,165,165,0.25)] transition-all duration-500">
         
@@ -76,11 +92,22 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
             "{item.content}"
           </p>
           
-          <div className="mt-auto pt-4 border-t border-gray-50">
-            <h4 className="font-serif text-xl text-textMain font-bold tracking-tight">{item.name}</h4>
-            <span className="text-xs font-sans text-primary font-bold uppercase tracking-[0.2em] block mt-1">
-              {item.role || 'Beautiful Client'}
-            </span>
+          <div className="mt-auto pt-4 border-t border-gray-50 flex items-end justify-between gap-3">
+            <div>
+              <h4 className="font-serif text-xl text-textMain font-bold tracking-tight">{item.name}</h4>
+              <span className="text-xs font-sans text-primary font-bold uppercase tracking-[0.2em] block mt-1">
+                {item.role || 'Beautiful Client'}
+              </span>
+            </div>
+            {formattedDate && (
+              <span className="text-[11px] font-sans text-textMain/40 font-medium flex items-center gap-1.5 shrink-0 bg-gray-50/80 px-2.5 py-1 rounded-full border border-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                {formattedDate}
+              </span>
+            )}
           </div>
         </div>
       </div>
