@@ -148,7 +148,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
             </svg>
           </button>
 
-          <div className="overflow-hidden h-6 flex items-center">
+          <div className="overflow-hidden h-6 flex-1 flex items-center justify-center">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.span
                 key={`${currentMonth}-${currentYear}`}
@@ -158,7 +158,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.22, ease: 'easeInOut' }}
-                className="font-sans font-semibold text-sm text-[#4A403A] tracking-wide absolute"
+                className="font-sans font-semibold text-sm text-[#4A403A] tracking-wide whitespace-nowrap"
               >
                 {MONTHS[currentMonth]} {currentYear}
               </motion.span>

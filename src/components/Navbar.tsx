@@ -60,10 +60,9 @@ const Navbar: React.FC<NavbarProps> = ({ isOverlay = false, onLinkClick }) => {
     }
   };
 
-  const handleBooking = () => {
-    const phoneNumber = "6288293473765";
-    const text = "Halo MBELL Makeup, saya ingin melakukan reservasi untuk appointment makeup. Boleh info pricelist dan availability?";
-    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
+  const handleBooking = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    performScroll('#contact');
     setIsMobileMenuOpen(false);
     if (onLinkClick) onLinkClick();
   };
