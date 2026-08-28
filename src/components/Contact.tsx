@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Button from './ui/Button';
 import BookingCalendar from './ui/BookingCalendar';
 import { supabase } from '../lib/supabase';
@@ -42,6 +41,7 @@ const Contact: React.FC = () => {
   // Terms & Conditions confirmation modal state
   const [showTermsConfirmModal, setShowTermsConfirmModal] = useState(false);
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
+  const [termsZoom, setTermsZoom] = useState(100); // 100% baseline
 
   // ── Fetch booked dates from Supabase ──────────────────────────────
   const fetchBookedDates = useCallback(async () => {
@@ -525,11 +525,11 @@ Terima kasih!`;
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="px-6 py-4 bg-gradient-to-r from-[#FFF0F3] to-[#FDF6F8] border-b border-[#F4ACB7]/30 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2.5">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-[#FFF0F3] to-[#FDF6F8] border-b border-[#F4ACB7]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 relative">
+                <div className="flex items-center gap-2.5 pr-10 sm:pr-0">
                   <span className="text-2xl">📋</span>
                   <div>
-                    <h3 className="font-serif text-lg md:text-xl text-[#4A403A] font-bold">
+                    <h3 className="font-serif text-base sm:text-lg md:text-xl text-[#4A403A] font-bold leading-tight">
                       Konfirmasi Syarat & Ketentuan
                     </h3>
                     <p className="text-[10px] text-[#9D8189] font-sans">
@@ -537,68 +537,76 @@ Terima kasih!`;
                     </p>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowTermsConfirmModal(false)}
-                  className="w-9 h-9 rounded-full bg-white text-[#9D8189] hover:bg-[#F4ACB7]/20 hover:text-[#B56576] flex items-center justify-center transition-all shadow-sm border border-gray-100"
-                  aria-label="Close modal"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
+
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <div className="flex items-center gap-1.5 bg-white p-1 rounded-2xl shadow-sm border border-[#F4ACB7]/30">
+                    <button
+                      type="button"
+                      onClick={() => setTermsZoom(z => Math.max(z - 25, 50))}
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
+                      title="Zoom Out"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                    <span className="text-[10px] sm:text-xs font-bold text-gray-500 w-8 sm:w-10 text-center">{termsZoom}%</span>
+                    <button
+                      type="button"
+                      onClick={() => setTermsZoom(z => Math.min(z + 25, 250))}
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
+                      title="Zoom In"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                    
+                    <div className="w-[1px] h-4 bg-gray-200 mx-0.5 sm:mx-1"></div>
+                    
+                    <a
+                      href={termConditionImg}
+                      download="Syarat-Ketentuan-MBell-Makeup.jpg"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#FFF0F3] hover:bg-[#F4ACB7] text-[#B56576] hover:text-white flex items-center justify-center transition-colors"
+                      title="Download S&K"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </a>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowTermsConfirmModal(false);
+                      setTermsZoom(100);
+                    }}
+                    className="absolute top-3 right-4 sm:relative sm:top-auto sm:right-auto w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-[#9D8189] hover:bg-[#F4ACB7]/20 hover:text-[#B56576] flex items-center justify-center transition-all shadow-sm border border-gray-100"
+                    aria-label="Close modal"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
               </div>
 
-              {/* Modal Body: Scrollable Image via react-zoom-pan-pinch */}
-              <TransformWrapper initialScale={1} minScale={0.5} maxScale={4} centerZoomedOut={true}>
-                {({ zoomIn, zoomOut }) => (
-                  <div className="flex-1 w-full bg-gray-50 flex flex-col relative overflow-hidden">
-                    {/* ── Floating Controls: Zoom & Download ── */}
-                    <div className="absolute top-4 right-4 z-20 flex justify-end pointer-events-none">
-                      <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm p-1.5 rounded-2xl shadow-sm border border-gray-200 pointer-events-auto">
-                        <button
-                          type="button"
-                          onClick={() => zoomOut()}
-                          className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
-                          title="Zoom Out"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => zoomIn()}
-                          className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
-                          title="Zoom In"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        </button>
-                        
-                        <div className="w-[1px] h-5 bg-gray-200 mx-1"></div>
-                        
-                        <a
-                          href={termConditionImg}
-                          download="Syarat-Ketentuan-MBell-Makeup.jpg"
-                          className="w-8 h-8 rounded-xl bg-[#FFF0F3] hover:bg-[#F4ACB7] text-[#B56576] hover:text-white flex items-center justify-center transition-colors"
-                          title="Download S&K"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        </a>
-                      </div>
-                    </div>
+              {/* Modal Body: Scrollable Image via Native CSS */}
+              <div className="flex-1 overflow-auto p-4 sm:p-6 bg-gray-50 flex flex-col items-center justify-start relative">
 
-                    <div className="flex-1 w-full h-full flex items-center justify-center p-4 cursor-grab active:cursor-grabbing">
-                      <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
-                        <img
-                          src={termConditionImg}
-                          alt="Syarat & Ketentuan Booking MBELL Makeup"
-                          className="max-w-full h-auto rounded-2xl shadow-md border border-gray-200 object-contain pointer-events-none"
-                        />
-                      </TransformComponent>
-                    </div>
-                  </div>
-                )}
-              </TransformWrapper>
+                <div 
+                  className={`w-full flex origin-top pb-10 ${termsZoom <= 100 ? 'justify-center' : 'justify-start'}`}
+                  style={{ touchAction: 'pan-x pan-y pinch-zoom' }}
+                >
+                  <img
+                    src={termConditionImg}
+                    alt="Syarat & Ketentuan Booking MBELL Makeup"
+                    className="rounded-2xl shadow-md border border-gray-200"
+                    style={{ 
+                      width: `${termsZoom}%`, 
+                      maxWidth: 'none', 
+                      height: 'auto', 
+                      transition: 'width 0.2s ease-out' 
+                    }}
+                  />
+                </div>
+              </div>
 
               {/* Modal Footer with Checkbox & Submit */}
               <div className="px-6 py-4 bg-white border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
