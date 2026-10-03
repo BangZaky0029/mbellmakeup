@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mbellmakeup.vercel.app/sitemap.xml
