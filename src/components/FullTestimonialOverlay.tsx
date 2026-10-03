@@ -5,7 +5,6 @@ import type { Testimonial } from '../types';
 import TestimonialCard from './TestimonialCard';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import FlowerBackground from './ui/FlowerBackground';
 import Button from './ui/Button';
 
 interface FullTestimonialOverlayProps {
@@ -63,15 +62,13 @@ const FullTestimonialOverlay: React.FC<FullTestimonialOverlayProps> = ({ onClose
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: "100%" } as any}
-      animate={{ opacity: 1, y: 0 } as any}
-      exit={{ opacity: 0, y: "100%" } as any}
-      transition={{ type: "spring", damping: 30, stiffness: 100 } as any}
+      initial={{ opacity: 0, y: "100%" }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: "100%" }}
+      transition={{ type: "spring", damping: 30, stiffness: 100 }}
       className="fixed inset-0 z-[9000] bg-surface flex flex-col overflow-hidden"
     >
-      <div className="absolute inset-0 z-0 opacity-40">
-        <FlowerBackground />
-      </div>
+      {/* Redundant FlowerBackground removed to prevent double-rendering and save GPU */}
 
       <div className="absolute top-0 left-0 right-0 z-[150]">
         <Navbar isOverlay={true} onLinkClick={onClose} />
@@ -83,8 +80,8 @@ const FullTestimonialOverlay: React.FC<FullTestimonialOverlayProps> = ({ onClose
           <div className="text-center mb-16 relative">
             {/* Back Menu Button */}
             <motion.button
-              initial={{ opacity: 0, x: -20 } as any}
-              animate={{ opacity: 1, x: 0 } as any}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               onClick={onClose}
               className="absolute left-0 top-0 hidden md:flex items-center gap-2 px-6 py-2.5 bg-white/50 backdrop-blur rounded-full border border-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-sm group"
             >
@@ -95,15 +92,15 @@ const FullTestimonialOverlay: React.FC<FullTestimonialOverlayProps> = ({ onClose
             </motion.button>
 
             <motion.span 
-              initial={{ opacity: 0 } as any}
-              animate={{ opacity: 1 } as any}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               className="text-primary font-sans font-bold tracking-[0.4em] uppercase text-xs mb-4 block"
             >
               Gallery of Happiness
             </motion.span>
             <motion.h2 
-              initial={{ opacity: 0, scale: 0.9 } as any}
-              animate={{ opacity: 1, scale: 1 } as any}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               className="font-serif text-5xl md:text-7xl text-textMain mb-8"
             >
               Real Stories
@@ -155,8 +152,8 @@ const FullTestimonialOverlay: React.FC<FullTestimonialOverlayProps> = ({ onClose
                 {/* See More Button */}
                 {filteredTestimonials.length > visibleCount && (
                   <motion.div 
-                    initial={{ opacity: 0 } as any}
-                    animate={{ opacity: 1 } as any}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     className="flex justify-center pt-8"
                   >
                     <Button 
@@ -174,8 +171,8 @@ const FullTestimonialOverlay: React.FC<FullTestimonialOverlayProps> = ({ onClose
               </div>
             ) : (
               <motion.div 
-                initial={{ opacity: 0 } as any}
-                animate={{ opacity: 1 } as any}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 className="py-40 text-center"
               >
                 <p className="font-serif text-3xl text-textMain/20 italic">No feedback for this rating yet...</p>

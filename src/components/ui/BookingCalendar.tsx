@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BookedDay } from '../../types';
-import termConditionImg from '../../assets/term&Condition.jpeg';
+import termConditionImg from '../../assets/term-condition.jpeg';
 
 interface BookingCalendarProps {
   bookedDays: BookedDay[];

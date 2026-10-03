@@ -142,18 +142,8 @@ const MusicPlayer: React.FC = () => {
         {/* Animated Rings when playing */}
         {isPlaying && (
           <>
-            <motion.div
-              initial={{ opacity: 0, scale: 1 }}
-              animate={{ opacity: 0, scale: 2 }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 bg-primary/30 rounded-full"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 1 }}
-              animate={{ opacity: 0, scale: 1.5 }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-              className="absolute inset-0 bg-primary/30 rounded-full"
-            />
+            <div className="absolute inset-0 bg-primary/30 rounded-full pulse-ring-1" />
+            <div className="absolute inset-0 bg-primary/30 rounded-full pulse-ring-2" />
           </>
         )}
 
@@ -162,10 +152,10 @@ const MusicPlayer: React.FC = () => {
           {isPlaying ? (
             // Equalizer Icon
             <div className="flex items-end gap-[2px] h-4">
-              <motion.div animate={{ height: [4, 12, 6, 14, 4] }} transition={{ duration: 0.8, repeat: Infinity }} className="w-[3px] bg-white rounded-full" />
-              <motion.div animate={{ height: [10, 5, 16, 8, 10] }} transition={{ duration: 0.6, repeat: Infinity }} className="w-[3px] bg-white rounded-full" />
-              <motion.div animate={{ height: [6, 14, 8, 12, 6] }} transition={{ duration: 0.9, repeat: Infinity }} className="w-[3px] bg-white rounded-full" />
-              <motion.div animate={{ height: [12, 6, 10, 4, 12] }} transition={{ duration: 0.7, repeat: Infinity }} className="w-[3px] bg-white rounded-full" />
+              <div className="w-[3px] bg-white rounded-full eq-bar-1" />
+              <div className="w-[3px] bg-white rounded-full eq-bar-2" />
+              <div className="w-[3px] bg-white rounded-full eq-bar-3" />
+              <div className="w-[3px] bg-white rounded-full eq-bar-4" />
             </div>
           ) : (
             // Play Icon

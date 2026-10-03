@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import type { Testimonial } from '../types';
 import TestimonialCard from './TestimonialCard';
@@ -25,16 +25,10 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
     offset: ["start end", "end start"]
   });
   
-  // Add a spring physics wrapper to smooth out abrupt scroll stops!
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 20,
-    restDelta: 0.001
-  });
-  
-  // Map vertical scroll progress to a horizontal shift (e.g., from 150px right to -150px left)
-  // This creates the visual cue that the container is horizontally scrollable!
-  const xTransform = useTransform(smoothProgress, [0, 1], ["150px", "-150px"]);
+  // PERFORMANCE FIX: Removed useSpring (calculated every frame = expensive on mobile)
+  // Using useTransform directly — much lighter, no physics simulation
+  // Reduced range from 150px to 50px for less layout thrashing
+  const xTransform = useTransform(scrollYProgress, [0, 1], ["50px", "-50px"]);
 
   const fetchTestimonials = useCallback(async () => {
     try {
@@ -75,17 +69,17 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
     <section ref={sectionRef} id="testimonials" className="py-24 overflow-hidden relative z-10">
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
         <motion.span 
-          initial={{ opacity: 0 } as any}
-          whileInView={{ opacity: 1 } as any}
-          viewport={{ once: true } as any}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           className="text-primary font-sans font-bold tracking-[0.3em] uppercase text-xs mb-4 block"
         >
           Love Notes
         </motion.span>
         <motion.h2 
-          initial={{ opacity: 0, y: 20 } as any}
-          whileInView={{ opacity: 1, y: 0 } as any}
-          viewport={{ once: true } as any}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           className="font-serif text-5xl md:text-6xl text-textMain"
         >
           Client Stories

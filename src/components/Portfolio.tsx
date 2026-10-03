@@ -1,6 +1,6 @@
 // C:\codingVibes\myPortfolio\mbell\mbell-1\src\components\Portfolio.tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { motion, useMotionValue, animate, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { CATEGORIES, CATEGORY_LABELS, SHOW_PORTFOLIO_PHOTOS } from '../constants';
 import type { Category, PortfolioItem } from '../types';
 import Button from './ui/Button';
@@ -47,17 +47,6 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
   }, [activeCategory, portfolioData]);
 
   const visibleItems = useMemo(() => filteredItems.slice(0, BATCH_SIZE), [filteredItems]);
-  const firstRow = visibleItems.slice(0, Math.ceil(visibleItems.length / 2));
-  const secondRow = visibleItems.slice(Math.ceil(visibleItems.length / 2));
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const parallax1 = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]); 
-  const parallax2 = useTransform(scrollYProgress, [0, 1], ["8%", "-8%"]);
-
   if (loading) return (
     <section id="portfolio" className="py-24 flex items-center justify-center">
       <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -144,98 +133,64 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
           </div>
         </motion.div>
       ) : (
-        <div className="relative w-full perspective-container min-h-[50vh] flex flex-col items-center justify-center overflow-visible px-4">
-          <div className="relative w-full max-w-[1600px] transform-style-3d rotate-x-[5deg] scale-[1.02] origin-center gpu-accelerated flex flex-col items-center">
-            <InteractiveRow items={firstRow} onClick={onItemClick} parallaxX={parallax1} activeCategory={activeCategory} />
-            <div className="h-6 md:h-12"></div>
-            <InteractiveRow items={secondRow} onClick={onItemClick} parallaxX={parallax2} activeCategory={activeCategory} />
-          </div>
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-6 relative z-20">
+           {visibleItems.length === 0 ? (
+             <div className="h-48 flex items-center justify-center italic text-textMain/20 font-serif text-2xl">
+               Discovering beauty...
+             </div>
+           ) : (
+             <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+               {visibleItems.map((item, i) => (
+                  <div key={item.id} className="break-inside-avoid">
+                    <MoodboardCard item={item} onClick={() => onItemClick(item)} index={i} />
+                  </div>
+               ))}
+             </div>
+           )}
         </div>
       )}
 
       {SHOW_PORTFOLIO_PHOTOS && (
         <div className="flex justify-center mt-20 relative z-20">
-          <Button onClick={() => onOpenGallery(portfolioData, activeCategory)} variant="outline" className="bg-white/80 shadow-sm border-textMain/10 text-textMain/80 px-12 py-4">
+          <Button onClick={() => onOpenGallery(portfolioData, activeCategory)} variant="outline" className="bg-white/80 backdrop-blur shadow-sm border-white/50 text-textMain/80 px-12 py-4 hover:border-primary/50">
              Browse Full Experience
           </Button>
         </div>
       )}
-
-      <style>{`
-        .perspective-container { perspective: 2000px; }
-        .transform-style-3d { transform-style: preserve-3d; }
-      `}</style>
     </section>
   );
 };
 
-const InteractiveRow = ({ items, onClick, parallaxX, activeCategory }: any) => {
-  const x = useMotionValue(0);
-  
-  useEffect(() => {
-    animate(x, 0, { type: "spring", damping: 25, stiffness: 100 });
-  }, [activeCategory, x]);
-
-  if (items.length === 0) return (
-    <div className="h-48 flex items-center justify-center italic text-textMain/20 font-serif text-2xl">
-      Discovering beauty...
-    </div>
-  );
-
-  return (
-    <motion.div className="overflow-visible w-full flex justify-center items-center" style={{ x: parallaxX }}>
-      <motion.div 
-          drag="x"
-          dragConstraints={{ left: -300, right: 300 }}
-          style={{ x }}
-          className="flex gap-4 md:gap-10 w-max px-[2vw] md:px-[5vw] cursor-grab active:cursor-grabbing justify-center items-center py-4"
-      >
-          {items.map((item: any) => (
-            <MoodboardCard
-              key={item.id}
-              item={item}
-              onClick={() => onClick(item)}
-            />
-          ))}
-
-      </motion.div>
-    </motion.div>
-  );
-}
-
-const MoodboardCard = ({ item, onClick }: any) => {
+const MoodboardCard = ({ item, onClick, index }: any) => {
   return (
     <motion.div
-      whileHover={{ y: -20, scale: 1.03, transition: { duration: 0.4, ease: "easeOut" } }}
-      className="group relative cursor-pointer gpu-accelerated flex-shrink-0"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.6, delay: (index % 3) * 0.1, ease: "easeOut" }}
+      className="group relative cursor-pointer w-full"
       onClick={onClick}
     >
-      {/* Container Card adjusted for better mobile spacing */}
-      <div className="w-[160px] h-[230px] md:w-[360px] md:h-[500px] bg-white p-2.5 md:p-5 pb-16 md:pb-32 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] border border-gray-50 rounded-xl md:rounded-2xl transition-shadow duration-500 group-hover:shadow-[0_40px_80px_-20px_rgba(212,165,165,0.3)]">
-        <div className="w-full h-full relative overflow-hidden bg-gray-100 rounded-lg md:rounded-xl">
-          <img 
-            src={item.imageUrl} 
-            alt={item.title} 
-            className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-1000 group-hover:scale-110" 
-            loading="lazy" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        </div>
-        
-        {/* Footer Text area adjusted to prevent overflow on mobile */}
-        <div className="absolute bottom-4 md:bottom-6 left-4 md:left-8 right-4 md:right-8">
-          <h3 className="font-serif text-sm md:text-3xl font-medium text-textMain truncate leading-tight group-hover:text-primary transition-colors duration-300">
-            {item.title}
-          </h3>
-          <div className="h-[1px] md:h-[2px] w-0 bg-primary/40 my-1 md:my-3 group-hover:w-12 transition-all duration-500"></div>
-          <p className="font-sans text-[7px] md:text-[11px] text-textMain/40 font-bold uppercase tracking-[0.1em] md:tracking-[0.25em]">
-            {item.category}
-          </p>
+      <div className="relative rounded-2xl md:rounded-[2rem] overflow-hidden bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(212,165,165,0.3)] transition-all duration-500 transform group-hover:-translate-y-1">
+        <img 
+          src={item.imageUrl} 
+          alt={item.title} 
+          className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105" 
+          loading="lazy" 
+        />
+        {/* Editorial Hover Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-8">
+          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <p className="font-sans text-[9px] md:text-[10px] text-primary font-bold uppercase tracking-widest mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+              {item.category}
+            </p>
+            <h3 className="font-serif text-xl md:text-3xl text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75">
+              {item.title}
+            </h3>
+            <div className="h-[1px] w-0 bg-primary/60 mt-4 group-hover:w-16 transition-all duration-700 delay-200"></div>
+          </div>
         </div>
       </div>
-      
-      {/* Glow Effect */}
-      <div className="absolute -inset-4 bg-primary/5 rounded-[2rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity -z-10 pointer-events-none"></div>
     </motion.div>
   );
 };

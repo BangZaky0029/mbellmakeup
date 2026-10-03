@@ -143,20 +143,24 @@ const FullGalleryOverlay: React.FC<FullGalleryOverlayProps> = ({ items, category
                              animate={{ opacity: 1, y: 0 }}
                              whileHover={{ y: -8 }}
                              onClick={() => onItemClick(item)}
-                             className="group relative cursor-pointer overflow-hidden rounded-2xl shadow-sm bg-white p-2"
+                             className="group relative cursor-pointer rounded-2xl md:rounded-[2rem] overflow-hidden bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(212,165,165,0.3)] transition-all duration-500 transform hover:-translate-y-1"
                            >
-                             <div className="aspect-auto overflow-hidden rounded-xl bg-gray-50">
-                                <img 
-                                  src={item.imageUrl} 
-                                  alt={item.title} 
-                                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                                  loading="lazy"
-                                />
-                             </div>
-                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"></div>
-                             <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
-                                <h4 className="text-white font-serif text-base leading-tight truncate">{item.title}</h4>
-                                <p className="text-white/70 text-[9px] uppercase tracking-widest mt-1">Details</p>
+                             <img 
+                               src={item.imageUrl} 
+                               alt={item.title} 
+                               className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
+                               loading="lazy"
+                             />
+                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-8 pointer-events-none">
+                                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                  <p className="font-sans text-[9px] md:text-[10px] text-primary font-bold uppercase tracking-widest mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                    {item.category}
+                                  </p>
+                                  <h3 className="font-serif text-xl md:text-3xl text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75 truncate">
+                                    {item.title}
+                                  </h3>
+                                  <div className="h-[1px] w-0 bg-primary/60 mt-4 group-hover:w-16 transition-all duration-700 delay-200"></div>
+                                </div>
                              </div>
                            </motion.div>
                          ))}

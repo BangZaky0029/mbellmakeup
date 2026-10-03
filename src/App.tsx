@@ -58,8 +58,8 @@ function App() {
       <AnimatePresence>
         {!soundEnabled && (
           <motion.div 
-            initial={{ opacity: 1 } as any}
-            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } } as any}
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
             className="fixed inset-0 z-[100] bg-surface flex flex-col items-center justify-center text-center px-6 overflow-hidden"
           >
              <div className="absolute inset-0 z-0 opacity-50">
@@ -67,9 +67,9 @@ function App() {
              </div>
 
              <motion.div 
-               initial={{ opacity: 0, y: 30 } as any}
-               animate={{ opacity: 1, y: 0 } as any}
-               transition={{ duration: 1, delay: 0.2 } as any}
+               initial={{ opacity: 0, y: 30 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 1, delay: 0.2 }}
                className="relative z-10 max-w-md w-full"
              >
                 <div className="mb-6 flex justify-center">
@@ -110,9 +110,9 @@ function App() {
 
       {soundEnabled && (
         <motion.div
-          initial={{ opacity: 0 } as any}
-          animate={{ opacity: 1 } as any}
-          transition={{ duration: 1 } as any}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
         >
           <FlowerBackground />
           <MusicPlayer />

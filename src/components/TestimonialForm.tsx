@@ -98,8 +98,8 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-6 py-8">
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 } as any}
-        animate={{ opacity: 1, scale: 1 } as any}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
         className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 shadow-2xl border border-primary/10"
       >
         <div className="text-center mb-10">
@@ -111,8 +111,8 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
           {status === 'success' ? (
             <motion.div 
               key="success"
-              initial={{ opacity: 0, scale: 0.95 } as any}
-              animate={{ opacity: 1, scale: 1 } as any}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               className="text-center py-12"
             >
               <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
@@ -133,8 +133,8 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
               key="form"
               onSubmit={handleSubmit} 
               className="space-y-6 md:space-y-8"
-              initial={{ opacity: 1 } as any}
-              exit={{ opacity: 0 } as any}
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             >
               <div className="space-y-6">
                 <div className="flex flex-col items-center gap-3">
@@ -170,8 +170,8 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1">Nama Lengkap *</label>
+                  <div className="space-y-2 relative group">
+                    <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-primary">Nama Lengkap *</label>
                     <input 
                       type="text" 
                       name="name"
@@ -179,32 +179,32 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
                       value={formData.name}
                       onChange={handleInputChange}
                       placeholder="Contoh: Bella Aprillian"
-                      className="w-full px-5 md:px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 outline-none transition-all text-sm font-sans"
+                      className="w-full px-5 md:px-6 py-4 rounded-2xl bg-white/50 border border-white/60 focus:bg-white focus:border-primary/40 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm font-sans shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-sm"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1">Tipe Event</label>
+                  <div className="space-y-2 relative group">
+                    <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-primary">Tipe Event</label>
                     <input 
                       type="text" 
                       name="role"
                       value={formData.role}
                       onChange={handleInputChange}
                       placeholder="Contoh: Wedding / Graduation"
-                      className="w-full px-5 md:px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 outline-none transition-all text-sm font-sans"
+                      className="w-full px-5 md:px-6 py-4 rounded-2xl bg-white/50 border border-white/60 focus:bg-white focus:border-primary/40 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm font-sans shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-sm"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1">Testimoni Anda *</label>
+                <div className="space-y-2 relative group">
+                  <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-primary">Testimoni Anda *</label>
                   <textarea 
                     name="content"
                     required
                     value={formData.content}
                     onChange={handleInputChange}
-                    rows={5}
+                    rows={4}
                     placeholder="Ceritakan pengalaman tak terlupakan Anda menggunakan jasa MBell Makeup..."
-                    className="w-full px-5 md:px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 outline-none transition-all text-sm font-sans resize-none leading-relaxed"
+                    className="w-full px-5 md:px-6 py-4 rounded-2xl bg-white/50 border border-white/60 focus:bg-white focus:border-primary/40 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm font-sans resize-none leading-relaxed shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-sm custom-scrollbar"
                   ></textarea>
                 </div>
 

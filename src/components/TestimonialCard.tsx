@@ -28,13 +28,13 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 } as any}
-      whileInView={{ opacity: 1, y: 0 } as any}
-      viewport={{ once: true } as any}
-      transition={{ delay: index * 0.1 } as any}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ delay: index * 0.1 }}
       className="w-[320px] sm:w-[500px] md:w-[650px] flex-shrink-0"
     >
-      <div className="bg-white rounded-[2rem] shadow-[0_15px_50px_-15px_rgba(0,0,0,0.08)] border border-gray-100 h-full flex flex-col sm:flex-row overflow-hidden group hover:shadow-[0_30px_60px_-15px_rgba(212,165,165,0.25)] transition-all duration-500">
+      <div className="bg-white/90 backdrop-blur-md rounded-[2rem] shadow-[0_15px_50px_-15px_rgba(0,0,0,0.08)] border border-white/50 h-full flex flex-col sm:flex-row overflow-hidden group hover:shadow-[0_30px_60px_-15px_rgba(212,165,165,0.3)] hover:-translate-y-1 transition-all duration-500">
         
         {/* Left Side: Portrait Image 9:16 or Placeholder */}
         <div className="w-full sm:w-[40%] md:w-[35%] aspect-[3/4] sm:aspect-[9/16] bg-gray-50 overflow-hidden relative flex items-center justify-center">
@@ -42,6 +42,9 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
             <img 
               src={item.image_url} 
               alt={item.name} 
+              loading="lazy"
+              width="400"
+              height="700"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = fallbackAvatar;
@@ -88,11 +91,13 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
             ))}
           </div>
 
-          <p className="font-sans text-textMain/80 italic leading-relaxed mb-8 relative z-10 line-clamp-6 text-sm md:text-base">
-            "{item.content}"
-          </p>
+          <div className="relative z-10 flex-1 mb-8 overflow-y-auto pr-3 custom-scrollbar min-h-[120px] max-h-[180px]">
+            <p className="font-sans text-textMain/80 italic leading-relaxed text-sm md:text-base">
+              "{item.content}"
+            </p>
+          </div>
           
-          <div className="mt-auto pt-4 border-t border-gray-50 flex items-end justify-between gap-3">
+          <div className="mt-auto pt-4 border-t border-gray-50 flex items-end justify-between gap-3 shrink-0">
             <div>
               <h4 className="font-serif text-xl text-textMain font-bold tracking-tight">{item.name}</h4>
               <span className="text-xs font-sans text-primary font-bold uppercase tracking-[0.2em] block mt-1">

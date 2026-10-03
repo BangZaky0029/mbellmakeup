@@ -4,7 +4,7 @@ import Button from './ui/Button';
 import BookingCalendar from './ui/BookingCalendar';
 import { supabase } from '../lib/supabase';
 import type { BookedDay } from '../types';
-import termConditionImg from '../assets/term&Condition.jpeg';
+import termConditionImg from '../assets/term-condition.jpeg';
 
 const SERVICES = [
   'Wedding / Akad',
