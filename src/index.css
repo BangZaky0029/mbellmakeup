@@ -75,3 +75,85 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(200, 138, 130, 0.55) rgba(230, 215, 210, 0.4);
 }
+
+/* Ethereal Petal Drift Animations (GPU Accelerated 60 FPS) */
+@keyframes petal-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0);
+  }
+  100% {
+    transform: translate3d(0, 112vh, 0);
+  }
+}
+
+@keyframes petal-sway-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(35px, 0, 0) rotate(22deg);
+  }
+}
+
+@keyframes petal-sway-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-30px, 0, 0) rotate(-18deg);
+  }
+}
+
+@keyframes petal-sway-3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-12deg);
+  }
+  50% {
+    transform: translate3d(40px, 0, 0) rotate(16deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal-floating,
+  .petal-rain-item {
+    animation: none !important;
+  }
+}
+
+/* Gentle Petal Rain (Hujan Kelopak Bunga Pelan & Samar-Samar di Latar Belakang) */
+@keyframes petal-rain-fall {
+  0% {
+    top: -50px;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.52;
+  }
+  85% {
+    opacity: 0.52;
+  }
+  100% {
+    top: 105vh;
+    opacity: 0;
+  }
+}
+
+@keyframes petal-rain-sway {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(24px, 0, 0) rotate(22deg);
+  }
+}
+
+@keyframes petal-rain-sway-alt {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-12deg);
+  }
+  50% {
+    transform: translate3d(-22px, 0, 0) rotate(16deg);
+  }
+}
+
+

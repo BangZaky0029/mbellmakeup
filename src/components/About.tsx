@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import bellaProfile from '../assets/bella_2.jpeg';
+import bellaProfile from '../assets/foto_2_opt.jpeg';
+import RandomTextReveal from './ui/RandomTextReveal';
 
 const About: React.FC = () => {
   return (
@@ -19,8 +20,8 @@ const About: React.FC = () => {
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-mbell-border bg-mbell-canvas shadow-[0_16px_40px_rgba(42,33,33,0.06)]">
               <img
                 src={bellaProfile}
-                alt="Bella Aprillian - Professional Makeup Artist"
-                className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                alt="Bella Aprilian - Professional Makeup Artist"
+                className="w-full h-full object-cover object-[center_18%] transition-transform duration-700 hover:scale-105"
                 loading="lazy"
               />
             </div>
@@ -31,7 +32,7 @@ const About: React.FC = () => {
                 "Kecantikan alami adalah karakter terbaikmu."
               </p>
               <p className="font-sans text-[11px] text-mbell-primary font-medium mt-2">
-                — Bella Aprillian
+                — Bella Aprilian
               </p>
             </div>
           </motion.div>
@@ -44,19 +45,17 @@ const About: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.15 }}
             className="lg:col-span-7 text-left"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-canvas border border-mbell-border mb-4">
-              <span className="text-xs font-sans font-medium text-mbell-primary">
-                Tentang MBell MakeUp
-              </span>
-            </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-6 leading-tight">
-              Menghadirkan keanggunan sejati tanpa mengubah karakter dirimu.
-            </h2>
+            <RandomTextReveal
+              as="h2"
+              text="Menghadirkan keanggunan sejati tanpa mengubah karakter dirimu."
+              className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-6 leading-tight"
+              delayBase={0.1}
+            />
 
             <div className="font-sans text-mbell-muted text-base sm:text-lg leading-relaxed space-y-4 max-w-[62ch]">
               <p>
-                Halo, saya <span className="font-medium text-mbell-ink">Bella Aprillian</span>, Founder & Lead Makeup Artist di MBell MakeUp. Berangkat dari kecintaan pada seni tata rias, fokus utama saya adalah merancang riasan yang menonjolkan fitur terbaik wajahmu secara elegan.
+                Halo, saya <span className="font-medium text-mbell-ink">Bella Aprilian</span>, Founder & Lead Makeup Artist di MBell MakeUp. Berangkat dari kecintaan pada seni tata rias, fokus utama saya adalah merancang riasan yang menonjolkan fitur terbaik wajahmu secara elegan.
               </p>
               <p>
                 Setiap orang memiliki jenis kulit dan warna dasar (*skin undertone*) yang berbeda. Kami hanya menggunakan produk-produk premium teruji dan teknik aplikasi modern agar riasan terasa ringan, tidak menyumbat pori, dan tetap *flawless* dari awal acara hingga selesai.

@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import bellaPortrait from '../assets/bella_1.png';
+import bellaPortrait from '../assets/foto_1_opt.jpeg';
 import akadImage from '../assets/akad-makeup.jpeg';
+import RandomTextReveal from './ui/RandomTextReveal';
 
 interface HeroProps {
   onExploreClick?: () => void;
@@ -33,7 +34,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick }) =>
     <section id="home" className="relative bg-mbell-canvas text-mbell-ink pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden border-b border-mbell-border">
       <div className="max-w-6xl mx-auto px-5 sm:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          
+
           {/* Kolom Visual: Tampil di atas pada Mobile, di kanan pada Desktop */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
@@ -53,7 +54,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick }) =>
             </div>
 
             {/* Thumbnail Pendukung (Akad/Bridal Detail) */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
@@ -79,17 +80,14 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick }) =>
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="lg:col-span-7 lg:order-1 text-left"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mbell-surface border border-mbell-border mb-4">
-              <span className="w-2 h-2 rounded-full bg-mbell-rose animate-pulse" />
-              <p className="text-xs font-sans font-medium text-mbell-primary">
-                Professional Makeup Artist
-              </p>
-            </div>
-            
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium leading-[1.12] tracking-tight text-mbell-ink mb-6">
-              Sentuhan riasan personal untuk momen paling berkesanmu.
-            </h1>
-            
+
+            <RandomTextReveal
+              as="h1"
+              text="Sentuhan riasan personal untuk momen paling berkesanmu."
+              className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium leading-[1.12] tracking-tight text-mbell-ink mb-6"
+              delayBase={0.12}
+            />
+
             <p className="font-sans text-base sm:text-lg text-mbell-muted leading-relaxed max-w-[58ch] mb-8">
               Mulai dari prosesi akad, resepsi pernikahan, hingga wisuda dan momen istimewa lainnya. Kami merancang tampilan yang menyatu alami dengan karakter wajahmu dan nyaman bertahan sepanjang hari.
             </p>

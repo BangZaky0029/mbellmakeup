@@ -127,7 +127,7 @@ const Footer: React.FC<FooterProps> = ({ onLinkClick }) => {
                   </a>
                 </li>
                 <li className="text-xs leading-relaxed text-mbell-muted/80 pt-1">
-                  Melayani sesi makeup panggilan (on-location) untuk area Lampung dan sekitarnya.
+                  Melayani sesi makeup panggilan (on-location) untuk area Bogor dan sekitarnya.
                 </li>
              </ul>
           </div>

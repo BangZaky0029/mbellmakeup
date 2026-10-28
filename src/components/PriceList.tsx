@@ -5,6 +5,7 @@ import price01 from '../assets/price_01.webp';
 import price02 from '../assets/price_02.webp';
 import price03 from '../assets/price_03.png';
 import termsImg from '../assets/term-condition.jpeg';
+import RandomTextReveal from './ui/RandomTextReveal';
 
 interface PackageItem {
   id: string;
@@ -105,17 +106,15 @@ export const PriceList: React.FC = () => {
   return (
     <section id="pricelist" className="py-20 md:py-28 bg-mbell-surface/60 border-b border-mbell-border relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
-        
+
         {/* Header Seksi */}
         <div className="max-w-2xl text-left mb-8 md:mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-canvas border border-mbell-border mb-3">
-            <span className="text-xs font-sans font-medium text-mbell-primary">
-              Investasi & Paket Layanan
-            </span>
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight">
-            Rincian paket & ketentuan riasan.
-          </h2>
+          <RandomTextReveal
+            as="h2"
+            text="Rincian paket & ketentuan riasan."
+            className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight"
+            delayBase={0.1}
+          />
           <p className="font-sans text-sm sm:text-base text-mbell-muted leading-relaxed">
             Pilih kategori paket di bawah ini untuk melihat daftar harga resmi. Ketuk pada gambar katalog untuk memperbesar tampilan dan membaca detail rincian di layar ponselmu.
           </p>
@@ -130,11 +129,10 @@ export const PriceList: React.FC = () => {
                 key={item.id}
                 type="button"
                 onClick={() => setActiveTab(item)}
-                className={`whitespace-nowrap min-h-[44px] px-5 py-2.5 rounded-full text-xs sm:text-sm font-sans font-medium transition-all border flex items-center gap-2 ${
-                  isActive
+                className={`whitespace-nowrap min-h-[44px] px-5 py-2.5 rounded-full text-xs sm:text-sm font-sans font-medium transition-all border flex items-center gap-2 ${isActive
                     ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-[0_2px_10px_rgba(158,90,84,0.2)]'
                     : 'bg-mbell-canvas text-mbell-ink border-mbell-border hover:bg-mbell-blush/50'
-                }`}
+                  }`}
               >
                 <span>{item.label}</span>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20' : 'bg-mbell-surface text-mbell-muted'}`}>
@@ -156,7 +154,7 @@ export const PriceList: React.FC = () => {
                 {activeTab.desc}
               </p>
             </div>
-            
+
             <button
               type="button"
               onClick={() => setIsZoomed(true)}
@@ -173,7 +171,7 @@ export const PriceList: React.FC = () => {
           </div>
 
           {/* Area Gambar Katalog */}
-          <div 
+          <div
             onClick={() => setIsZoomed(true)}
             className="cursor-zoom-in overflow-hidden rounded-2xl bg-mbell-surface max-w-xl mx-auto border border-mbell-border relative group shadow-sm"
           >
@@ -228,7 +226,7 @@ export const PriceList: React.FC = () => {
         {/* Lightbox Modal untuk Mobile Zoom (Rendered via createPortal to prevent layout glitches) */}
         {isZoomed && typeof document !== 'undefined' && createPortal(
           <AnimatePresence>
-            <motion.div 
+            <motion.div
               key="catalog-lightbox-backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -237,13 +235,13 @@ export const PriceList: React.FC = () => {
               className="fixed inset-0 z-[10000] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
               onClick={() => setIsZoomed(false)}
             >
-              <motion.div 
+              <motion.div
                 key="catalog-lightbox-card"
                 initial={{ scale: 0.94, opacity: 0, y: 15 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.94, opacity: 0, y: 15 }}
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] as const }}
-                className="relative max-w-4xl w-full my-auto text-center" 
+                className="relative max-w-4xl w-full my-auto text-center"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between pb-3 mb-2">
@@ -262,7 +260,7 @@ export const PriceList: React.FC = () => {
                     </svg>
                   </button>
                 </div>
-                
+
                 <div className="overflow-auto max-h-[76vh] rounded-2xl bg-mbell-canvas p-2 sm:p-3 shadow-2xl custom-scrollbar border border-white/10">
                   <img
                     src={activeTab.image}

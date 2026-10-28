@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import type { Testimonial } from '../types';
 import TestimonialCard from './TestimonialCard';
 import TestimonialForm from './TestimonialForm';
+import RandomTextReveal from './ui/RandomTextReveal';
 
 interface TestimonialsProps {
   onSeeFullGallery?: () => void;
@@ -12,7 +13,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const fetchTestimonials = useCallback(async () => {
@@ -52,18 +53,16 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
   return (
     <section id="testimonials" className="py-20 md:py-28 bg-mbell-canvas border-b border-mbell-border relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 mb-10">
-        
+
         {/* Header Seksi & Kontrol Panah */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8">
           <div className="text-left max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-surface border border-mbell-border mb-3">
-              <span className="text-xs font-sans font-medium text-mbell-primary">
-                Kata Mereka
-              </span>
-            </div>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight">
-              Cerita bahagia dari para klien.
-            </h2>
+            <RandomTextReveal
+              as="h2"
+              text="Cerita bahagia dari para klien."
+              className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight"
+              delayBase={0.1}
+            />
             <p className="font-sans text-sm sm:text-base text-mbell-muted leading-relaxed">
               Kepuasan dan senyum percaya dirimu adalah pencapaian terbesar kami. Geser ke samping untuk membaca pengalaman mereka.
             </p>
@@ -71,7 +70,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
 
           {/* Desktop Arrow Controls */}
           <div className="hidden sm:flex items-center gap-2">
-            <button 
+            <button
               type="button"
               aria-label="Geser ke kiri"
               onClick={() => scroll('left')}
@@ -81,7 +80,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
-            <button 
+            <button
               type="button"
               aria-label="Geser ke kanan"
               onClick={() => scroll('right')}
@@ -95,7 +94,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
         </div>
 
         {/* Snap Carousel Container */}
-        <div 
+        <div
           ref={containerRef}
           className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 items-start"
         >
@@ -130,17 +129,17 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
 
         {/* Action Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button 
+          <button
             type="button"
-            onClick={onSeeFullGallery} 
+            onClick={onSeeFullGallery}
             className="w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-full bg-mbell-surface text-mbell-ink border border-mbell-border font-sans font-medium text-xs sm:text-sm hover:bg-mbell-blush/60 transition-colors shadow-sm"
           >
             Lihat Semua Testimoni
           </button>
-          
-          <button 
+
+          <button
             type="button"
-            onClick={() => setShowForm(!showForm)} 
+            onClick={() => setShowForm(!showForm)}
             className="w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-full bg-mbell-primary text-mbell-canvas font-sans font-medium text-xs sm:text-sm hover:bg-mbell-ink transition-colors shadow-sm"
           >
             {showForm ? 'Tutup Formulir Ulasan' : 'Tulis Ulasan Anda'}

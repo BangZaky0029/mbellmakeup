@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import { CATEGORIES, CATEGORY_LABELS, SHOW_PORTFOLIO_PHOTOS } from '../constants';
 import type { Category, PortfolioItem } from '../types';
 import { supabase } from '../lib/supabase';
+import RandomTextReveal from './ui/RandomTextReveal';
 
-const BATCH_SIZE = 6; 
+const BATCH_SIZE = 6;
 
 interface PortfolioProps {
   onOpenGallery: (items: PortfolioItem[], category: string) => void;
@@ -25,7 +26,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
           .from('images')
           .select('*')
           .order('id', { ascending: true });
-        
+
         if (!fetchError && data) {
           setPortfolioData(data as PortfolioItem[]);
         }
@@ -50,14 +51,13 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
     <section id="portfolio" ref={containerRef} className="py-20 md:py-28 relative z-10 overflow-hidden bg-mbell-canvas border-b border-mbell-border">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 mb-12">
         <div className="max-w-2xl text-left mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-surface border border-mbell-border mb-3">
-            <span className="text-xs font-sans font-medium text-mbell-primary">
-              Karya Pilihan
-            </span>
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight">
-            Galeri riasan & transformasi.
-          </h2>
+
+          <RandomTextReveal
+            as="h2"
+            text="Galeri riasan & transformasi."
+            className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight"
+            delayBase={0.1}
+          />
           <p className="font-sans text-sm sm:text-base text-mbell-muted leading-relaxed">
             Setiap wajah memiliki keunikan tersendiri. Kami memadukan warna, teknik kontur, dan kelembutan tekstur untuk menonjolkan kecantikanmu di setiap sudut foto.
           </p>
@@ -72,11 +72,10 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`whitespace-nowrap min-h-[40px] px-5 py-2 rounded-full text-xs font-sans font-medium transition-colors border ${
-                    isActive
+                  className={`whitespace-nowrap min-h-[40px] px-5 py-2 rounded-full text-xs font-sans font-medium transition-colors border ${isActive
                       ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-sm'
                       : 'bg-mbell-surface text-mbell-ink border-mbell-border hover:bg-mbell-blush/50'
-                  }`}
+                    }`}
                 >
                   {CATEGORY_LABELS[cat]}
                 </button>
@@ -94,7 +93,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
       ) : !SHOW_PORTFOLIO_PHOTOS ? (
         /* Bespoke Editorial Coming Soon Card */
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -102,20 +101,20 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
           >
             <div className="w-16 h-16 rounded-full bg-mbell-canvas border border-mbell-border flex items-center justify-center mx-auto mb-5 text-mbell-primary">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
-                <circle cx="9" cy="9" r="2"/>
-                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                <circle cx="9" cy="9" r="2" />
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
               </svg>
             </div>
-            
+
             <h3 className="font-serif text-2xl sm:text-3xl font-medium text-mbell-ink mb-3">
               Galeri Portofolio Sedang Diperbarui
             </h3>
-            
+
             <p className="font-sans text-sm text-mbell-muted max-w-md mx-auto mb-8 leading-relaxed">
               Kami sedang mengkurasi dokumentasi hasil riasan pernikahan, akad, dan wisuda terbaru. Ingin melihat foto riasan spesifik atau ingin konsultasi look?
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
                 href="https://wa.me/6288293473765?text=Halo%20MBell%20MakeUp%2C%20saya%20tertarik%20melihat%20koleksi%20foto%20portofolio%20riasan%20terbaru."
@@ -145,20 +144,20 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {visibleItems.map((item, i) => (
-                <PortfolioCard 
-                  key={item.id} 
-                  item={item} 
-                  onClick={() => onItemClick(item)} 
-                  index={i} 
+                <PortfolioCard
+                  key={item.id}
+                  item={item}
+                  onClick={() => onItemClick(item)}
+                  index={i}
                 />
               ))}
             </div>
           )}
 
           <div className="flex justify-center mt-12">
-            <button 
+            <button
               type="button"
-              onClick={() => onOpenGallery(portfolioData, activeCategory)} 
+              onClick={() => onOpenGallery(portfolioData, activeCategory)}
               className="inline-flex items-center gap-2 min-h-[48px] px-8 py-3 rounded-full bg-mbell-surface text-mbell-ink border border-mbell-border font-sans font-medium text-sm hover:bg-mbell-blush/60 transition-colors shadow-sm"
             >
               <span>Buka Seluruh Galeri ({portfolioData.length} Foto)</span>
@@ -185,11 +184,11 @@ const PortfolioCard = ({ item, onClick, index }: { item: PortfolioItem; onClick:
       onClick={onClick}
     >
       <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-mbell-surface border border-mbell-border shadow-sm transition-all duration-300 group-hover:shadow-md">
-        <img 
-          src={item.imageUrl} 
-          alt={item.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-          loading="lazy" 
+        <img
+          src={item.imageUrl}
+          alt={item.title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading="lazy"
         />
         {/* Subtle Gradient & Typography */}
         <div className="absolute inset-0 bg-gradient-to-t from-mbell-ink/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 text-left">

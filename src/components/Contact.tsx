@@ -4,6 +4,7 @@ import BookingCalendar from './ui/BookingCalendar';
 import { supabase } from '../lib/supabase';
 import type { BookedDay } from '../types';
 import termConditionImg from '../assets/term-condition.jpeg';
+import RandomTextReveal from './ui/RandomTextReveal';
 
 const SERVICES = [
   'Wedding / Akad Nikah',
@@ -75,13 +76,13 @@ const Contact: React.FC = () => {
   // ── Validation Helpers ───────────────────────────────────────────
   const isTimeAllowed = (timeStr: string, dateStr: string) => {
     if (!timeStr || !dateStr) return true;
-    
+
     const today = new Date();
     const localYear = today.getFullYear();
     const localMonth = String(today.getMonth() + 1).padStart(2, '0');
     const localDate = String(today.getDate()).padStart(2, '0');
     const todayStr = `${localYear}-${localMonth}-${localDate}`;
-    
+
     if (dateStr === todayStr) {
       const [h, m] = timeStr.split(':').map(Number);
       const selectedMins = h * 60 + m;
@@ -106,7 +107,7 @@ const Contact: React.FC = () => {
         setDateError(`Tanggal ini sudah dipesan untuk ${alreadyBooked.service}. Silakan pilih tanggal lain.`);
       }
     }
-    
+
     if (name === 'time') {
       setTimeError(null);
     }
@@ -262,17 +263,15 @@ Terima kasih!`;
   return (
     <section id="contact" className="py-20 md:py-28 bg-mbell-surface/40 border-b border-mbell-border relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-5 sm:px-8">
-        
+
         {/* Header Seksi */}
         <div className="max-w-xl text-left mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-canvas border border-mbell-border mb-3">
-            <span className="text-xs font-sans font-medium text-mbell-primary">
-              Reservasi & Konsultasi
-            </span>
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight">
-            Pilih tanggal & amankan jadwalmu.
-          </h2>
+          <RandomTextReveal
+            as="h2"
+            text="Pilih tanggal & amankan jadwalmu."
+            className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight"
+            delayBase={0.1}
+          />
           <p className="font-sans text-sm sm:text-base text-mbell-muted leading-relaxed">
             Periksa ketersediaan tanggal pada kalender di bawah, isi rincian acara Anda, dan kami akan segera mengonfirmasi pesanan Anda via WhatsApp.
           </p>
@@ -280,7 +279,7 @@ Terima kasih!`;
 
         {/* Card Formulir Kontak */}
         <div className="bg-mbell-canvas rounded-3xl p-6 sm:p-10 shadow-[0_12px_36px_rgba(42,33,33,0.04)] border border-mbell-border text-left">
-          
+
           {/* Banner Sukses */}
           {submitSuccess && (
             <motion.div
@@ -300,7 +299,7 @@ Terima kasih!`;
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            
+
             {/* Row 1: Nama & Layanan */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -398,11 +397,10 @@ Terima kasih!`;
                             setFormData((prev) => ({ ...prev, time: t }));
                             setTimeError(null);
                           }}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors ${
-                            formData.time === t
+                          className={`px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors ${formData.time === t
                               ? 'bg-mbell-primary text-mbell-canvas shadow-sm'
                               : 'bg-mbell-surface text-mbell-ink hover:bg-mbell-blush/60'
-                          }`}
+                            }`}
                         >
                           {t}
                         </button>
@@ -541,7 +539,7 @@ Terima kasih!`;
               </div>
 
               {/* Modal Body Gambar S&K */}
-              <div 
+              <div
                 className="flex-1 overflow-auto p-4 bg-mbell-surface/30 flex flex-col items-center"
                 onTouchMove={(e) => {
                   if (e.touches.length === 2) {

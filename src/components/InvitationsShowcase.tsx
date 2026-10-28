@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import type { InvitationTemplate } from '../types';
+import RandomTextReveal from './ui/RandomTextReveal';
 
 const SUPABASE_MOCKUP_BASE = 'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/invitations/mock-up_Template';
 const INVITATIONS_WEB_URL = 'https://mbellinvitations.vercel.app';
@@ -316,18 +317,17 @@ export const InvitationsShowcase: React.FC = () => {
   return (
     <section id="invitations" className="relative py-20 bg-mbell-canvas overflow-hidden border-t border-mbell-border/40">
       <div className="max-w-6xl mx-auto px-5 sm:px-8">
-        
+
         {/* Header Showcase Minimalis */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-blush/60 border border-mbell-rose/30 text-mbell-primary text-xs font-sans font-medium mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-mbell-primary animate-pulse" />
-              <span>MBell Wedding Suite & Undangan Digital</span>
-            </div>
-            
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-mbell-ink font-medium tracking-tight">
-              Koleksi Undangan Digital
-            </h2>
+
+            <RandomTextReveal
+              as="h2"
+              text="Koleksi Undangan Digital"
+              className="font-serif text-2xl sm:text-3xl md:text-4xl text-mbell-ink font-medium tracking-tight"
+              delayBase={0.1}
+            />
             <p className="font-sans text-xs sm:text-sm text-mbell-muted max-w-xl mt-1.5 leading-relaxed">
               Desain undangan digital responsif yang senada dengan konsep riasan dan busana pernikahanmu. Geser untuk melihat semua pilihan template.
             </p>
@@ -354,11 +354,10 @@ export const InvitationsShowcase: React.FC = () => {
                 onClick={() => slide('left')}
                 disabled={!canScrollLeft}
                 aria-label="Geser ke kiri"
-                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
-                  canScrollLeft
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${canScrollLeft
                     ? 'border-mbell-border bg-mbell-surface text-mbell-ink hover:border-mbell-primary hover:text-mbell-primary active:scale-95 shadow-sm'
                     : 'border-mbell-border/40 bg-mbell-surface/30 text-mbell-muted/40 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="15 18 9 12 15 6"></polyline>
@@ -370,11 +369,10 @@ export const InvitationsShowcase: React.FC = () => {
                 onClick={() => slide('right')}
                 disabled={!canScrollRight}
                 aria-label="Geser ke kanan"
-                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
-                  canScrollRight
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${canScrollRight
                     ? 'border-mbell-border bg-mbell-surface text-mbell-ink hover:border-mbell-primary hover:text-mbell-primary active:scale-95 shadow-sm'
                     : 'border-mbell-border/40 bg-mbell-surface/30 text-mbell-muted/40 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6"></polyline>
@@ -393,10 +391,10 @@ export const InvitationsShowcase: React.FC = () => {
                 cat === 'all'
                   ? 'Semua Template'
                   : cat === 'adat'
-                  ? 'Adat Nusantara'
-                  : cat === 'modern'
-                  ? 'Modern & Editorial'
-                  : cat.charAt(0).toUpperCase() + cat.slice(1);
+                    ? 'Adat Nusantara'
+                    : cat === 'modern'
+                      ? 'Modern & Editorial'
+                      : cat.charAt(0).toUpperCase() + cat.slice(1);
 
               return (
                 <button
@@ -408,11 +406,10 @@ export const InvitationsShowcase: React.FC = () => {
                       sliderRef.current.scrollTo({ left: 0, behavior: 'smooth' });
                     }
                   }}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-sans font-medium whitespace-nowrap transition-all ${
-                    isActive
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-sans font-medium whitespace-nowrap transition-all ${isActive
                       ? 'bg-mbell-primary text-mbell-canvas shadow-xs'
                       : 'bg-mbell-surface/80 text-mbell-muted hover:text-mbell-ink border border-mbell-border/60 hover:bg-mbell-surface'
-                  }`}
+                    }`}
                 >
                   {label}
                 </button>
@@ -544,7 +541,7 @@ export const InvitationsShowcase: React.FC = () => {
                         >
                           Detail
                         </button>
-                        
+
                         <button
                           type="button"
                           onClick={() => handleConsultWhatsApp(template.name)}
@@ -690,7 +687,7 @@ export const InvitationsShowcase: React.FC = () => {
                         <polyline points="7 7 17 7 17 17"></polyline>
                       </svg>
                     </a>
-                    
+
                     <button
                       type="button"
                       onClick={() => handleConsultWhatsApp(selectedPreview.name)}

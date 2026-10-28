@@ -10,10 +10,15 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FlowerBackground from './components/ui/FlowerBackground';
 import MusicPlayer from './components/ui/MusicPlayer';
+import ScrollProgress from './components/ui/ScrollProgress';
+import ScrollToTop from './components/ui/ScrollToTop';
+import ScrollReveal from './components/ui/ScrollReveal';
 import Button from './components/ui/Button';
 import InvitationsShowcase from './components/InvitationsShowcase';
 import logo from './assets/logoBrand.png';
 import SiteGuard from './components/SiteGuard';
+import PetalRain from './components/ui/PetalRain';
+import SmoothScroll from './components/ui/SmoothScroll';
 
 // Import Overlays and Types
 import FullGalleryOverlay from './components/FullGalleryOverlay';
@@ -56,6 +61,9 @@ function App() {
   return (
     <SiteGuard>
       <div className="relative min-h-screen bg-mbell-canvas text-mbell-ink font-sans selection:bg-mbell-primary selection:text-mbell-canvas">
+        {/* Soft Organic Flower Petal Rain across entire app */}
+        <PetalRain />
+
         <AnimatePresence>
           {!soundEnabled && (
             <motion.div 
@@ -108,27 +116,42 @@ function App() {
         </AnimatePresence>
 
         {soundEnabled && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
+          <SmoothScroll>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
             {/* Ambient Background & Fixed Controls */}
             <FlowerBackground />
+            <ScrollProgress />
             <MusicPlayer />
+            <ScrollToTop />
             
             {/* Primary Fixed Floating Navigation */}
             <Navbar />
             
             <main className="relative z-10">
               <Hero />
-              <About />
-              <Portfolio onOpenGallery={handleOpenGallery} onItemClick={handleItemClick} />
-              <PriceList />
-              <InvitationsShowcase />
-              <Testimonials onSeeFullGallery={handleOpenTestimonials} />
-              <Contact />
+              <ScrollReveal>
+                <About />
+              </ScrollReveal>
+              <ScrollReveal>
+                <Portfolio onOpenGallery={handleOpenGallery} onItemClick={handleItemClick} />
+              </ScrollReveal>
+              <ScrollReveal>
+                <PriceList />
+              </ScrollReveal>
+              <ScrollReveal>
+                <InvitationsShowcase />
+              </ScrollReveal>
+              <ScrollReveal>
+                <Testimonials onSeeFullGallery={handleOpenTestimonials} />
+              </ScrollReveal>
+              <ScrollReveal>
+                <Contact />
+              </ScrollReveal>
             </main>
 
             <Footer />
@@ -192,6 +215,7 @@ function App() {
               )}
             </Modal>
           </motion.div>
+        </SmoothScroll>
         )}
       </div>
     </SiteGuard>
