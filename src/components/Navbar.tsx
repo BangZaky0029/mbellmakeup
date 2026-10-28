@@ -102,8 +102,8 @@ const Navbar: React.FC<NavbarProps> = ({ isOverlay = false, onLinkClick }) => {
 
   const navItemVariants = {
     hidden: { opacity: 0, y: 14 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const }
     }
@@ -112,11 +112,10 @@ const Navbar: React.FC<NavbarProps> = ({ isOverlay = false, onLinkClick }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-300 ${
-          showBackground
+        className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-300 ${showBackground
             ? 'bg-mbell-canvas/90 backdrop-blur-md shadow-[0_2px_15px_rgba(42,33,33,0.04)] border-b border-mbell-border py-3.5'
             : 'bg-transparent py-5'
-        }`}
+          }`}
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8 flex justify-between items-center">
           {/* Logo Brand */}
@@ -241,7 +240,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOverlay = false, onLinkClick }) => {
               </div>
 
               {/* Navigation Items (Touch Target >= 48px, Staggered Flow) */}
-              <motion.div 
+              <motion.div
                 variants={navListVariants}
                 initial="hidden"
                 animate="visible"
@@ -266,7 +265,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOverlay = false, onLinkClick }) => {
               </motion.div>
 
               {/* Drawer Bottom Quick Action */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15, duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
@@ -279,7 +278,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOverlay = false, onLinkClick }) => {
                   Cek Jadwal & Pesan Riasan
                 </button>
                 <p className="text-center font-sans text-xs text-mbell-muted mt-3">
-                  Bella Aprillian — Professional Makeup Artist
+                  Bella Aprilian — Professional Makeup Artist
                 </p>
               </motion.div>
             </motion.div>
