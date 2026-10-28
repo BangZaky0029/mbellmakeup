@@ -30,8 +30,6 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [direction, setDirection] = useState<1 | -1>(1); // for slide animation
   const [showTermsModal, setShowTermsModal] = useState(false);
-  const [termsZoom, setTermsZoom] = useState(100); // 100% baseline
-  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
 
   // Build a map: 'YYYY-MM-DD' -> service
   const bookedMap = useMemo(() => {
