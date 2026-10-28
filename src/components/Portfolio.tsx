@@ -1,9 +1,7 @@
-// C:\codingVibes\myPortfolio\mbell\mbell-1\src\components\Portfolio.tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { CATEGORIES, CATEGORY_LABELS, SHOW_PORTFOLIO_PHOTOS } from '../constants';
 import type { Category, PortfolioItem } from '../types';
-import Button from './ui/Button';
 import { supabase } from '../lib/supabase';
 
 const BATCH_SIZE = 6; 
@@ -28,7 +26,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
           .select('*')
           .order('id', { ascending: true });
         
-        if (!fetchError) {
+        if (!fetchError && data) {
           setPortfolioData(data as PortfolioItem[]);
         }
       } catch (err) {
@@ -47,148 +45,160 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
   }, [activeCategory, portfolioData]);
 
   const visibleItems = useMemo(() => filteredItems.slice(0, BATCH_SIZE), [filteredItems]);
-  if (loading) return (
-    <section id="portfolio" className="py-24 flex items-center justify-center">
-      <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-    </section>
-  );
 
   return (
-    <section id="portfolio" ref={containerRef} className="py-24 relative z-10 overflow-hidden bg-transparent">
-      <div className="max-w-7xl mx-auto px-6 mb-16">
-        <div className="text-center mb-12">
-          <motion.span 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-primary font-sans font-bold tracking-[0.2em] uppercase text-xs mb-4 block"
-          >
-            Curated Beauty
-          </motion.span>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            viewport={{ once: true }}
-            className="font-serif text-4xl md:text-6xl text-textMain mb-6"
-          >
-            Selected Works
-          </motion.h2>
-          <div className="h-[1px] w-16 bg-primary mx-auto mb-8 opacity-40"></div>
-          <p className="text-textMain/60 font-sans text-sm md:text-base max-w-lg mx-auto leading-relaxed">
-            Setiap wajah adalah kanvas, setiap riasan adalah karya seni. Jelajahi momen transformasi favorit kami.
+    <section id="portfolio" ref={containerRef} className="py-20 md:py-28 relative z-10 overflow-hidden bg-mbell-canvas border-b border-mbell-border">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 mb-12">
+        <div className="max-w-2xl text-left mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-surface border border-mbell-border mb-3">
+            <span className="text-xs font-sans font-medium text-mbell-primary">
+              Karya Pilihan
+            </span>
+          </div>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight">
+            Galeri riasan & transformasi.
+          </h2>
+          <p className="font-sans text-sm sm:text-base text-mbell-muted leading-relaxed">
+            Setiap wajah memiliki keunikan tersendiri. Kami memadukan warna, teknik kontur, dan kelembutan tekstur untuk menonjolkan kecantikanmu di setiap sudut foto.
           </p>
         </div>
 
+        {/* Filter Pills (Scrollable di Mobile) */}
         {SHOW_PORTFOLIO_PHOTOS && (
-          <div className="mb-16 flex justify-center flex-wrap gap-2 md:gap-3 max-w-5xl mx-auto">
-              {CATEGORIES.map((cat) => (
+          <div className="flex overflow-x-auto gap-2 pb-2 no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0">
+            {CATEGORIES.map((cat) => {
+              const isActive = activeCategory === cat;
+              return (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[9px] md:text-[10px] uppercase tracking-[0.1em] md:tracking-[0.15em] transition-all duration-300 font-sans border font-bold ${
-                    activeCategory === cat 
-                      ? 'bg-textMain border-textMain text-white shadow-lg' 
-                      : 'bg-white/40 border-gray-100 text-textMain/60 hover:bg-white hover:border-primary hover:text-primary'
+                  className={`whitespace-nowrap min-h-[40px] px-5 py-2 rounded-full text-xs font-sans font-medium transition-colors border ${
+                    isActive
+                      ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-sm'
+                      : 'bg-mbell-surface text-mbell-ink border-mbell-border hover:bg-mbell-blush/50'
                   }`}
                 >
                   {CATEGORY_LABELS[cat]}
                 </button>
-              ))}
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* MOODBOARD COLLAGE OR CLIENT-FACING COMING SOON NOTICE */}
-      {!SHOW_PORTFOLIO_PHOTOS ? (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto px-8 py-16 text-center bg-white/60 backdrop-blur-xl rounded-[3rem] border border-dashed border-primary/20 shadow-xl relative z-20"
-        >
-          <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6 border border-primary/20 shadow-inner">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A5A5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/>
-              <path d="M12 8v4l3 3"/>
-            </svg>
-          </div>
-          <h3 className="font-serif text-3xl md:text-4xl text-textMain mb-3">
-            New Portfolio Coming Soon ✨
-          </h3>
-          <p className="font-sans text-xs md:text-sm text-textMain/70 italic leading-relaxed max-w-lg mx-auto mb-6">
-            Kami sedang memperbarui galeri dengan karya-karya riasan terbaru yang memukau. Tertarik melihat katalog lengkap atau ingin berkonsultasi mengenai inspirasi look Anda?
-          </p>
-          <div className="flex justify-center">
-            <a
-              href="https://wa.me/6288293473765?text=Halo%20MBELL%20Makeup%2C%20saya%20tertarik%20melihat%20katalog%20portfolio%20terbaru."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-sans font-bold text-xs uppercase tracking-wider shadow-md hover:bg-secondary transition-all transform hover:scale-105"
-            >
-              <span>Tanya Katalog via WhatsApp</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 2L11 13"/>
-                <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-              </svg>
-            </a>
-          </div>
-        </motion.div>
-      ) : (
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-6 relative z-20">
-           {visibleItems.length === 0 ? (
-             <div className="h-48 flex items-center justify-center italic text-textMain/20 font-serif text-2xl">
-               Discovering beauty...
-             </div>
-           ) : (
-             <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-               {visibleItems.map((item, i) => (
-                  <div key={item.id} className="break-inside-avoid">
-                    <MoodboardCard item={item} onClick={() => onItemClick(item)} index={i} />
-                  </div>
-               ))}
-             </div>
-           )}
+      {/* Konten Portofolio */}
+      {loading ? (
+        <div className="py-16 flex justify-center items-center">
+          <div className="w-8 h-8 border-2 border-mbell-rose border-t-transparent rounded-full animate-spin"></div>
         </div>
-      )}
+      ) : !SHOW_PORTFOLIO_PHOTOS ? (
+        /* Bespoke Editorial Coming Soon Card */
+        <div className="max-w-3xl mx-auto px-5 sm:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="p-8 sm:p-12 text-center bg-mbell-surface/70 rounded-3xl border border-mbell-border shadow-[0_10px_30px_rgba(42,33,33,0.03)]"
+          >
+            <div className="w-16 h-16 rounded-full bg-mbell-canvas border border-mbell-border flex items-center justify-center mx-auto mb-5 text-mbell-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+            </div>
+            
+            <h3 className="font-serif text-2xl sm:text-3xl font-medium text-mbell-ink mb-3">
+              Galeri Portofolio Sedang Diperbarui
+            </h3>
+            
+            <p className="font-sans text-sm text-mbell-muted max-w-md mx-auto mb-8 leading-relaxed">
+              Kami sedang mengkurasi dokumentasi hasil riasan pernikahan, akad, dan wisuda terbaru. Ingin melihat foto riasan spesifik atau ingin konsultasi look?
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a
+                href="https://wa.me/6288293473765?text=Halo%20MBell%20MakeUp%2C%20saya%20tertarik%20melihat%20koleksi%20foto%20portofolio%20riasan%20terbaru."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center min-h-[46px] px-6 py-2.5 rounded-full bg-mbell-primary text-mbell-canvas font-sans font-medium text-xs sm:text-sm hover:bg-mbell-ink transition-colors shadow-sm"
+              >
+                Tanya Foto Portofolio via WhatsApp
+              </a>
+              <a
+                href="https://www.instagram.com/mbell.makeup/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center min-h-[46px] px-6 py-2.5 rounded-full bg-mbell-canvas text-mbell-ink border border-mbell-border font-sans font-medium text-xs sm:text-sm hover:bg-mbell-blush/60 transition-colors"
+              >
+                Lihat di Instagram @mbell.makeup
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      ) : (
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          {visibleItems.length === 0 ? (
+            <div className="h-40 flex items-center justify-center text-mbell-muted font-sans text-sm italic">
+              Belum ada foto untuk kategori ini.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {visibleItems.map((item, i) => (
+                <PortfolioCard 
+                  key={item.id} 
+                  item={item} 
+                  onClick={() => onItemClick(item)} 
+                  index={i} 
+                />
+              ))}
+            </div>
+          )}
 
-      {SHOW_PORTFOLIO_PHOTOS && (
-        <div className="flex justify-center mt-20 relative z-20">
-          <Button onClick={() => onOpenGallery(portfolioData, activeCategory)} variant="outline" className="bg-white/80 backdrop-blur shadow-sm border-white/50 text-textMain/80 px-12 py-4 hover:border-primary/50">
-             Browse Full Experience
-          </Button>
+          <div className="flex justify-center mt-12">
+            <button 
+              type="button"
+              onClick={() => onOpenGallery(portfolioData, activeCategory)} 
+              className="inline-flex items-center gap-2 min-h-[48px] px-8 py-3 rounded-full bg-mbell-surface text-mbell-ink border border-mbell-border font-sans font-medium text-sm hover:bg-mbell-blush/60 transition-colors shadow-sm"
+            >
+              <span>Buka Seluruh Galeri ({portfolioData.length} Foto)</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
         </div>
       )}
     </section>
   );
 };
 
-const MoodboardCard = ({ item, onClick, index }: any) => {
+const PortfolioCard = ({ item, onClick, index }: { item: PortfolioItem; onClick: () => void; index: number }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 0.6, delay: (index % 3) * 0.1, ease: "easeOut" }}
-      className="group relative cursor-pointer w-full"
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
+      className="group relative cursor-pointer"
       onClick={onClick}
     >
-      <div className="relative rounded-2xl md:rounded-[2rem] overflow-hidden bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(212,165,165,0.3)] transition-all duration-500 transform group-hover:-translate-y-1">
+      <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-mbell-surface border border-mbell-border shadow-sm transition-all duration-300 group-hover:shadow-md">
         <img 
           src={item.imageUrl} 
           alt={item.title} 
-          className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105" 
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
           loading="lazy" 
         />
-        {/* Editorial Hover Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-8">
-          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-            <p className="font-sans text-[9px] md:text-[10px] text-primary font-bold uppercase tracking-widest mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-              {item.category}
-            </p>
-            <h3 className="font-serif text-xl md:text-3xl text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75">
-              {item.title}
-            </h3>
-            <div className="h-[1px] w-0 bg-primary/60 mt-4 group-hover:w-16 transition-all duration-700 delay-200"></div>
-          </div>
+        {/* Subtle Gradient & Typography */}
+        <div className="absolute inset-0 bg-gradient-to-t from-mbell-ink/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 text-left">
+          <span className="text-[11px] font-sans font-medium text-mbell-rose uppercase tracking-wider mb-1">
+            {item.category}
+          </span>
+          <h4 className="font-serif text-lg text-mbell-canvas font-medium">
+            {item.title}
+          </h4>
         </div>
       </div>
     </motion.div>

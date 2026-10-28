@@ -122,9 +122,9 @@ const SiteGuard: React.FC<SiteGuardProps> = ({ children }) => {
   if (status === 'loading') {
     return (
       <div className="fixed inset-0 bg-[#FFFCF9] flex items-center justify-center z-[999]">
-        <div className="flex flex-col items-center gap-4">
+        <div className="relative flex flex-col items-center gap-4">
           <img src={logo} alt="MBell" className="w-16 h-16 opacity-70 animate-pulse" />
-          <div className="flex gap-1.5">
+          <div className="relative flex gap-1.5">
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}

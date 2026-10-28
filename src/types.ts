@@ -51,3 +51,18 @@ export interface BookedDay {
   date: string;   // format: 'YYYY-MM-DD'
   service: string;
 }
+
+export interface InvitationTemplate {
+  id: string;
+  name: string;
+  slug?: string;
+  category?: string;
+  description?: string;
+  thumbnail_url?: string;
+  mockup_url?: string;
+  preview_badge?: string;
+  accent_color?: string;
+  price?: number;
+  original_price?: number;
+  is_active?: boolean;
+}

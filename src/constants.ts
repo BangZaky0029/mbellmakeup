@@ -39,6 +39,7 @@
     { name: 'About', href: '#about' },
     { name: 'Portfolio', href: '#portfolio' },
     { name: 'Price List', href: '#pricelist' },
+    { name: 'Undangan', href: '#invitations' },
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'Contact', href: '#contact' },
   ];

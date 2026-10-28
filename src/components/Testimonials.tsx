@@ -1,10 +1,8 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import type { Testimonial } from '../types';
 import TestimonialCard from './TestimonialCard';
 import TestimonialForm from './TestimonialForm';
-import Button from './ui/Button';
 
 interface TestimonialsProps {
   onSeeFullGallery?: () => void;
@@ -15,20 +13,7 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   
-  const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // ── Parallax Scroll Effect ──
-  // Track vertical scroll progress of this section
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
-  
-  // PERFORMANCE FIX: Removed useSpring (calculated every frame = expensive on mobile)
-  // Using useTransform directly — much lighter, no physics simulation
-  // Reduced range from 150px to 50px for less layout thrashing
-  const xTransform = useTransform(scrollYProgress, [0, 1], ["50px", "-50px"]);
 
   const fetchTestimonials = useCallback(async () => {
     try {
@@ -54,9 +39,8 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
 
   const scroll = (direction: 'left' | 'right') => {
     if (containerRef.current) {
-      const { current } = containerRef;
-      const scrollAmount = direction === 'left' ? -500 : 500;
-      current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const scrollAmount = direction === 'left' ? -380 : 380;
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
@@ -66,110 +50,110 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSeeFullGallery }) => {
   };
 
   return (
-    <section ref={sectionRef} id="testimonials" className="py-24 overflow-hidden relative z-10">
-      <div className="max-w-7xl mx-auto px-6 mb-16 text-center">
-        <motion.span 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-primary font-sans font-bold tracking-[0.3em] uppercase text-xs mb-4 block"
-        >
-          Love Notes
-        </motion.span>
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-serif text-5xl md:text-6xl text-textMain"
-        >
-          Client Stories
-        </motion.h2>
-        <div className="h-[1px] w-12 bg-primary mx-auto mt-6 opacity-30"></div>
-      </div>
+    <section id="testimonials" className="py-20 md:py-28 bg-mbell-canvas border-b border-mbell-border relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 mb-10">
+        
+        {/* Header Seksi & Kontrol Panah */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8">
+          <div className="text-left max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-surface border border-mbell-border mb-3">
+              <span className="text-xs font-sans font-medium text-mbell-primary">
+                Kata Mereka
+              </span>
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-3 leading-tight">
+              Cerita bahagia dari para klien.
+            </h2>
+            <p className="font-sans text-sm sm:text-base text-mbell-muted leading-relaxed">
+              Kepuasan dan senyum percaya dirimu adalah pencapaian terbesar kami. Geser ke samping untuk membaca pengalaman mereka.
+            </p>
+          </div>
 
-      <div className="relative w-full max-w-[1600px] mx-auto group px-4">
-        <div className="absolute top-0 left-0 w-8 md:w-32 h-full bg-gradient-to-r from-surface to-transparent z-20 pointer-events-none"></div>
-        <div className="absolute top-0 right-0 w-8 md:w-32 h-full bg-gradient-to-l from-surface to-transparent z-20 pointer-events-none"></div>
-
-        <div className="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button 
-            onClick={() => scroll('left')}
-            className="w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-gray-50"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
+          {/* Desktop Arrow Controls */}
+          <div className="hidden sm:flex items-center gap-2">
+            <button 
+              type="button"
+              aria-label="Geser ke kiri"
+              onClick={() => scroll('left')}
+              className="w-10 h-10 rounded-full bg-mbell-surface border border-mbell-border text-mbell-ink flex items-center justify-center hover:bg-mbell-blush/60 transition-colors shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button 
+              type="button"
+              aria-label="Geser ke kanan"
+              onClick={() => scroll('right')}
+              className="w-10 h-10 rounded-full bg-mbell-surface border border-mbell-border text-mbell-ink flex items-center justify-center hover:bg-mbell-blush/60 transition-colors shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
         </div>
 
+        {/* Snap Carousel Container */}
         <div 
           ref={containerRef}
-          className="overflow-x-auto px-4 md:px-24 py-12 pb-16 no-scrollbar scroll-smooth"
+          className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 items-start"
         >
-          <motion.div 
-            style={{ x: xTransform }} 
-            className="flex gap-8 md:gap-12 w-max"
-          >
-            {loading && testimonials.length === 0 ? (
-              Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="w-[320px] sm:w-[500px] md:w-[650px] flex-shrink-0 animate-pulse">
-                  <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 h-[450px] flex flex-col sm:flex-row overflow-hidden">
-                    <div className="w-full sm:w-[35%] h-full bg-gray-100"></div>
-                    <div className="flex-1 p-10 flex flex-col">
-                      <div className="h-6 bg-gray-100 rounded w-1/2 mb-6"></div>
-                      <div className="h-4 bg-gray-100 rounded w-full mb-3"></div>
-                    </div>
+          {loading && testimonials.length === 0 ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="w-[280px] sm:w-[380px] flex-shrink-0 animate-pulse">
+                <div className="bg-mbell-surface rounded-2xl border border-mbell-border h-[220px] p-6 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <div className="h-4 bg-mbell-border/60 rounded w-1/3"></div>
+                    <div className="h-3 bg-mbell-border/60 rounded w-full"></div>
+                    <div className="h-3 bg-mbell-border/60 rounded w-4/5"></div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-mbell-border/60"></div>
+                    <div className="h-4 bg-mbell-border/60 rounded w-1/2"></div>
                   </div>
                 </div>
-              ))
-            ) : testimonials.length > 0 ? (
-              testimonials.map((item, index) => (
-                <TestimonialCard key={item.id} item={item} index={index} />
-              ))
-            ) : (
-              <div className="w-[320px] md:w-[650px] text-center py-24 bg-white/30 backdrop-blur-sm rounded-[3rem] border border-dashed border-primary/20">
-                <p className="font-serif text-3xl text-textMain/20 italic">"Goresan kuas adalah bahasa cinta..." ✨</p>
               </div>
-            )}
-          </motion.div>
+            ))
+          ) : testimonials.length > 0 ? (
+            testimonials.map((item, index) => (
+              <TestimonialCard key={item.id} item={item} index={index} />
+            ))
+          ) : (
+            <div className="w-full text-center py-12 bg-mbell-surface rounded-2xl border border-mbell-border">
+              <p className="font-serif text-xl text-mbell-muted italic">
+                "Jadilah yang pertama menuliskan cerita bahagiamu bersama MBell MakeUp..." ✨
+              </p>
+            </div>
+          )}
         </div>
 
-        <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        {/* Action Buttons */}
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
           <button 
-            onClick={() => scroll('right')}
-            className="w-14 h-14 rounded-full bg-white shadow-2xl flex items-center justify-center text-textMain hover:bg-primary hover:text-white transition-all transform hover:scale-110 border border-gray-50"
+            type="button"
+            onClick={onSeeFullGallery} 
+            className="w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-full bg-mbell-surface text-mbell-ink border border-mbell-border font-sans font-medium text-xs sm:text-sm hover:bg-mbell-blush/60 transition-colors shadow-sm"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            Lihat Semua Testimoni
+          </button>
+          
+          <button 
+            type="button"
+            onClick={() => setShowForm(!showForm)} 
+            className="w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-full bg-mbell-primary text-mbell-canvas font-sans font-medium text-xs sm:text-sm hover:bg-mbell-ink transition-colors shadow-sm"
+          >
+            {showForm ? 'Tutup Formulir Ulasan' : 'Tulis Ulasan Anda'}
           </button>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-6 mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
-         <Button 
-           onClick={onSeeFullGallery} 
-           variant="primary"
-           className="px-12 py-5 shadow-xl transform hover:scale-105 min-w-[240px]"
-         >
-           View Full Gallery
-         </Button>
-         
-         {!showForm ? (
-           <Button 
-            onClick={() => setShowForm(true)} 
-            variant="outline"
-            className="px-12 py-5 bg-white shadow-xl border-primary/10 text-primary hover:bg-primary hover:text-white transition-all transform hover:scale-105 min-w-[240px]"
-           >
-             Tulis Testimoni Anda
-           </Button>
-         ) : (
-           <div className="relative w-full max-w-3xl pt-10">
-             <button 
-                onClick={() => setShowForm(false)}
-                className="absolute top-4 right-4 md:right-10 z-20 w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-textMain/40 hover:text-primary transition-all shadow-lg border border-white"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-             </button>
-             <TestimonialForm onSuccess={handleSuccess} />
-           </div>
-         )}
+        {/* Form Modal/Expansion */}
+        {showForm && (
+          <div className="mt-8 pt-8 border-t border-mbell-border">
+            <TestimonialForm onSuccess={handleSuccess} />
+          </div>
+        )}
+
       </div>
     </section>
   );

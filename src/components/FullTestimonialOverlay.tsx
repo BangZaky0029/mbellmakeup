@@ -140,7 +140,7 @@ const FullTestimonialOverlay: React.FC<FullTestimonialOverlayProps> = ({ onClose
               <div className="space-y-12">
                 <motion.div 
                   layout
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12"
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start"
                 >
                   {displayedTestimonials.map((item, index) => (
                     <div key={item.id} className="flex justify-center">

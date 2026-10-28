@@ -10,10 +10,10 @@ interface BookingCalendarProps {
   isLoading?: boolean;
 }
 
-const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAYS_OF_WEEK = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
 ];
 
 const BookingCalendar: React.FC<BookingCalendarProps> = ({
@@ -105,46 +105,41 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   };
 
   const slideVariants = {
-    enter: (dir: number) => ({ x: dir * 40, opacity: 0 }),
+    enter: (dir: number) => ({ x: dir * 30, opacity: 0 }),
     center: { x: 0, opacity: 1 },
-    exit: (dir: number) => ({ x: dir * -40, opacity: 0 }),
+    exit: (dir: number) => ({ x: dir * -30, opacity: 0 }),
   };
 
   return (
     <>
-      <div className="mt-3 rounded-2xl border border-[#F4ACB7]/40 bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden relative">
+      <div className="mt-3 rounded-2xl border border-mbell-border bg-mbell-canvas shadow-sm overflow-hidden relative">
         {/* ── Terms & Conditions Notice Banner ── */}
-        <div className="bg-gradient-to-r from-[#FFF0F3] via-[#FDE8ED] to-[#FFF0F3] border-b border-[#F4ACB7]/30 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2 text-xs font-sans text-[#7A525E]">
+        <div className="bg-mbell-surface border-b border-mbell-border px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-xs font-sans text-mbell-ink">
             <span className="text-base flex-shrink-0">📜</span>
-            <span className="font-semibold text-[11px] sm:text-xs">
-              Harap pelajari <strong className="text-[#B56576]">Syarat & Ketentuan</strong> sebelum booking!
+            <span className="font-medium text-[11px] sm:text-xs">
+              Harap baca <strong className="text-mbell-primary">Syarat & Ketentuan</strong> sebelum memilih jadwal.
             </span>
           </div>
           <button
             type="button"
             onClick={() => setShowTermsModal(true)}
-            className="px-3.5 py-1.5 rounded-full bg-white text-[#B56576] hover:bg-[#B56576] hover:text-white border border-[#F4ACB7]/60 font-sans font-bold text-[10px] uppercase tracking-wider shadow-sm transition-all duration-200 flex items-center gap-1.5 group shrink-0"
+            className="px-3.5 py-1.5 rounded-full bg-mbell-canvas text-mbell-primary hover:bg-mbell-primary hover:text-mbell-canvas border border-mbell-border font-sans font-semibold text-[10px] uppercase tracking-wider shadow-sm transition-all duration-200 flex items-center gap-1.5 shrink-0"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
             <span>Baca S&K</span>
           </button>
         </div>
 
-        {/* ── Header ── */}
-        <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-[#FFF0F3] to-[#FDF6F8] border-b border-[#F4ACB7]/30">
+        {/* ── Header Navigasi Bulan ── */}
+        <div className="flex items-center justify-between px-5 py-3 bg-mbell-canvas border-b border-mbell-border">
           <button
             type="button"
             onClick={goToPrevMonth}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#9D8189] hover:bg-[#F4ACB7]/30 hover:text-[#D4A5A5] transition-all duration-200"
-            aria-label="Previous month"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-mbell-muted hover:bg-mbell-surface hover:text-mbell-ink transition-colors"
+            aria-label="Bulan sebelumnya"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </button>
 
@@ -157,8 +152,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.22, ease: 'easeInOut' }}
-                className="font-sans font-semibold text-sm text-[#4A403A] tracking-wide whitespace-nowrap"
+                transition={{ duration: 0.2 }}
+                className="font-serif font-medium text-base text-mbell-ink tracking-wide whitespace-nowrap"
               >
                 {MONTHS[currentMonth]} {currentYear}
               </motion.span>
@@ -168,37 +163,28 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
           <button
             type="button"
             onClick={goToNextMonth}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#9D8189] hover:bg-[#F4ACB7]/30 hover:text-[#D4A5A5] transition-all duration-200"
-            aria-label="Next month"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-mbell-muted hover:bg-mbell-surface hover:text-mbell-ink transition-colors"
+            aria-label="Bulan berikutnya"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </button>
         </div>
 
-        {/* ── Day of Week Headers ── */}
-        <div className="grid grid-cols-7 px-3 pt-3 pb-1">
+        {/* ── Header Hari ── */}
+        <div className="grid grid-cols-7 px-3 pt-3 pb-1 border-b border-mbell-border/40">
           {DAYS_OF_WEEK.map((d) => (
-            <div key={d} className="text-center text-[10px] font-bold text-[#9D8189]/70 uppercase tracking-wider py-1">
+            <div key={d} className="text-center text-[11px] font-sans font-medium text-mbell-muted py-1">
               {d}
             </div>
           ))}
         </div>
 
-        {/* ── Calendar Grid ── */}
+        {/* ── Grid Kalender dengan Touch Target Min 44x44px ── */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-10">
-            <div className="flex gap-1.5">
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className="w-2 h-2 rounded-full bg-[#F4ACB7]"
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15 }}
-                />
-              ))}
-            </div>
+          <div className="flex items-center justify-center py-12">
+            <div className="w-6 h-6 border-2 border-mbell-rose border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
           <AnimatePresence mode="wait" custom={direction}>
@@ -209,26 +195,26 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.22, ease: 'easeInOut' }}
-              className="grid grid-cols-7 gap-y-1 px-3 pb-4 pt-1"
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-7 gap-1 px-3 py-3"
             >
               {calendarDays.map((day, idx) => {
                 if (!day) {
-                  return <div key={`empty-${idx}`} />;
+                  return <div key={`empty-${idx}`} className="min-h-[44px]" />;
                 }
 
                 const { dateStr, isToday, isPast, isBooked, isSelected } = getDayState(day);
                 const isHov = hoveredDate === dateStr;
 
                 let cellClass =
-                  'relative flex flex-col items-center justify-center rounded-xl w-full aspect-square cursor-pointer select-none transition-all duration-150 group';
+                  'relative flex flex-col items-center justify-center rounded-xl w-full min-h-[44px] aspect-square select-none transition-all duration-150';
 
                 if (isPast) {
                   cellClass += ' opacity-30 cursor-not-allowed';
                 } else if (isBooked) {
                   cellClass += ' cursor-not-allowed';
-                } else if (isSelected) {
-                  cellClass += ' cursor-pointer';
+                } else {
+                  cellClass += ' cursor-pointer hover:bg-mbell-blush/40';
                 }
 
                 return (
@@ -240,27 +226,22 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                     onMouseLeave={() => setHoveredDate(null)}
                     role="button"
                     tabIndex={isPast || isBooked ? -1 : 0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') handleDayClick(day);
-                    }}
                     aria-label={
                       isBooked
-                        ? `${dateStr} — Booked: ${bookedMap[dateStr]}`
+                        ? `${dateStr} — Terisi: ${bookedMap[dateStr]}`
                         : dateStr
                     }
                   >
                     {/* Background layer */}
                     <div
                       className={[
-                        'absolute inset-[2px] rounded-xl transition-all duration-150',
+                        'absolute inset-1 rounded-xl transition-all duration-150',
                         isSelected
-                          ? 'bg-[#D4A5A5] shadow-md'
+                          ? 'bg-mbell-primary shadow-sm'
                           : isBooked
-                          ? 'bg-[#FADADD]'
+                          ? 'bg-mbell-surface border border-mbell-border'
                           : isToday && !isPast
-                          ? 'bg-white ring-1 ring-[#D4A5A5] ring-dashed'
-                          : !isPast && isHov
-                          ? 'bg-[#FFF0F2]'
+                          ? 'border border-dashed border-mbell-rose bg-mbell-surface/50'
                           : '',
                       ].join(' ')}
                     />
@@ -268,16 +249,16 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
                     {/* Day number */}
                     <span
                       className={[
-                        'relative z-10 text-xs font-semibold leading-none',
+                        'relative z-10 text-xs font-sans font-medium leading-none',
                         isSelected
-                          ? 'text-white'
+                          ? 'text-mbell-canvas font-semibold'
                           : isBooked
-                          ? 'text-[#C4828E]'
+                          ? 'text-mbell-muted'
                           : isPast
-                          ? 'text-[#4A403A]'
+                          ? 'text-mbell-muted/60'
                           : isToday
-                          ? 'text-[#D4A5A5] font-bold'
-                          : 'text-[#4A403A]',
+                          ? 'text-mbell-primary font-bold'
+                          : 'text-mbell-ink',
                       ].join(' ')}
                     >
                       {day}
@@ -285,58 +266,17 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
                     {/* Booked indicator dot */}
                     {isBooked && (
-                      <span className="relative z-10 mt-0.5 w-1 h-1 rounded-full bg-[#F4ACB7]" />
+                      <span className="relative z-10 mt-1 w-1.5 h-1.5 rounded-full bg-mbell-rose" />
                     )}
 
-                    {/* Tooltip — shown on hover for booked days */}
+                    {/* Tooltip — booked days */}
                     {isBooked && isHov && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 4, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className={`absolute bottom-full mb-1 z-50 pointer-events-none flex flex-col ${
-                          idx % 7 >= 5
-                            ? 'right-[-8px] items-end'
-                            : idx % 7 <= 1
-                            ? 'left-[-8px] items-start'
-                            : 'left-1/2 -translate-x-1/2 items-center'
-                        }`}
-                      >
-                        <div className="bg-[#4A403A] text-white text-[10px] font-sans rounded-lg px-2.5 py-1.5 whitespace-nowrap shadow-xl">
-                          <div className="font-semibold">🌸 Sudah Dipesan</div>
-                          <div className="opacity-75 mt-0.5">{bookedMap[dateStr]}</div>
+                      <div className="absolute bottom-full mb-1 z-50 pointer-events-none flex flex-col items-center">
+                        <div className="bg-mbell-ink text-mbell-canvas text-[10px] font-sans rounded-lg px-2.5 py-1 whitespace-nowrap shadow-md">
+                          <div className="font-medium">Sudah Terisi</div>
+                          <div className="opacity-80 text-[9px]">{bookedMap[dateStr]}</div>
                         </div>
-                        <div 
-                          className={`w-0 h-0 border-l-[5px] border-r-[5px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#4A403A] ${
-                            idx % 7 >= 5 ? 'mr-6' : idx % 7 <= 1 ? 'ml-6' : ''
-                          }`} 
-                        />
-                      </motion.div>
-                    )}
-
-                    {/* Tooltip — past date message */}
-                    {isPast && isHov && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className={`absolute bottom-full mb-1 z-50 pointer-events-none flex flex-col ${
-                          idx % 7 >= 5
-                            ? 'right-[-8px] items-end'
-                            : idx % 7 <= 1
-                            ? 'left-[-8px] items-start'
-                            : 'left-1/2 -translate-x-1/2 items-center'
-                        }`}
-                      >
-                        <div className="bg-[#9D8189] text-white text-[10px] font-sans rounded-lg px-2 py-1.5 whitespace-nowrap shadow-xl">
-                          Tanggal sudah lewat
-                        </div>
-                        <div 
-                          className={`w-0 h-0 border-l-[5px] border-r-[5px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#9D8189] ${
-                            idx % 7 >= 5 ? 'mr-6' : idx % 7 <= 1 ? 'ml-6' : ''
-                          }`} 
-                        />
-                      </motion.div>
+                      </div>
                     )}
                   </div>
                 );
@@ -346,10 +286,10 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
         )}
 
         {/* ── Legend ── */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 py-3 border-t border-[#F4ACB7]/20 bg-[#FFFCF9]">
-          <LegendItem color="bg-[#FADADD] ring-1 ring-[#F4ACB7]" label="Sudah ada booking" />
-          <LegendItem color="bg-[#D4A5A5]" label="Tanggal dipilih" />
-          <LegendItem color="bg-white ring-1 ring-dashed ring-[#D4A5A5]" label="Hari ini" />
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-5 py-3 border-t border-mbell-border bg-mbell-surface/40">
+          <LegendItem color="bg-mbell-surface border border-mbell-border" dot="bg-mbell-rose" label="Sudah Terisi" />
+          <LegendItem color="bg-mbell-primary" label="Pilihan Anda" />
+          <LegendItem color="border border-dashed border-mbell-rose bg-white" label="Hari Ini" />
         </div>
       </div>
 
@@ -360,131 +300,53 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-black/75 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+            className="fixed inset-0 z-[1200] bg-mbell-ink/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
             onClick={() => setShowTermsModal(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="bg-white rounded-3xl max-w-2xl w-full my-auto max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-white/20"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-mbell-canvas rounded-3xl max-w-2xl w-full my-auto max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-mbell-border"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-[#FFF0F3] to-[#FDF6F8] border-b border-[#F4ACB7]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 relative">
-                <div className="flex items-center gap-2.5 pr-10 sm:pr-0">
-                  <span className="text-2xl">📜</span>
-                  <div>
-                    <h3 className="font-serif text-base sm:text-lg md:text-xl text-[#4A403A] font-bold leading-tight">
-                      Syarat & Ketentuan Booking
-                    </h3>
-                    <p className="text-[10px] text-[#9D8189] font-sans">
-                      MBELL Makeup Services & Booking Rules
-                    </p>
-                  </div>
+              <div className="px-5 py-4 bg-mbell-surface border-b border-mbell-border flex items-center justify-between">
+                <div>
+                  <h3 className="font-serif text-lg text-mbell-ink font-medium">
+                    Syarat & Ketentuan Booking
+                  </h3>
+                  <p className="text-xs text-mbell-muted font-sans">
+                    Panduan & Kebijakan Reservasi MBell MakeUp
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-2 self-start sm:self-auto">
-                  <div className="flex items-center gap-1.5 bg-white p-1 rounded-2xl shadow-sm border border-[#F4ACB7]/30">
-                    <button
-                      type="button"
-                      onClick={() => setTermsZoom(z => Math.max(z - 25, 50))}
-                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
-                      title="Zoom Out"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    </button>
-                    <span className="text-[10px] sm:text-xs font-bold text-gray-500 w-8 sm:w-10 text-center">{termsZoom}%</span>
-                    <button
-                      type="button"
-                      onClick={() => setTermsZoom(z => Math.min(z + 25, 250))}
-                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
-                      title="Zoom In"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    </button>
-                    
-                    <div className="w-[1px] h-4 bg-gray-200 mx-0.5 sm:mx-1"></div>
-                    
-                    <a
-                      href={termConditionImg}
-                      download="Syarat-Ketentuan-MBell-Makeup.jpg"
-                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#FFF0F3] hover:bg-[#F4ACB7] text-[#B56576] hover:text-white flex items-center justify-center transition-colors"
-                      title="Download S&K"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    </a>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowTermsModal(false);
-                      setTermsZoom(100);
-                    }}
-                    className="absolute top-3 right-4 sm:relative sm:top-auto sm:right-auto w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-[#9D8189] hover:bg-[#F4ACB7]/20 hover:text-[#B56576] flex items-center justify-center transition-all shadow-sm border border-gray-100"
-                    aria-label="Close modal"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTermsModal(false)}
+                  className="w-8 h-8 rounded-full bg-mbell-canvas border border-mbell-border flex items-center justify-center text-mbell-ink hover:text-mbell-primary transition-colors"
+                >
+                  ✕
+                </button>
               </div>
 
-              {/* Modal Body: Scrollable Image via Native CSS */}
-              <div 
-                className="flex-1 overflow-auto p-4 sm:p-6 bg-gray-50 flex flex-col items-center justify-start relative"
-                onTouchMove={(e) => {
-                  if (e.touches.length === 2) {
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-                    if (lastTouchDistance !== null) {
-                      const delta = dist - lastTouchDistance;
-                      // Sensitivity multiplier (e.g. 0.5)
-                      setTermsZoom(z => Math.min(Math.max(z + delta * 0.5, 50), 300));
-                    }
-                    setLastTouchDistance(dist);
-                  }
-                }}
-                onTouchEnd={() => setLastTouchDistance(null)}
-                onTouchCancel={() => setLastTouchDistance(null)}
-              >
-                <div 
-                  className={`w-full flex origin-top pb-10 ${termsZoom <= 100 ? 'justify-center' : 'justify-start'}`}
-                  style={{ touchAction: 'pan-x pan-y' }}
-                >
-                  <img
-                    src={termConditionImg}
-                    alt="Syarat & Ketentuan Booking MBELL Makeup"
-                    className="rounded-2xl shadow-md border border-gray-200"
-                    style={{ 
-                      width: `${termsZoom}%`, 
-                      maxWidth: 'none', 
-                      height: 'auto', 
-                      transition: lastTouchDistance ? 'none' : 'width 0.2s ease-out' 
-                    }}
-                  />
-                </div>
+              {/* Modal Body */}
+              <div className="flex-1 overflow-auto p-4 bg-mbell-surface/30 flex flex-col items-center">
+                <img
+                  src={termConditionImg}
+                  alt="Syarat & Ketentuan Booking MBell MakeUp"
+                  className="rounded-xl shadow border border-mbell-border max-w-full h-auto"
+                />
               </div>
 
               {/* Modal Footer */}
-              <div className="px-6 py-4 bg-white border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-                <p className="text-[11px] text-[#9D8189] font-sans text-center sm:text-left">
-                  *Pastikan Anda telah membaca seluruh syarat sebelum memilih tanggal.
-                </p>
+              <div className="px-5 py-3.5 bg-mbell-canvas border-t border-mbell-border flex justify-end">
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowTermsModal(false);
-                    setTermsZoom(100);
-                  }}
-                  className="w-full sm:w-auto px-6 py-2.5 bg-[#B56576] hover:bg-[#9D8189] text-white font-sans font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition-all shrink-0"
+                  onClick={() => setShowTermsModal(false)}
+                  className="px-6 py-2 bg-mbell-primary text-mbell-canvas font-sans font-medium text-xs rounded-full shadow-sm hover:bg-mbell-ink transition-colors"
                 >
-                  Saya Mengerti
+                  Saya Memahami S&K
                 </button>
               </div>
             </motion.div>
@@ -495,10 +357,12 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   );
 };
 
-const LegendItem: React.FC<{ color: string; label: string }> = ({ color, label }) => (
+const LegendItem: React.FC<{ color: string; dot?: string; label: string }> = ({ color, dot, label }) => (
   <div className="flex items-center gap-1.5">
-    <div className={`w-3.5 h-3.5 rounded-md flex-shrink-0 ${color}`} />
-    <span className="text-[10px] text-[#9D8189] font-sans">{label}</span>
+    <div className={`w-3 h-3 rounded-md flex items-center justify-center ${color}`}>
+      {dot && <span className={`w-1 h-1 rounded-full ${dot}`} />}
+    </div>
+    <span className="text-[11px] text-mbell-muted font-sans">{label}</span>
   </div>
 );
 

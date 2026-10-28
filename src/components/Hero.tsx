@@ -1,31 +1,22 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import type { Variants } from 'framer-motion'
-import Button from './ui/Button'
-import bella1 from '../assets/bella_1.png'
+import React from 'react';
+import { motion } from 'framer-motion';
+import bellaPortrait from '../assets/bella_1.png';
+import akadImage from '../assets/akad-makeup.jpeg';
 
-const Hero: React.FC = () => {
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
+interface HeroProps {
+  onExploreClick?: () => void;
+  onBookingClick?: () => void;
+}
 
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.6, ease: "easeOut" } 
-    },
-  };
-
-  const handleBooking = () => {
-    const element = document.getElementById('contact');
+export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick }) => {
+  const scrollTo = (targetId: string, customCallback?: () => void) => {
+    if (customCallback) {
+      customCallback();
+      return;
+    }
+    const element = document.getElementById(targetId);
     if (element) {
-      const offset = 80;
+      const offset = 85;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -33,82 +24,113 @@ const Hero: React.FC = () => {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 w-full relative z-10 flex flex-col-reverse lg:grid lg:grid-cols-12 gap-8 lg:gap-0 items-center">
-        
-        {/* Left: Typography (Overlapping) */}
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="relative z-20 col-span-12 lg:col-span-7 text-center lg:text-left pt-10 lg:pt-0"
-        >
-          <motion.div variants={itemVariants} className="mb-6 lg:mb-8">
-            <span className="py-1.5 px-5 border border-primary/20 rounded-full text-[9px] md:text-[10px] font-sans font-bold tracking-[0.25em] text-primary uppercase bg-white/70 backdrop-blur-md shadow-sm">
-              Professional Makeup Artist
-            </span>
-          </motion.div>
+    <section id="home" className="relative bg-mbell-canvas text-mbell-ink pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden border-b border-mbell-border">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          
+          {/* Kolom Visual: Tampil di atas pada Mobile, di kanan pada Desktop */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-5 lg:order-2 relative mx-auto w-full max-w-sm lg:max-w-none"
+          >
+            {/* Main Portrait with Organic Arch */}
+            <div className="relative aspect-[4/5] rounded-t-full rounded-b-3xl overflow-hidden border border-mbell-border bg-mbell-surface shadow-[0_20px_50px_rgba(200,138,130,0.15)]">
+              <img
+                src={bellaPortrait}
+                alt="Hasil riasan profesional oleh MBell MakeUp"
+                className="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
+                loading="eager"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-mbell-ink/20 via-transparent to-transparent pointer-events-none" />
+            </div>
 
-          <div className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] leading-[1.1] mb-6 lg:mb-8 text-textMain mix-blend-multiply">
-            <motion.div variants={itemVariants} className="font-medium tracking-tight">Enhancing Your</motion.div>
-            <motion.div variants={itemVariants} className="italic text-primary font-light relative inline-block">
-              <span className="relative z-10">Natural Beauty</span>
-              <div className="absolute bottom-2 left-0 right-0 h-3 bg-primary/10 -z-10 rounded-full"></div>
+            {/* Thumbnail Pendukung (Akad/Bridal Detail) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="hidden sm:block absolute -bottom-5 -left-6 w-32 aspect-square rounded-2xl overflow-hidden border-4 border-mbell-canvas bg-mbell-surface shadow-lg"
+            >
+              <img
+                src={akadImage}
+                alt="Riasan pengantin akad MBell MakeUp"
+                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+              />
             </motion.div>
-          </div>
 
-          <motion.p
-            variants={itemVariants}
-            className="max-w-md mx-auto lg:mx-0 font-sans text-sm md:text-base text-textMain/70 mb-10 leading-relaxed"
-          >
-            Curating timeless looks for your special moments. Experience the touch of luxury and elegance designed exclusively for you.
-          </motion.p>
-
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <Button variant="primary" onClick={handleBooking} className="shadow-lg hover:shadow-xl hover:-translate-y-1">Book Appointment</Button>
-            <Button variant="outline" onClick={() => document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' })} className="bg-white/50 backdrop-blur hover:bg-white">Explore Portfolio</Button>
+            {/* Subtle Signature Badge */}
+            <div className="absolute top-4 right-4 bg-mbell-canvas/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-mbell-border shadow-sm text-[11px] font-sans font-medium text-mbell-muted">
+              Certified MUA
+            </div>
           </motion.div>
-        </motion.div>
 
-        {/* Right: Editorial Image (Arch/Rounded) */}
-        <motion.div
-           initial={{ opacity: 0, scale: 0.95, x: 20 }}
-           animate={{ opacity: 1, scale: 1, x: 0 }}
-           transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-           className="relative z-10 col-span-12 lg:col-span-5 w-full flex justify-center lg:justify-end lg:-ml-12"
-        >
-          <div className="relative w-[280px] sm:w-[340px] lg:w-[420px] aspect-[3/4] md:aspect-[4/5] rounded-[3rem] sm:rounded-[4rem] lg:rounded-t-full lg:rounded-b-[4rem] overflow-hidden bg-gray-50 border-4 sm:border-8 border-white shadow-[0_30px_60px_-15px_rgba(212,165,165,0.3)]">
-            <img src={bella1} alt="Bella Makeup Artistry" className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-1000" />
+          {/* Kolom Teks & Aksi: Rata kiri, bersih, dan ramah dibaca */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="lg:col-span-7 lg:order-1 text-left"
+          >
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mbell-surface border border-mbell-border mb-4">
+              <span className="w-2 h-2 rounded-full bg-mbell-rose animate-pulse" />
+              <p className="text-xs font-sans font-medium text-mbell-primary">
+                Professional Makeup Artist
+              </p>
+            </div>
             
-            {/* Elegant overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent pointer-events-none"></div>
-          </div>
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium leading-[1.12] tracking-tight text-mbell-ink mb-6">
+              Sentuhan riasan personal untuk momen paling berkesanmu.
+            </h1>
+            
+            <p className="font-sans text-base sm:text-lg text-mbell-muted leading-relaxed max-w-[58ch] mb-8">
+              Mulai dari prosesi akad, resepsi pernikahan, hingga wisuda dan momen istimewa lainnya. Kami merancang tampilan yang menyatu alami dengan karakter wajahmu dan nyaman bertahan sepanjang hari.
+            </p>
 
-          {/* Floating Element */}
-          <motion.div 
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-6 -left-6 lg:bottom-12 lg:-left-12 bg-white/90 backdrop-blur-md p-4 sm:p-5 rounded-2xl shadow-xl border border-white flex items-center gap-4 hidden sm:flex"
-          >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            {/* Tombol Aksi: Full-width di layar HP kecil, berdampingan di layar besar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+              <button
+                type="button"
+                onClick={() => scrollTo('contact', onBookingClick)}
+                className="inline-flex justify-center items-center min-h-[48px] px-7 py-3.5 rounded-full bg-mbell-primary text-mbell-canvas font-sans font-medium text-sm transition-all hover:bg-mbell-ink shadow-[0_4px_14px_rgba(158,90,84,0.25)] focus:outline-none focus:ring-2 focus:ring-mbell-rose focus:ring-offset-2 active:scale-98"
+              >
+                Cek Jadwal & Pesan
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollTo('pricelist', onExploreClick)}
+                className="inline-flex justify-center items-center min-h-[48px] px-7 py-3.5 rounded-full bg-mbell-surface text-mbell-ink border border-mbell-border font-sans font-medium text-sm transition-colors hover:bg-mbell-blush/60 focus:outline-none focus:ring-2 focus:ring-mbell-rose focus:ring-offset-2 active:scale-98"
+              >
+                Lihat Daftar Paket
+              </button>
             </div>
-            <div>
-              <p className="font-serif text-lg sm:text-xl font-bold text-textMain leading-none">Premium</p>
-              <p className="font-sans text-[9px] sm:text-[10px] text-textMain/60 uppercase tracking-widest mt-1">MakeUp Service</p>
+
+            {/* Features Row */}
+            <div className="mt-10 pt-8 border-t border-mbell-border grid grid-cols-3 gap-4 text-left">
+              <div>
+                <p className="font-serif text-xl sm:text-2xl font-medium text-mbell-ink">5+ Thn</p>
+                <p className="font-sans text-xs text-mbell-muted mt-0.5">Pengalaman MUA</p>
+              </div>
+              <div>
+                <p className="font-serif text-xl sm:text-2xl font-medium text-mbell-ink">Natural</p>
+                <p className="font-sans text-xs text-mbell-muted mt-0.5">Complexion Flawless</p>
+              </div>
+              <div>
+                <p className="font-serif text-xl sm:text-2xl font-medium text-mbell-ink">Halal</p>
+                <p className="font-sans text-xs text-mbell-muted mt-0.5">Produk Terkurasi</p>
+              </div>
             </div>
           </motion.div>
-        </motion.div>
-      </div>
 
-      {/* Decorative Blur Background Element */}
-      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none -z-10 hidden lg:block"></div>
+        </div>
+      </div>
     </section>
   );
 };

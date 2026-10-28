@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
-import Button from './ui/Button';
 
 interface TestimonialFormProps {
   onSuccess?: () => void;
@@ -30,7 +29,7 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.size > 10 * 1024 * 1024) {
-        alert("File size must be less than 10MB");
+        alert("Ukuran file maksimal 10MB");
         return;
       }
       setFile(selectedFile);
@@ -68,7 +67,7 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
         .from('testimonials')
         .insert([{
           name: formData.name,
-          role: formData.role,
+          role: formData.role || 'Klien Bahagia',
           content: formData.content,
           image_url: imageUrl,
           rating: rating,
@@ -91,20 +90,21 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
     } catch (err: any) {
       console.error(err);
       setStatus('error');
-      setErrorMessage(err.message || 'Terjadi kesalahan saat mengirim testimoni.');
+      setErrorMessage(err.message || 'Terjadi kendala saat mengirim testimoni. Silakan coba kembali.');
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-6 py-8">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 shadow-2xl border border-primary/10"
-      >
-        <div className="text-center mb-10">
-          <h3 className="font-serif text-3xl md:text-4xl text-textMain mb-3">Share Your Experience</h3>
-          <p className="text-textMain/50 text-sm font-sans italic tracking-wide">Momen bahagia Anda adalah inspirasi kami 💖</p>
+    <div className="max-w-2xl mx-auto px-4 py-4">
+      <div className="bg-mbell-canvas border border-mbell-border rounded-3xl p-6 sm:p-10 shadow-[0_10px_30px_rgba(42,33,33,0.04)] text-left">
+        
+        <div className="text-center mb-8">
+          <h3 className="font-serif text-2xl sm:text-3xl font-medium text-mbell-ink mb-2">
+            Bagikan Cerita Riasan Anda
+          </h3>
+          <p className="font-sans text-xs sm:text-sm text-mbell-muted">
+            Ulasan dan pengalaman berhargamu sangat berarti bagi kami ✨
+          </p>
         </div>
 
         <AnimatePresence mode="wait">
@@ -113,182 +113,173 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({ onSuccess }) => {
               key="success"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-12"
+              className="text-center py-10"
             >
-              <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <div className="w-16 h-16 bg-mbell-surface border border-mbell-border text-mbell-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
               </div>
-              <h4 className="font-serif text-3xl text-textMain mb-4">Terima Kasih Cantik!</h4>
-              <p className="text-textMain/70 font-sans text-lg mb-10">Testimoni Anda telah dipublikasikan di galeri kami! ✨</p>
-              <Button 
-                variant="outline" 
-                className="px-12 py-4" 
+              <h4 className="font-serif text-2xl text-mbell-ink mb-2">Terima Kasih Banyak!</h4>
+              <p className="text-mbell-muted font-sans text-sm mb-6">
+                Testimoni Anda telah tersimpan dan akan tampil pada halaman galeri kami.
+              </p>
+              <button 
+                type="button"
+                className="min-h-[44px] px-6 py-2.5 rounded-full bg-mbell-surface text-mbell-ink border border-mbell-border text-xs font-medium hover:bg-mbell-blush/60 transition-colors" 
                 onClick={() => setStatus('idle')}
               >
-                Kirim Testimoni Lain
-              </Button>
+                Tulis Ulasan Lain
+              </button>
             </motion.div>
           ) : (
-            <motion.form 
-              key="form"
-              onSubmit={handleSubmit} 
-              className="space-y-6 md:space-y-8"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="space-y-6">
-                <div className="flex flex-col items-center gap-3">
-                  <label className="text-[10px] font-bold text-textMain/40 uppercase tracking-[0.3em]">Berikan Rating Anda</label>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        className="transition-all duration-200 hover:scale-125 focus:outline-none"
-                        onClick={() => setRating(star)}
-                        onMouseEnter={() => setHoverRating(star)}
-                        onMouseLeave={() => setHoverRating(0)}
-                      >
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          width="36" 
-                          height="36" 
-                          viewBox="0 0 24 24" 
-                          fill={(hoverRating || rating) >= star ? "#FFD700" : "none"} 
-                          stroke={(hoverRating || rating) >= star ? "#FFD700" : "#E5E7EB"}
-                          strokeWidth="2" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                          className="drop-shadow-sm"
-                        >
-                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                        </svg>
-                      </button>
-                    ))}
-                  </div>
-                  <span className="text-xs font-serif italic text-textMain/30">Ketuk bintang untuk memberi nilai</span>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-                  <div className="space-y-2 relative group">
-                    <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-primary">Nama Lengkap *</label>
-                    <input 
-                      type="text" 
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder="Contoh: Bella Aprillian"
-                      className="w-full px-5 md:px-6 py-4 rounded-2xl bg-white/50 border border-white/60 focus:bg-white focus:border-primary/40 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm font-sans shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-sm"
-                    />
-                  </div>
-                  <div className="space-y-2 relative group">
-                    <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-primary">Tipe Event</label>
-                    <input 
-                      type="text" 
-                      name="role"
-                      value={formData.role}
-                      onChange={handleInputChange}
-                      placeholder="Contoh: Wedding / Graduation"
-                      className="w-full px-5 md:px-6 py-4 rounded-2xl bg-white/50 border border-white/60 focus:bg-white focus:border-primary/40 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm font-sans shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-sm"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2 relative group">
-                  <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-primary">Testimoni Anda *</label>
-                  <textarea 
-                    name="content"
-                    required
-                    value={formData.content}
-                    onChange={handleInputChange}
-                    rows={4}
-                    placeholder="Ceritakan pengalaman tak terlupakan Anda menggunakan jasa MBell Makeup..."
-                    className="w-full px-5 md:px-6 py-4 rounded-2xl bg-white/50 border border-white/60 focus:bg-white focus:border-primary/40 focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm font-sans resize-none leading-relaxed shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-sm custom-scrollbar"
-                  ></textarea>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center ml-1">
-                    <label className="text-[10px] font-bold text-textMain/50 uppercase tracking-[0.2em]">Foto Hasil Makeup (Opsional)</label>
-                    <span className="text-[9px] text-textMain/30 uppercase tracking-widest italic">Portrait 9:16 disarankan</span>
-                  </div>
-                  <div className="flex flex-col sm:flex-row items-center gap-6 p-4 md:p-6 rounded-[2rem] bg-gray-50/50 border border-dashed border-gray-200 hover:bg-white/50 transition-colors">
-                    <div 
-                      onClick={() => fileInputRef.current?.click()}
-                      className="w-28 h-40 md:w-32 md:h-44 rounded-2xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-primary/40 hover:bg-white transition-all bg-white shadow-sm overflow-hidden group relative"
+            <form onSubmit={handleSubmit} className="space-y-6">
+              
+              {/* Star Rating Selector */}
+              <div className="flex flex-col items-center gap-2 pb-2">
+                <label className="text-xs font-sans font-medium text-mbell-muted">
+                  Beri Penilaian Layanan
+                </label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      className="transition-transform hover:scale-110 focus:outline-none p-1"
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
                     >
-                      {preview ? (
-                        <img src={preview} className="w-full h-full object-cover" alt="Preview" />
-                      ) : (
-                        <div className="text-center p-4">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300 mx-auto mb-2 group-hover:text-primary transition-colors"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                          <p className="text-[8px] font-bold text-textMain/30 uppercase tracking-widest">Upload Photo</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 text-center sm:text-left">
-                       <h5 className="font-serif text-lg text-textMain mb-1">Pilih Foto Terbaik Anda</h5>
-                       <p className="text-[10px] text-textMain/40 leading-relaxed max-w-xs mb-3">Jika tidak diunggah, kami akan menampilkan pesan rindu di galeri kami. 😊</p>
-                       <input 
-                         type="file" 
-                         ref={fileInputRef}
-                         onChange={handleFileChange}
-                         accept="image/*"
-                         className="hidden"
-                       />
-                       <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                         <button 
-                           type="button" 
-                           onClick={() => fileInputRef.current?.click()}
-                           className="px-4 py-1.5 rounded-full bg-white border border-gray-100 text-[9px] text-textMain font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
-                         >
-                           {file ? 'Ganti Foto' : 'Pilih Foto'}
-                         </button>
-                         {file && (
-                           <button 
-                             type="button" 
-                             onClick={() => {setFile(null); setPreview(null);}}
-                             className="px-4 py-1.5 rounded-full border border-red-100 text-[9px] text-red-400 font-bold uppercase tracking-widest hover:bg-red-50 transition-colors"
-                           >
-                             Hapus Foto
-                           </button>
-                         )}
-                       </div>
-                       <p className="mt-3 text-[9px] text-textMain/30 uppercase tracking-widest">Maksimal 10MB</p>
-                    </div>
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="28" 
+                        height="28" 
+                        viewBox="0 0 24 24" 
+                        fill={(hoverRating || rating) >= star ? "#F59E0B" : "none"} 
+                        stroke={(hoverRating || rating) >= star ? "#F59E0B" : "#E6D7D2"}
+                        strokeWidth="1.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Input Fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-sans font-medium text-mbell-ink mb-1.5">
+                    Nama Lengkap *
+                  </label>
+                  <input 
+                    type="text" 
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Contoh: Sarah Anindita"
+                    className="w-full min-h-[48px] px-4 py-2.5 rounded-xl bg-mbell-canvas border border-mbell-border text-sm font-sans text-mbell-ink placeholder:text-mbell-muted/60 focus:outline-none focus:ring-2 focus:ring-mbell-rose/30 focus:border-mbell-rose transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-sans font-medium text-mbell-ink mb-1.5">
+                    Jenis Acara
+                  </label>
+                  <input 
+                    type="text" 
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    placeholder="Contoh: Akad & Resepsi / Wisuda"
+                    className="w-full min-h-[48px] px-4 py-2.5 rounded-xl bg-mbell-canvas border border-mbell-border text-sm font-sans text-mbell-ink placeholder:text-mbell-muted/60 focus:outline-none focus:ring-2 focus:ring-mbell-rose/30 focus:border-mbell-rose transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Textarea */}
+              <div>
+                <label className="block text-xs font-sans font-medium text-mbell-ink mb-1.5">
+                  Pengalaman & Kesan Riasan *
+                </label>
+                <textarea 
+                  name="content"
+                  required
+                  rows={4}
+                  value={formData.content}
+                  onChange={handleInputChange}
+                  placeholder="Ceritakan kepuasan Anda mengenai riasan MBell MakeUp..."
+                  className="w-full px-4 py-3 rounded-xl bg-mbell-canvas border border-mbell-border text-sm font-sans text-mbell-ink placeholder:text-mbell-muted/60 focus:outline-none focus:ring-2 focus:ring-mbell-rose/30 focus:border-mbell-rose transition-all resize-none leading-relaxed"
+                ></textarea>
+              </div>
+
+              {/* Photo Upload (Optional) */}
+              <div>
+                <label className="block text-xs font-sans font-medium text-mbell-ink mb-1.5">
+                  Foto Hasil Riasan (Opsional)
+                </label>
+                <div className="flex items-center gap-4 p-3 rounded-xl bg-mbell-surface border border-mbell-border">
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-14 h-14 rounded-lg border border-dashed border-mbell-border bg-mbell-canvas flex items-center justify-center cursor-pointer overflow-hidden shrink-0 hover:border-mbell-rose transition-colors"
+                  >
+                    {preview ? (
+                      <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-mbell-muted">
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                        <circle cx="9" cy="9" r="2"/>
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex-1 text-left">
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-xs font-sans font-medium text-mbell-primary hover:text-mbell-ink underline"
+                    >
+                      {file ? 'Ganti Foto' : 'Pilih Foto dari Galeri'}
+                    </button>
+                    <p className="text-[11px] text-mbell-muted mt-0.5">Format JPG/PNG, maks 10MB</p>
                   </div>
                 </div>
               </div>
 
+              {/* Error message */}
               {status === 'error' && (
-                <div className="p-4 bg-red-50 border border-red-100 rounded-2xl">
-                  <p className="text-red-500 text-xs text-center font-medium leading-relaxed">{errorMessage}</p>
+                <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs">
+                  {errorMessage}
                 </div>
               )}
 
-              <div className="pt-2">
-                <Button 
-                  type="submit" 
-                  variant="primary" 
-                  disabled={status === 'loading'}
-                  className="w-full h-14 md:h-16 shadow-[0_15px_35px_-5px_rgba(212,165,165,0.4)] flex items-center justify-center gap-3 text-base group overflow-hidden"
-                >
-                  {status === 'loading' ? (
-                     <span className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  ) : (
-                    <>
-                      <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">Publikasikan Testimoni</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 transition-all duration-300 group-hover:translate-x-2 group-hover:-translate-y-1 group-hover:scale-110"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                    </>
-                  )}
-                </Button>
-              </div>
-            </motion.form>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="w-full min-h-[48px] rounded-full bg-mbell-primary text-mbell-canvas font-sans font-medium text-sm flex items-center justify-center hover:bg-mbell-ink transition-colors shadow-sm disabled:opacity-50"
+              >
+                {status === 'loading' ? (
+                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  'Kirim Testimoni'
+                )}
+              </button>
+
+            </form>
           )}
         </AnimatePresence>
-      </motion.div>
+
+      </div>
     </div>
   );
 };

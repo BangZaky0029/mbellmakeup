@@ -1,16 +1,17 @@
-
-// C:\codingVibes\myPortfolio\mbell\mbell\src\App.tsx
-import { useState} from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Portfolio from './components/Portfolio';
-import Testimonials from './components/Testimonials';
 import PriceList from './components/PriceList';
+import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
+import Footer from './components/Footer';
 import FlowerBackground from './components/ui/FlowerBackground';
 import MusicPlayer from './components/ui/MusicPlayer';
 import Button from './components/ui/Button';
+import InvitationsShowcase from './components/InvitationsShowcase';
 import logo from './assets/logoBrand.png';
 import SiteGuard from './components/SiteGuard';
 
@@ -24,7 +25,7 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(false);
   
   // State for Global Overlays
-  const [galleryData, setGalleryData] = useState<{items: PortfolioItem[], category: string} | null>(null);
+  const [galleryData, setGalleryData] = useState<{ items: PortfolioItem[]; category: string } | null>(null);
   const [isTestimonialGalleryOpen, setIsTestimonialGalleryOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
 
@@ -47,132 +48,152 @@ function App() {
 
   const handleBookLook = (item: PortfolioItem) => {
     const phoneNumber = "6288293473765";
-    const text = `Halo MBELL Makeup, saya tertarik dengan look portfolio "${item.title}" (${item.category}). Boleh info lebih lanjut?`;
+    const text = `Halo MBell MakeUp, saya tertarik dengan look portfolio "${item.title}" (${item.category}). Boleh info ketersediaan slot tanggal untuk look ini?`;
     const encodedText = encodeURIComponent(text);
     window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, '_blank');
   };
 
   return (
     <SiteGuard>
-    <div className="relative min-h-screen">
-      <AnimatePresence>
-        {!soundEnabled && (
-          <motion.div 
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
-            className="fixed inset-0 z-[100] bg-surface flex flex-col items-center justify-center text-center px-6 overflow-hidden"
-          >
-             <div className="absolute inset-0 z-0 opacity-50">
+      <div className="relative min-h-screen bg-mbell-canvas text-mbell-ink font-sans selection:bg-mbell-primary selection:text-mbell-canvas">
+        <AnimatePresence>
+          {!soundEnabled && (
+            <motion.div 
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
+              className="fixed inset-0 z-[100] bg-mbell-canvas flex flex-col items-center justify-center text-center px-6 overflow-hidden"
+            >
+              <div className="absolute inset-0 z-0 opacity-40">
                 <FlowerBackground />
-             </div>
+              </div>
 
-             <motion.div 
-               initial={{ opacity: 0, y: 30 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 1, delay: 0.2 }}
-               className="relative z-10 max-w-md w-full"
-             >
+              <motion.div 
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, delay: 0.15 }}
+                className="relative z-10 max-w-md w-full"
+              >
                 <div className="mb-6 flex justify-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/30 animate-pulse">
-                    <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                      <img src={logo} alt="Logo" className="w-20 h-25" />
-                    </div>
+                  <div className="w-20 h-20 rounded-full bg-mbell-surface border border-mbell-border flex items-center justify-center p-3 shadow-[0_8px_24px_rgba(200,138,130,0.2)]">
+                    <img src={logo} alt="MBell MakeUp" className="w-full h-full object-contain" />
                   </div>
                 </div>
 
-                <h1 className="font-serif text-4xl md:text-6xl text-textMain mb-3 tracking-wide">
+                <h1 className="font-serif text-4xl sm:text-5xl text-mbell-ink mb-3 font-medium tracking-tight">
                   MBell MakeUp
                 </h1>
                 
-                <div className="h-[1px] w-24 bg-primary mx-auto mb-6"></div>
+                <div className="h-[1px] w-16 bg-mbell-rose mx-auto mb-4"></div>
 
-                <p className="font-sans text-textMain/60 text-sm md:text-base tracking-widest uppercase mb-10 leading-relaxed">
-                  Enhancing Natural Beauty<br/>with a touch of elegance
+                <p className="font-sans text-mbell-muted text-xs sm:text-sm tracking-widest uppercase mb-8 leading-relaxed">
+                  Enhancing Natural Beauty<br />with a touch of elegance
                 </p>
 
-                <p className="font-sans text-xs text-textMain/40 mb-6 italic">
-                  * For the best experience, please enable sound
+                <p className="font-sans text-xs text-mbell-muted/70 mb-6 italic">
+                  * Untuk pengalaman terbaik, silakan aktifkan audio
                 </p>
 
                 <div className="flex justify-center">
                   <Button 
                     variant="primary" 
                     onClick={() => setSoundEnabled(true)}
-                    className="shadow-xl"
+                    className="shadow-lg min-w-[200px]"
                   >
-                    Enter Experience
+                    Buka Halaman Riasan
                   </Button>
                 </div>
-             </motion.div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {soundEnabled && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Ambient Background & Fixed Controls */}
+            <FlowerBackground />
+            <MusicPlayer />
+            
+            {/* Primary Fixed Floating Navigation */}
+            <Navbar />
+            
+            <main className="relative z-10">
+              <Hero />
+              <About />
+              <Portfolio onOpenGallery={handleOpenGallery} onItemClick={handleItemClick} />
+              <PriceList />
+              <InvitationsShowcase />
+              <Testimonials onSeeFullGallery={handleOpenTestimonials} />
+              <Contact />
+            </main>
+
+            <Footer />
+
+            {/* Overlays */}
+            <AnimatePresence>
+              {galleryData && (
+                <FullGalleryOverlay 
+                  items={galleryData.items} 
+                  category={galleryData.category}
+                  onClose={handleCloseGallery}
+                  onItemClick={handleItemClick}
+                />
+              )}
+
+              {isTestimonialGalleryOpen && (
+                <FullTestimonialOverlay 
+                  onClose={() => setIsTestimonialGalleryOpen(false)} 
+                />
+              )}
+            </AnimatePresence>
+
+            {/* Selected Portfolio Item Modal */}
+            <Modal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)}>
+              {selectedItem && (
+                <div className="flex flex-col md:flex-row h-full w-full bg-mbell-canvas">
+                  <div className="w-full md:w-1/2 h-56 sm:h-64 md:h-auto relative bg-mbell-surface flex-shrink-0">
+                    <img 
+                      src={selectedItem.imageUrl} 
+                      alt={selectedItem.title} 
+                      className="w-full h-full object-cover" 
+                    />
+                    <div className="absolute top-4 left-4 bg-mbell-canvas/90 backdrop-blur px-3 py-1 rounded-full text-xs font-sans font-medium text-mbell-ink border border-mbell-border shadow-sm">
+                      {selectedItem.category}
+                    </div>
+                  </div>
+                  <div className="w-full md:w-1/2 p-6 md:p-10 overflow-y-auto flex flex-col justify-between text-left">
+                    <div>
+                      <h3 className="font-serif text-2xl md:text-3xl font-medium text-mbell-ink mb-2">
+                        {selectedItem.title}
+                      </h3>
+                      <div className="w-12 h-[2px] bg-mbell-rose mb-4"></div>
+                      <p className="font-sans text-sm md:text-base text-mbell-muted mb-4 font-medium leading-relaxed">
+                        {selectedItem.description}
+                      </p>
+                      <p className="font-sans text-xs md:text-sm text-mbell-muted/80 leading-relaxed mb-6">
+                        {selectedItem.details || "Detail untuk proyek tata rias ini terkurasi khusus sesuai karakter klien."}
+                      </p>
+                    </div>
+                    <div className="pt-4 border-t border-mbell-border">
+                      <Button 
+                        variant="primary" 
+                        onClick={() => handleBookLook(selectedItem)} 
+                        className="w-full"
+                      >
+                        Pesan Look Riasan Ini
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </Modal>
           </motion.div>
         )}
-      </AnimatePresence>
-
-      {soundEnabled && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <FlowerBackground />
-          <MusicPlayer />
-          
-          <main className="relative">
-            <Hero />
-            <div className="h-10 md:h-20"></div>
-            <About />
-            <div className="h-10 md:h-20"></div>
-            <Portfolio onOpenGallery={handleOpenGallery} onItemClick={handleItemClick} />
-            <div className="h-10 md:h-20"></div>
-            <Testimonials onSeeFullGallery={handleOpenTestimonials} />
-            <div className="h-10 md:h-20"></div>
-            <PriceList />
-            <div className="h-10 md:h-20"></div>
-            <Contact />
-            <div className="h-20"></div>
-          </main>
-
-          <AnimatePresence>
-            {galleryData && (
-              <FullGalleryOverlay 
-                items={galleryData.items} 
-                category={galleryData.category}
-                onClose={handleCloseGallery}
-                onItemClick={handleItemClick}
-              />
-            )}
-
-            {isTestimonialGalleryOpen && (
-              <FullTestimonialOverlay 
-                onClose={() => setIsTestimonialGalleryOpen(false)} 
-              />
-            )}
-          </AnimatePresence>
-
-          <Modal isOpen={!!selectedItem} onClose={() => setSelectedItem(null)}>
-            {selectedItem && (
-              <div className="flex flex-col md:flex-row h-full w-full">
-                <div className="w-full md:w-1/2 h-48 sm:h-56 md:h-auto relative bg-gray-100 flex-shrink-0">
-                  <img src={selectedItem.imageUrl} alt={selectedItem.title} className="w-full h-full object-cover" />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-textMain tracking-widest uppercase shadow-sm">
-                    {selectedItem.category}
-                  </div>
-                </div>
-                <div className="w-full md:w-1/2 p-6 md:p-12 overflow-y-auto flex flex-col justify-center">
-                  <h3 className="font-serif text-2xl md:text-4xl text-textMain mb-2">{selectedItem.title}</h3>
-                  <div className="w-16 h-1 bg-primary mb-4 md:mb-6"></div>
-                  <p className="font-sans text-base md:text-lg text-textMain/80 mb-4 md:mb-6 font-medium">{selectedItem.description}</p>
-                  <p className="font-sans text-sm md:text-base text-textMain/60 leading-relaxed mb-6 md:mb-8">{selectedItem.details || "Details for this project are coming soon."}</p>
-                  <div className="mt-auto">
-                    <Button variant="primary" onClick={() => handleBookLook(selectedItem)} className="w-full md:w-auto">Book This Look</Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </Modal>
-        </motion.div>
-      )}
-    </div>
+      </div>
     </SiteGuard>
   );
 }

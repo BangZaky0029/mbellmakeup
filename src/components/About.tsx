@@ -1,71 +1,93 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import me from '../assets/bella_1.png';
+import bellaProfile from '../assets/bella_2.jpeg';
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="py-24 relative z-10 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-20">
-          
-          {/* Image Column */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
+    <section id="about" className="py-20 md:py-28 bg-mbell-surface/50 border-b border-mbell-border relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+
+          {/* Kolom Visual Profil Bella */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="w-full md:w-1/2 relative"
+            className="lg:col-span-5 relative mx-auto w-full max-w-sm lg:max-w-none"
           >
-            <div className="relative aspect-[3/4] md:aspect-[4/5] w-full max-w-md mx-auto rounded-t-full rounded-b-[200px] overflow-hidden shadow-2xl">
-              <img 
-                src={me}
-                alt="Bella Aprillian - Makeup Artist" 
-                className="w-full h-full object-cover"
+            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-mbell-border bg-mbell-canvas shadow-[0_16px_40px_rgba(42,33,33,0.06)]">
+              <img
+                src={bellaProfile}
+                alt="Bella Aprillian - Professional Makeup Artist"
+                className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
+                loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent mix-blend-overlay"></div>
             </div>
-            
-            {/* Decorative Elements around image */}
-            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-primary/20 rounded-full blur-2xl -z-10"></div>
-            <div className="absolute top-12 -right-8 w-40 h-40 bg-secondary/20 rounded-full blur-2xl -z-10"></div>
+
+            {/* Signature Floating Card */}
+            <div className="absolute -bottom-6 -right-4 sm:-bottom-8 sm:right-4 bg-mbell-canvas border border-mbell-border rounded-2xl p-4 sm:p-5 shadow-lg max-w-[220px]">
+              <p className="font-serif italic text-lg text-mbell-ink leading-tight">
+                "Kecantikan alami adalah karakter terbaikmu."
+              </p>
+              <p className="font-sans text-[11px] text-mbell-primary font-medium mt-2">
+                — Bella Aprillian
+              </p>
+            </div>
           </motion.div>
 
-          {/* Text Column */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
+          {/* Kolom Narasi & Filosofi Riasan */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-full md:w-1/2 text-left"
+            transition={{ duration: 0.8, delay: 0.15 }}
+            className="lg:col-span-7 text-left"
           >
-            <span className="text-primary font-sans font-bold tracking-widest uppercase text-sm mb-4 block">
-              The Artist
-            </span>
-            <h2 className="font-serif text-4xl md:text-5xl text-textMain mb-8 leading-tight">
-              About Me
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mbell-canvas border border-mbell-border mb-4">
+              <span className="text-xs font-sans font-medium text-mbell-primary">
+                Tentang MBell MakeUp
+              </span>
+            </div>
+
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-mbell-ink mb-6 leading-tight">
+              Menghadirkan keanggunan sejati tanpa mengubah karakter dirimu.
             </h2>
-            
-            <div className="font-sans text-textMain/70 leading-relaxed space-y-6 text-lg">
+
+            <div className="font-sans text-mbell-muted text-base sm:text-lg leading-relaxed space-y-4 max-w-[62ch]">
               <p>
-                Selamat datang di <span className="font-serif font-bold text-primary">MBELL!</span> Saya Bella Aprillian, seorang makeup artist yang berdedikasi untuk menonjolkan kecantikan alami Anda dan membuat Anda merasa percaya diri di setiap momen spesial dalam hidup Anda.
+                Halo, saya <span className="font-medium text-mbell-ink">Bella Aprillian</span>, Founder & Lead Makeup Artist di MBell MakeUp. Berangkat dari kecintaan pada seni tata rias, fokus utama saya adalah merancang riasan yang menonjolkan fitur terbaik wajahmu secara elegan.
               </p>
               <p>
-                Dengan pengalaman bertahun-tahun dalam makeup pengantin, acara spesial, dan pemotretan profesional, saya mengkhususkan diri dalam menciptakan tampilan yang timeless sekaligus modern. Setiap wajah memiliki cerita unik, dan saya di sini untuk membuat Anda bersinar di hari-hari terpenting Anda.
+                Setiap orang memiliki jenis kulit dan warna dasar (*skin undertone*) yang berbeda. Kami hanya menggunakan produk-produk premium teruji dan teknik aplikasi modern agar riasan terasa ringan, tidak menyumbat pori, dan tetap *flawless* dari awal acara hingga selesai.
               </p>
               <p>
-                Pendekatan saya menggabungkan teknik profesional dengan sentuhan personal, memastikan Anda tidak hanya tampil cantik tetapi juga merasa luar biasa.
+                Baik itu hari pernikahan yang sakral, wisuda yang penuh kebanggaan, maupun acara istimewa lainnya, MBell MakeUp siap menemani langkah bahagiamu dengan tenang dan percaya diri.
               </p>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-gray-100 flex items-center gap-4">
-               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-serif italic font-bold text-xl">
-                 BA
-               </div>
-               <div>
-                 <p className="font-serif text-xl text-textMain">Bella Aprillian</p>
-                 <p className="font-sans text-sm text-textMain/50 tracking-wider uppercase">Professional MUA</p>
-               </div>
+            {/* Keunggulan Layanan */}
+            <div className="mt-8 pt-6 border-t border-mbell-border/80 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-mbell-canvas border border-mbell-border flex items-center justify-center text-mbell-primary shrink-0 mt-0.5">
+                  ✓
+                </div>
+                <div>
+                  <h4 className="font-serif text-base text-mbell-ink font-medium">Ketahanan Seharian</h4>
+                  <p className="font-sans text-xs text-mbell-muted mt-0.5">Teknik *skin-prep* mendalam untuk hasil riasan awet & anti-crack.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-mbell-canvas border border-mbell-border flex items-center justify-center text-mbell-primary shrink-0 mt-0.5">
+                  ✓
+                </div>
+                <div>
+                  <h4 className="font-serif text-base text-mbell-ink font-medium">Higienitas Terjamin</h4>
+                  <p className="font-sans text-xs text-mbell-muted mt-0.5">Peralatan kuas, spons, dan aplikator disterilisasi sebelum setiap sesi.</p>
+                </div>
+              </div>
             </div>
+
           </motion.div>
 
         </div>

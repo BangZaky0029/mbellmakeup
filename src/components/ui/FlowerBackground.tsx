@@ -1,9 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
-// Optimized Flower: Removed expensive SVG Filters (glow)
 const RealisticFlower = ({ className, colorPrimary, colorSecondary, size = 100, id, ...props }: any) => {
-  // Use unique gradient ID per instance to avoid SVG ID collision
   const gradientId = `petalGrad-${id || 'default'}`;
   
   return (
@@ -11,25 +9,24 @@ const RealisticFlower = ({ className, colorPrimary, colorSecondary, size = 100, 
       viewBox="0 0 100 100" 
       width={size} 
       height={size} 
-      className={`${className}`} 
+      className={className} 
       {...props}
       style={{ overflow: 'visible', willChange: 'transform' }}
     >
       <defs>
         <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={colorPrimary} stopOpacity="0.7" />
+          <stop offset="0%" stopColor={colorPrimary} stopOpacity="0.8" />
           <stop offset="100%" stopColor={colorSecondary} stopOpacity="0.3" />
         </linearGradient>
       </defs>
 
       <g>
-        {/* Simplified Layers for performance */}
         {[0, 120, 240].map((angle, i) => (
           <path
             key={`l1-${i}`}
             d="M50 50 C50 20, 30 10, 50 0 C70 10, 50 20, 50 50"
             fill={colorSecondary}
-            opacity="0.4"
+            opacity="0.35"
             transform={`rotate(${angle}, 50, 50) scale(1.1)`}
           />
         ))}
@@ -39,75 +36,62 @@ const RealisticFlower = ({ className, colorPrimary, colorSecondary, size = 100, 
             key={`l2-${i}`}
             d="M50 50 C50 25, 35 15, 50 5 C65 15, 50 25, 50 50"
             fill={`url(#${gradientId})`}
-            opacity="0.8"
+            opacity="0.75"
             transform={`rotate(${angle}, 50, 50)`}
           />
         ))}
 
-        {/* Core center */}
-        <circle cx="50" cy="50" r="3" fill="#FFD700" opacity="0.8" />
+        <circle cx="50" cy="50" r="3" fill="#C88A82" opacity="0.7" />
       </g>
     </svg>
   );
 };
 
 const FlowerBackground: React.FC = () => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"]
-  });
+  const { scrollYProgress } = useScroll();
 
-  // Switch to useTransform directly instead of useSpring for less calculation jitter
-  const yBack = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const yMid = useTransform(scrollYProgress, [0, 1], [0, -150]);
-  const yFront = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  
-  const rotateSlow = useTransform(scrollYProgress, [0, 1], [0, 45]);
+  const yBack = useTransform(scrollYProgress, [0, 1], [0, 140]);
+  const yMid = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const yFront = useTransform(scrollYProgress, [0, 1], [0, 180]);
+  const rotateSlow = useTransform(scrollYProgress, [0, 1], [0, 35]);
 
   return (
-    <div ref={ref} className="fixed inset-0 z-0 pointer-events-none overflow-hidden h-full w-full bg-[#FFFCF9]">
-      {/* Atmospheric Blurs — disabled on mobile via hidden, shown on md+ */}
-      {/* On mobile: simple gradient circles WITHOUT blur for zero GPU cost */}
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden h-full w-full bg-[#FCF9F6]">
+      {/* Subtle Atmospheric Gradients */}
       <motion.div 
         style={{ y: yBack }}
-        className="absolute top-0 right-0 w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-primary/10 rounded-full blur-none md:blur-[100px] opacity-30 md:opacity-100"
+        className="absolute top-0 right-0 w-[240px] md:w-[450px] aspect-square bg-[#EBD8D0]/30 rounded-full blur-[100px]"
       />
       <motion.div 
         style={{ y: yMid }}
-        className="absolute bottom-0 left-0 w-[200px] h-[200px] md:w-[300px] md:h-[300px] bg-secondary/10 rounded-full blur-none md:blur-[80px] opacity-30 md:opacity-100"
+        className="absolute bottom-0 left-0 w-[200px] md:w-[350px] aspect-square bg-[#F4EBE6]/60 rounded-full blur-[90px]"
       />
 
-      {/* 3D FLOWERS — Top right flower (all screens but smaller on mobile) */}
+      {/* Top right flower (Subtle 8% Opacity) */}
       <motion.div
         style={{ y: yBack, rotate: rotateSlow }}
-        className="absolute top-[-2%] right-[-2%] opacity-10 md:opacity-20"
+        className="absolute top-[-2%] right-[-2%] opacity-[0.08]"
       >
-        <RealisticFlower id="flower-1" size={300} colorPrimary="#D4A5A5" colorSecondary="#9D8189" className="hidden md:block" />
-        <RealisticFlower id="flower-1m" size={150} colorPrimary="#D4A5A5" colorSecondary="#9D8189" className="block md:hidden" />
+        <RealisticFlower id="flower-1" size={280} colorPrimary="#C88A82" colorSecondary="#EBD8D0" className="hidden md:block" />
+        <RealisticFlower id="flower-1m" size={140} colorPrimary="#C88A82" colorSecondary="#EBD8D0" className="block md:hidden" />
       </motion.div>
 
-      {/* Middle left flower — HIDDEN on mobile to reduce GPU load */}
+      {/* Middle left flower (Subtle 7% Opacity) */}
       <motion.div
         style={{ y: yMid }}
-        className="absolute top-[45%] left-[-2%] opacity-40 hidden md:block"
+        className="absolute top-[45%] left-[-2%] opacity-[0.07] hidden md:block"
       >
-        <RealisticFlower id="flower-2" size={180} colorPrimary="#F4ACB7" colorSecondary="#D4A5A5" />
+        <RealisticFlower id="flower-2" size={160} colorPrimary="#9E5A54" colorSecondary="#C88A82" />
       </motion.div>
 
-      {/* Bottom right flower — reduced size on mobile */}
+      {/* Bottom right flower (Subtle 8% Opacity) */}
       <motion.div
         style={{ y: yFront }}
-        className="absolute bottom-[15%] right-[5%] opacity-30 md:opacity-50"
+        className="absolute bottom-[15%] right-[4%] opacity-[0.08]"
       >
-        <RealisticFlower id="flower-3" size={120} colorPrimary="#D4A5A5" colorSecondary="#FFF" className="hidden md:block" />
-        <RealisticFlower id="flower-3m" size={60} colorPrimary="#D4A5A5" colorSecondary="#FFF" className="block md:hidden" />
+        <RealisticFlower id="flower-3" size={120} colorPrimary="#C88A82" colorSecondary="#FCF9F6" className="hidden md:block" />
+        <RealisticFlower id="flower-3m" size={60} colorPrimary="#C88A82" colorSecondary="#FCF9F6" className="block md:hidden" />
       </motion.div>
-
-      {/* Static Texture Overlay — uses local CSS gradient instead of external URL */}
-      <div className="absolute inset-0 opacity-[0.015] hidden md:block" style={{
-        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(74,64,58,0.03) 2px, rgba(74,64,58,0.03) 4px)'
-      }}></div>
     </div>
   );
 };
