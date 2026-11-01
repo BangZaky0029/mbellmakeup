@@ -6,7 +6,7 @@ import type { InvitationTemplate } from '../types';
 import RandomTextReveal from './ui/RandomTextReveal';
 
 const SUPABASE_MOCKUP_BASE = 'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/invitations/mock-up_Template';
-const INVITATIONS_WEB_URL = 'https://mbellinvitations.vercel.app';
+const INVITATIONS_WEB_URL = 'https://mbellinvitations.my.id';
 const ADMIN_WA_NUMBER = '6288293473765';
 
 // Fallback seeds jika Supabase belum selesai fetch pertama kali atau offline

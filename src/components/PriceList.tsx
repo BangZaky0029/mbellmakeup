@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import price01 from '../assets/price_01.webp';
-import price02 from '../assets/price_02.webp';
+import price02 from '../assets/price_02.png';
 import price03 from '../assets/price_03.png';
 import termsImg from '../assets/term-condition.jpeg';
 import RandomTextReveal from './ui/RandomTextReveal';
@@ -130,8 +130,8 @@ export const PriceList: React.FC = () => {
                 type="button"
                 onClick={() => setActiveTab(item)}
                 className={`whitespace-nowrap min-h-[44px] px-5 py-2.5 rounded-full text-xs sm:text-sm font-sans font-medium transition-all border flex items-center gap-2 ${isActive
-                    ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-[0_2px_10px_rgba(158,90,84,0.2)]'
-                    : 'bg-mbell-canvas text-mbell-ink border-mbell-border hover:bg-mbell-blush/50'
+                  ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-[0_2px_10px_rgba(158,90,84,0.2)]'
+                  : 'bg-mbell-canvas text-mbell-ink border-mbell-border hover:bg-mbell-blush/50'
                   }`}
               >
                 <span>{item.label}</span>
