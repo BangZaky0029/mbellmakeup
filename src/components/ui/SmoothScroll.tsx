@@ -48,8 +48,22 @@ export const SmoothScroll: React.FC<{ children?: React.ReactNode }> = ({ childre
     };
 
     const handleWheel = (e: WheelEvent) => {
-      // Jangan mengintervensi jika elemen anak memiliki scroll internal sendiri (misalnya dropdown / modal)
+      // Jangan mengintervensi jika elemen anak memiliki scroll internal atau isolasi scroll sendiri
       let targetElement = e.target as HTMLElement | null;
+      if (!targetElement) return;
+
+      // Cek apakah kursor berada di dalam container isolasi scroll (menu / foto) atau default telah dicegah
+      if (
+        e.defaultPrevented ||
+        targetElement.closest('[data-scroll-isolated]') ||
+        targetElement.closest('[data-scroll-lock]') ||
+        targetElement.closest('[role="listbox"]') ||
+        targetElement.closest('[role="region"]') ||
+        targetElement.closest('.isolate-scroll')
+      ) {
+        return;
+      }
+
       while (targetElement && targetElement !== document.body) {
         const overflowY = window.getComputedStyle(targetElement).overflowY;
         if (

@@ -1,11 +1,10 @@
-
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Button from './ui/Button';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import type { PortfolioItem, Category } from '../types';
-import { CATEGORIES, CATEGORY_LABELS, SHOW_PORTFOLIO_PHOTOS } from '../constants';
+import { CATEGORIES, CATEGORY_LABELS } from '../constants';
+import Masonry, { type MasonryItem } from './ui/Masonry';
 
 interface FullGalleryOverlayProps {
   items: PortfolioItem[];
@@ -14,237 +13,291 @@ interface FullGalleryOverlayProps {
   onItemClick: (item: PortfolioItem) => void;
 }
 
-const FullGalleryOverlay: React.FC<FullGalleryOverlayProps> = ({ items, category: initialCategory, onClose, onItemClick }) => {
-  const [activeCategory, setActiveCategory] = useState<string>(initialCategory);
-  const [displayCount, setDisplayCount] = useState(12);
+const normalize = (val: string) =>
+  val.toLowerCase().replace(/[\s_-]/g, '');
+
+const FullGalleryOverlay: React.FC<FullGalleryOverlayProps> = ({ 
+  items, 
+  category: initialCategory, 
+  onClose, 
+  onItemClick 
+}) => {
+  const [activeCategory, setActiveCategory] = useState<string>(initialCategory || 'all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState<number>(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
   
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Lock body scroll
+  // Responsive column tracker: 4 columns on desktop, 3 on tablet, 2 on mobile
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const normalize = (val: string) =>
-    val.toLowerCase().replace(/[\s_-]/g, '');
+  const columnCount = windowWidth < 640 ? 2 : windowWidth < 1024 ? 3 : 4;
 
+  // Lock body scroll while overlay is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
+
+  // Filter items
   const filteredItems = useMemo(() => {
+    if (!activeCategory || activeCategory === 'all') {
+      return items;
+    }
+    const normTarget = normalize(activeCategory);
     return items.filter(item =>
-      normalize(item.category) === normalize(activeCategory)
+      normalize(item.category || '') === normTarget
     );
   }, [items, activeCategory]);
 
-  const visibleItems = useMemo(() => filteredItems.slice(0, displayCount), [filteredItems, displayCount]);
-  const hasMore = filteredItems.length > displayCount;
-
-  // Masonry logic
-  const columns = useMemo(() => {
-    const colCount = typeof window !== 'undefined' && window.innerWidth < 768 ? 2 : 3;
-    const result: PortfolioItem[][] = Array.from({ length: colCount }, () => []);
-    visibleItems.forEach((item, index) => {
-      result[index % colCount].push(item);
+  // Compute category options with photo counts
+  const categoryOptions = useMemo(() => {
+    const countMap = new Map<string, number>();
+    items.forEach(item => {
+      const norm = normalize(item.category || '');
+      countMap.set(norm, (countMap.get(norm) || 0) + 1);
     });
-    return result;
-  }, [visibleItems]);
 
-  const handleLoadMore = () => {
-    setDisplayCount(prev => prev + 12);
-  };
+    const list: { key: string; label: string; count: number }[] = [
+      { key: 'all', label: 'Semua Look', count: items.length }
+    ];
+
+    CATEGORIES.forEach(cat => {
+      const norm = normalize(cat);
+      list.push({
+        key: cat,
+        label: CATEGORY_LABELS[cat] || cat,
+        count: countMap.get(norm) || 0
+      });
+    });
+
+    return list;
+  }, [items]);
+
+  // Convert to MasonryItem format with varied portrait heights for authentic Masonry look
+  const masonryItems: MasonryItem[] = useMemo(() => {
+    const heights = [760, 620, 840, 700, 920, 650, 780, 860];
+    
+    return filteredItems.map((item, idx) => {
+      const height = heights[idx % heights.length];
+      const catLabel = CATEGORY_LABELS[item.category as Category] || item.category;
+      const waText = encodeURIComponent(
+        `Halo MBell MakeUp, saya tertarik dengan look portfolio "${item.title}" (${catLabel}). Boleh info ketersediaan slot tanggal untuk look ini?`
+      );
+      
+      return {
+        id: String(item.id || idx),
+        img: item.imageUrl,
+        width: 600,
+        height,
+        title: item.title,
+        description: catLabel,
+        alt: item.title,
+        url: `https://wa.me/6288293473765?text=${waText}`,
+        rawItem: item
+      };
+    });
+  }, [filteredItems]);
 
   const handleCategoryChange = (cat: string) => {
     setActiveCategory(cat);
-    setDisplayCount(12);
     setIsFilterOpen(false);
-    if(scrollRef.current) {
-        scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const currentCategoryLabel = CATEGORY_LABELS[activeCategory as Category] || activeCategory;
+  const currentCategoryLabel = useMemo(() => {
+    if (activeCategory === 'all') return 'Semua Koleksi Look';
+    return CATEGORY_LABELS[activeCategory as Category] || activeCategory;
+  }, [activeCategory]);
 
   return (
-     <motion.div
-        initial={{ opacity: 0, scale: 1.05 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, y: "100%" }}
-        transition={{ type: "spring", damping: 30, stiffness: 100 }}
-        className="fixed inset-0 z-[9000] bg-[#faf8f6] flex flex-col"
-     >
-       <div className="absolute top-0 left-0 right-0 z-[150]">
-          <Navbar isOverlay={true} onLinkClick={onClose} />
-       </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 1.02 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, y: '100%' }}
+      transition={{ type: 'spring', damping: 28, stiffness: 120 }}
+      className="fixed inset-0 z-[9000] bg-[#FCF9F6] flex flex-col"
+    >
+      {/* Top Navbar */}
+      <div className="absolute top-0 left-0 right-0 z-[150]">
+        <Navbar isOverlay={true} onLinkClick={onClose} />
+      </div>
 
-       <div 
-         className="absolute inset-0 overflow-y-auto overflow-x-hidden scroll-smooth"
-         ref={scrollRef}
-       >
-          <div className="min-h-full flex flex-col items-center">
+      {/* Main Scrollable Canvas */}
+      <div 
+        className="absolute inset-0 overflow-y-auto overflow-x-hidden scroll-smooth pt-28 pb-16"
+        ref={scrollRef}
+      >
+        <div className="min-h-full flex flex-col items-center">
+          
+          <div className="flex-1 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full relative z-10 mb-16">
             
-            <div className="flex-1 pt-32 px-4 sm:px-6 max-w-7xl mx-auto w-full relative z-10">
-               
-               {/* Header Section */}
-               <div className="mb-16 text-center">
-                 <motion.div
-                   initial={{ opacity: 0, y: -20 }}
-                   animate={{ opacity: 1, y: 0 }}
-                   className="inline-block px-4 py-1 rounded-full border border-primary/20 text-primary font-sans font-bold tracking-widest uppercase text-[10px] mb-4 bg-white/50"
-                 >
-                   Gallery Collection
-                 </motion.div>
-                 <motion.h2 
-                    key={activeCategory}
-                    initial={{ opacity: 0, filter: 'blur(5px)' }}
-                    animate={{ opacity: 1, filter: 'blur(0px)' }}
-                    className="font-serif text-5xl md:text-6xl text-textMain mb-6"
-                 >
-                   {currentCategoryLabel}
-                 </motion.h2>
-                 <p className="text-textMain/50 font-sans tracking-wide max-w-md mx-auto italic">
-                   A curated collection of beauty from our archives.
-                 </p>
-               </div>
-
-               {/* MASONRY COLLAGE LAYOUT OR CLIENT-FACING COMING SOON NOTICE */}
-               {!SHOW_PORTFOLIO_PHOTOS ? (
-                 <div className="py-20 text-center max-w-lg mx-auto px-8 bg-white/80 backdrop-blur-md rounded-3xl border border-dashed border-primary/20 shadow-sm">
-                   <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4 border border-primary/20">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4A5A5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                       <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/>
-                       <path d="M12 8v4l3 3"/>
-                     </svg>
-                   </div>
-                   <h3 className="font-serif text-2xl md:text-3xl text-textMain mb-2">New Portfolio Coming Soon ✨</h3>
-                   <p className="font-sans text-xs md:text-sm text-textMain/60 italic leading-relaxed mb-6">
-                     Koleksi riasan terbaru sedang disiapkan. Silakan hubungi kami untuk melihat portofolio lengkap via WhatsApp.
-                   </p>
-                   <a
-                     href="https://wa.me/6288293473765?text=Halo%20MBELL%20Makeup%2C%20saya%20tertarik%20melihat%20katalog%20portfolio%20terbaru."
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white font-sans font-bold text-xs uppercase tracking-wider shadow-md hover:bg-secondary transition-all"
-                   >
-                     <span>Hubungi via WhatsApp</span>
-                   </a>
-                 </div>
-               ) : (
-                 <>
-                   <div className="flex gap-4 md:gap-8 mb-20 justify-center">
-                     {columns.map((column, colIdx) => (
-                       <div key={`col-${colIdx}`} className="flex flex-col gap-4 md:gap-8 flex-1 max-w-[400px]">
-                         {column.map((item) => (
-                           <motion.div
-                             key={item.id}
-                             layoutId={`item-${item.id}`}
-                             initial={{ opacity: 0, y: 20 }}
-                             animate={{ opacity: 1, y: 0 }}
-                             whileHover={{ y: -8 }}
-                             onClick={() => onItemClick(item)}
-                             className="group relative cursor-pointer rounded-2xl md:rounded-[2rem] overflow-hidden bg-white/50 backdrop-blur-sm border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(212,165,165,0.3)] transition-all duration-500 transform hover:-translate-y-1"
-                           >
-                             <img 
-                               src={item.imageUrl} 
-                               alt={item.title} 
-                               className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
-                               loading="lazy"
-                             />
-                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-8 pointer-events-none">
-                                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                  <p className="font-sans text-[9px] md:text-[10px] text-primary font-bold uppercase tracking-widest mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                                    {item.category}
-                                  </p>
-                                  <h3 className="font-serif text-xl md:text-3xl text-white font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75 truncate">
-                                    {item.title}
-                                  </h3>
-                                  <div className="h-[1px] w-0 bg-primary/60 mt-4 group-hover:w-16 transition-all duration-700 delay-200"></div>
-                                </div>
-                             </div>
-                           </motion.div>
-                         ))}
-                       </div>
-                     ))}
-                   </div>
-
-                   {/* Empty State */}
-                   {filteredItems.length === 0 && (
-                     <div className="py-32 text-center">
-                        <p className="font-serif text-2xl text-textMain/30 italic">No captures found yet...</p>
-                     </div>
-                   )}
-
-                   {/* Load More Button */}
-                   {hasMore && (
-                      <div className="flex justify-center mb-24">
-                         <Button onClick={handleLoadMore} variant="outline" className="px-12 py-4 border-textMain/10 text-textMain/70 bg-white/80 hover:bg-white hover:text-primary transition-all shadow-sm">
-                            Discover More Captures
-                         </Button>
-                      </div>
-                   )}
-                 </>
-               )}
-            </div>
-
-            <div className="relative z-10 bg-white w-full border-t border-gray-100">
-              <Footer onLinkClick={onClose} />
-            </div>
-          </div>
-       </div>
-
-       {/* FILTER BUBBLE NAVIGATION */}
-       <div className="fixed bottom-8 right-8 z-[200] flex flex-col items-end gap-4 pointer-events-none">
-          <AnimatePresence>
-            {isFilterOpen && (
-              <motion.div 
-                className="flex flex-col items-end gap-3 mb-2 pointer-events-auto max-h-[60vh] overflow-y-auto pr-2 pb-2 no-scrollbar"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
+            {/* Header Section */}
+            <div className="mb-10 text-center">
+              <motion.div
+                initial={{ opacity: 0, y: -15 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-mbell-rose/30 text-mbell-primary font-sans font-semibold tracking-widest uppercase text-[10px] mb-4 bg-mbell-surface/70 shadow-sm"
               >
-                {CATEGORIES.map((cat, i) => (
-                  <motion.button
-                    key={cat}
-                    onClick={() => handleCategoryChange(cat)}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.05 }}
-                    className={`
-                      px-6 py-2.5 rounded-full shadow-lg backdrop-blur-xl border transition-all
-                      text-xs font-sans font-bold tracking-widest uppercase
-                      ${activeCategory === cat 
-                        ? 'bg-primary text-white border-primary scale-105' 
-                        : 'bg-white/90 text-textMain border-white/50 hover:bg-white'
-                      }
-                    `}
-                  >
-                    {CATEGORY_LABELS[cat]}
-                  </motion.button>
-                ))}
+                <span>Gallery Collection</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-mbell-rose" />
+                <span>{filteredItems.length} Look Terkatalog</span>
               </motion.div>
-            )}
-          </AnimatePresence>
 
-          <motion.button
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className={`
-              w-16 h-16 rounded-full shadow-2xl flex items-center justify-center pointer-events-auto relative z-20 
-              transition-colors duration-300
-              ${isFilterOpen ? 'bg-textMain text-white' : 'bg-primary text-white'}
-            `}
-          >
-             {isFilterOpen ? (
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-             ) : (
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-             )}
-          </motion.button>
-       </div>
-     </motion.div>
+              <motion.h2 
+                key={activeCategory}
+                initial={{ opacity: 0, y: 8, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.3 }}
+                className="font-serif text-4xl sm:text-5xl md:text-6xl text-mbell-ink mb-4 font-medium tracking-tight"
+              >
+                {currentCategoryLabel}
+              </motion.h2>
+
+              <p className="text-mbell-muted font-sans text-sm sm:text-base tracking-wide max-w-lg mx-auto leading-relaxed">
+                Koleksi lengkap dokumentasi tata rias pengantin, wisuda, dan editorial dari arsip MBell MakeUp.
+              </p>
+
+              {/* Horizontal Category Pill Tabs (Quick Access) */}
+              <div className="mt-8 flex items-center justify-center">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-2 max-w-full">
+                  {categoryOptions.map((opt) => {
+                    const isActive = activeCategory === opt.key;
+                    return (
+                      <button
+                        key={opt.key}
+                        onClick={() => handleCategoryChange(opt.key)}
+                        className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-sans transition-all duration-200 border ${
+                          isActive
+                            ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-sm font-semibold scale-105'
+                            : 'bg-mbell-surface/80 text-mbell-ink border-mbell-border/80 hover:bg-mbell-blush/60 font-medium'
+                        }`}
+                      >
+                        {opt.label} {opt.count > 0 && <span className="opacity-75 text-[11px]">({opt.count})</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* 4-COLUMN MASONRY GRID (As requested, matching Image 1) */}
+            {filteredItems.length === 0 ? (
+              <div className="py-24 text-center">
+                <p className="font-serif text-2xl text-mbell-muted/60 italic">
+                  Belum ada foto untuk kategori ini...
+                </p>
+                <button
+                  onClick={() => handleCategoryChange('all')}
+                  className="mt-4 px-6 py-2 rounded-full bg-mbell-primary text-white text-xs font-sans font-medium"
+                >
+                  Tampilkan Semua Look
+                </button>
+              </div>
+            ) : (
+              <div className="w-full relative mt-4">
+                <Masonry
+                  items={masonryItems}
+                  columns={columnCount}
+                  gap={14}
+                  radius={16}
+                  animateFrom="bottom"
+                  hoverEffect="zoom"
+                  captions="hover"
+                  lightbox={true}
+                  draggable={false}
+                  stagger={0.03}
+                  duration={0.55}
+                  bounce={0.12}
+                  revealOnScroll={true}
+                  onItemClick={(item) => {
+                    if (item.rawItem) {
+                      onItemClick(item.rawItem);
+                    }
+                  }}
+                  className="w-full"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="relative z-10 bg-white w-full border-t border-mbell-border/60">
+            <Footer onLinkClick={onClose} />
+          </div>
+        </div>
+      </div>
+
+      {/* FLOATING FILTER BUBBLE (Bottom-Right for Quick Mobile Toggling) */}
+      <div className="fixed bottom-6 right-6 z-[200] flex flex-col items-end gap-3 pointer-events-none">
+        <AnimatePresence>
+          {isFilterOpen && (
+            <motion.div 
+              className="flex flex-col items-end gap-2 mb-2 pointer-events-auto max-h-[60vh] overflow-y-auto pr-2 pb-2 no-scrollbar"
+              initial={{ opacity: 0, x: 20, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 20, scale: 0.9 }}
+            >
+              {categoryOptions.map((opt, i) => (
+                <motion.button
+                  key={opt.key}
+                  onClick={() => handleCategoryChange(opt.key)}
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.03 }}
+                  className={`
+                    px-5 py-2 rounded-full shadow-lg backdrop-blur-xl border transition-all
+                    text-xs font-sans font-semibold tracking-wide
+                    ${activeCategory === opt.key 
+                      ? 'bg-mbell-primary text-white border-mbell-primary scale-105 shadow-mbell-primary/30' 
+                      : 'bg-white/95 text-mbell-ink border-mbell-border hover:bg-mbell-surface'
+                    }
+                  `}
+                >
+                  {opt.label} {opt.count > 0 && <span className="opacity-75">({opt.count})</span>}
+                </motion.button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.button
+          onClick={() => setIsFilterOpen(!isFilterOpen)}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          className={`
+            w-14 h-14 rounded-full shadow-2xl flex items-center justify-center pointer-events-auto relative z-20 
+            transition-colors duration-300 border border-white/40
+            ${isFilterOpen ? 'bg-mbell-ink text-white' : 'bg-mbell-primary text-white'}
+          `}
+          aria-label="Filter Kategori"
+        >
+          {isFilterOpen ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          )}
+        </motion.button>
+      </div>
+    </motion.div>
   );
-}
+};
 
 export default FullGalleryOverlay;
