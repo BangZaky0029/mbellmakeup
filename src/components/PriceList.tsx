@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, Download, Calendar, MessageCircle, X } from 'lucide-react';
+import { Eye, Download, Calendar, MessageCircle } from 'lucide-react';
 import price01 from '../assets/price_01.webp';
 import price02 from '../assets/price_02.png';
 import price03 from '../assets/price_03.png';
@@ -9,6 +8,7 @@ import termsImg from '../assets/term-condition.jpeg';
 import RandomTextReveal from './ui/RandomTextReveal';
 import Folder from './ui/Folder';
 import './ui/Folder.css';
+import InteractiveLightbox from './ui/InteractiveLightbox';
 
 interface PackageItem {
   id: string;
@@ -252,30 +252,6 @@ export const PriceList: React.FC = () => {
           </p>
         </div>
 
-        {/* Quick Navigasi Tab Pills (Dapat diklik untuk memilih paket aktif) */}
-        <div className="flex overflow-x-auto gap-2 pb-2 mb-6 sm:mb-8 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-          {PACKAGES.map((item) => {
-            const isActive = activeTab.id === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setActiveTab(item)}
-                className={`whitespace-nowrap min-h-[42px] px-4 py-2 rounded-full text-xs font-sans transition-all border flex items-center gap-2 ${
-                  isActive
-                    ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-[0_2px_12px_rgba(158,90,84,0.25)] font-semibold scale-105'
-                    : 'bg-mbell-canvas text-mbell-ink border-mbell-border hover:bg-mbell-blush/60 font-medium'
-                }`}
-              >
-                <span>{item.label}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-mbell-surface text-mbell-muted'}`}>
-                  {item.shortTitle}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
         {/* STAGE UTAMA: 3D Interactive Folder */}
         <div className="bg-gradient-to-b from-mbell-canvas via-mbell-canvas/90 to-mbell-surface/40 border border-mbell-border rounded-3xl p-6 sm:p-10 shadow-[0_16px_48px_rgba(42,33,33,0.06)] mb-8 flex flex-col items-center justify-center relative overflow-hidden">
           
@@ -297,58 +273,122 @@ export const PriceList: React.FC = () => {
               tabPosition="right"
               mode="flap"
               layout="spread"
-              size={isMobile ? 1.15 : isTablet ? 1.35 : 1.55}
+              size={isMobile ? 1.05 : isTablet ? 1.25 : 1.45}
               openOn="hover"
-              defaultOpen={true}
+              defaultOpen={false}
               items={folderItems}
               draggable={true}
               className="mx-auto select-none"
             />
           </div>
 
-          {/* Bottom Card Summary of Active Selected Package */}
-          <div className="w-full mt-6 pt-5 border-t border-mbell-border/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="text-left">
-              <div className="flex items-center gap-2 mb-1">
-                <h4 className="font-serif text-xl sm:text-2xl font-medium text-mbell-ink">
-                  {activeTab.label}
-                </h4>
-                <span className="text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full bg-mbell-primary/10 text-mbell-primary">
-                  {activeTab.shortTitle}
-                </span>
+          {/* Bottom Card Summary of Active Selected Package + Right Side Package Buttons Column */}
+          <div className="w-full mt-6 pt-5 border-t border-mbell-border/70 flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+            {/* SISI KIRI: Detail Paket Aktif & Action Buttons */}
+            <div className="text-left flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <h4 className="font-serif text-xl sm:text-2xl font-medium text-mbell-ink">
+                    {activeTab.label}
+                  </h4>
+                  <span className="text-[10px] font-sans font-semibold px-2.5 py-0.5 rounded-full bg-mbell-primary/10 text-mbell-primary">
+                    {activeTab.shortTitle}
+                  </span>
+                </div>
+                <p className="font-sans text-xs sm:text-sm text-mbell-muted leading-relaxed max-w-xl">
+                  {activeTab.desc}
+                </p>
               </div>
-              <p className="font-sans text-xs sm:text-sm text-mbell-muted max-w-xl leading-relaxed">
-                {activeTab.desc}
-              </p>
+
+              {/* Action Buttons for Active Package */}
+              <div className="flex flex-wrap items-center gap-2.5 mt-5">
+                <button
+                  type="button"
+                  onClick={() => handleWhatsAppBooking(activeTab)}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-mbell-primary hover:bg-mbell-ink text-white text-xs font-sans font-semibold transition-colors shadow-sm"
+                >
+                  <MessageCircle size={14} />
+                  <span>Tanya Paket via WhatsApp</span>
+                </button>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5">
-              <button
-                type="button"
-                onClick={() => setZoomItem(activeTab)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-mbell-surface hover:bg-mbell-blush/60 text-mbell-primary border border-mbell-border text-xs font-sans font-semibold transition-colors shadow-sm"
-              >
-                <Eye size={14} />
-                <span>Perbesar Brosur</span>
-              </button>
+            {/* SISI KANAN: Kolom Tombol Pilihan Paket & S&K dengan Icon View (Mata) & Download */}
+            <div className="w-full lg:w-auto shrink-0 flex flex-col gap-2 min-w-full sm:min-w-[320px] lg:min-w-[360px]">
+              {PACKAGES.map((item) => {
+                const isActive = activeTab.id === item.id;
+                return (
+                  <div
+                    key={item.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setActiveTab(item)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setActiveTab(item);
+                      }
+                    }}
+                    className={`w-full px-3.5 py-2.5 rounded-2xl text-xs font-sans transition-all border flex items-center justify-between gap-2.5 text-left cursor-pointer select-none ${
+                      isActive
+                        ? 'bg-mbell-primary text-mbell-canvas border-mbell-primary shadow-[0_4px_16px_rgba(158,90,84,0.25)] font-semibold'
+                        : 'bg-mbell-canvas hover:bg-mbell-surface text-mbell-ink border-mbell-border/80 hover:border-mbell-border font-medium shadow-xs'
+                    }`}
+                  >
+                    {/* Sisi Kiri: Label Paket & Kategori Singkat */}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="truncate">{item.label}</span>
+                      <span
+                        className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 font-normal ${
+                          isActive
+                            ? 'bg-white/20 text-white font-medium'
+                            : 'bg-mbell-surface text-mbell-muted'
+                        }`}
+                      >
+                        {item.shortTitle}
+                      </span>
+                    </div>
 
-              <button
-                type="button"
-                onClick={() => handleDownloadCatalog(activeTab)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-mbell-canvas hover:bg-mbell-surface text-mbell-ink border border-mbell-border text-xs font-sans font-semibold transition-colors shadow-sm"
-              >
-                <Download size={14} />
-                <span>Unduh Gambar</span>
-              </button>
+                    {/* Sisi Kanan: Action Icons {icon view} {icon download} */}
+                    <div className="flex items-center gap-1.5 shrink-0 ml-auto" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveTab(item);
+                          setZoomItem(item);
+                        }}
+                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                          isActive
+                            ? 'bg-white/15 hover:bg-white text-white hover:text-mbell-primary border border-white/20 shadow-xs'
+                            : 'bg-mbell-surface hover:bg-mbell-blush/80 text-mbell-ink hover:text-mbell-primary border border-mbell-border/70 shadow-xs'
+                        }`}
+                        title={`Perbesar brosur ${item.label}`}
+                        aria-label={`Perbesar brosur ${item.label}`}
+                      >
+                        <Eye size={13} />
+                      </button>
 
-              <button
-                type="button"
-                onClick={() => handleWhatsAppBooking(activeTab)}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-mbell-primary hover:bg-mbell-ink text-white text-xs font-sans font-semibold transition-colors shadow-sm"
-              >
-                <MessageCircle size={14} />
-                <span>Tanya Paket</span>
-              </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownloadCatalog(item);
+                        }}
+                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                          isActive
+                            ? 'bg-white/15 hover:bg-white text-white hover:text-mbell-primary border border-white/20 shadow-xs'
+                            : 'bg-mbell-surface hover:bg-mbell-blush/80 text-mbell-ink hover:text-mbell-primary border border-mbell-border/70 shadow-xs'
+                        }`}
+                        title={`Unduh brosur ${item.label}`}
+                        aria-label={`Unduh brosur ${item.label}`}
+                      >
+                        <Download size={13} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -389,85 +429,13 @@ export const PriceList: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Lightbox Modal untuk Mobile & Desktop Zoom */}
-        {zoomItem && typeof document !== 'undefined' && createPortal(
-          <AnimatePresence>
-            <motion.div
-              key="catalog-lightbox-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
-              className="fixed inset-0 z-[10000] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
-              onClick={() => setZoomItem(null)}
-            >
-              <motion.div
-                key="catalog-lightbox-card"
-                initial={{ scale: 0.94, opacity: 0, y: 15 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.94, opacity: 0, y: 15 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="relative max-w-4xl w-full my-auto text-center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Header Lightbox */}
-                <div className="flex items-center justify-between pb-3 mb-2 px-1">
-                  <div className="flex items-center gap-2 text-left">
-                    <span className="text-sm font-sans font-semibold text-white">
-                      {zoomItem.label}
-                    </span>
-                    <span className="text-[10px] font-sans px-2 py-0.5 rounded-full bg-white/20 text-white/90">
-                      {zoomItem.shortTitle}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleDownloadCatalog(zoomItem)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-sans font-medium backdrop-blur-md transition-colors"
-                      title="Download Gambar Brosur"
-                    >
-                      <Download size={13} />
-                      <span className="hidden sm:inline">Download</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setZoomItem(null)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-sans font-medium backdrop-blur-md transition-colors"
-                    >
-                      <X size={15} />
-                      <span className="hidden sm:inline">Tutup</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* High-Resolution Image Canvas */}
-                <div className="overflow-auto max-h-[76vh] rounded-2xl bg-[#FCF9F6] p-2 sm:p-3 shadow-2xl custom-scrollbar border border-white/10">
-                  <img
-                    src={zoomItem.image}
-                    alt={zoomItem.label}
-                    className="w-full h-auto max-h-[72vh] object-contain rounded-xl mx-auto"
-                  />
-                </div>
-
-                {/* Bottom WhatsApp Inquiry */}
-                <div className="mt-4 flex justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => handleWhatsAppBooking(zoomItem)}
-                    className="min-h-[44px] px-6 py-2.5 rounded-full bg-mbell-primary text-mbell-canvas font-sans text-xs font-semibold shadow-lg hover:bg-mbell-ink transition-colors flex items-center gap-2"
-                  >
-                    <MessageCircle size={15} />
-                    <span>Lanjut Booking via WhatsApp</span>
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>,
-          document.body
-        )}
+        {/* Interactive Lightbox Modal untuk Desktop & Mobile */}
+        <InteractiveLightbox
+          item={zoomItem}
+          onClose={() => setZoomItem(null)}
+          onDownload={handleDownloadCatalog}
+          onWhatsApp={handleWhatsAppBooking}
+        />
 
       </div>
     </section>

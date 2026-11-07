@@ -137,15 +137,17 @@
   width: var(--folder-doc-w);
   height: var(--folder-doc-h);
   overflow: hidden;
-  border-radius: calc(7px * var(--folder-scale));
+  border-radius: calc(8px * var(--folder-scale));
   background: var(--folder-paper);
   box-shadow:
-    0 0 0 0.5px rgba(0, 0, 0, 0.06),
-    0 calc(1px * var(--folder-scale)) calc(2px * var(--folder-scale)) rgba(0, 0, 0, 0.12),
-    0 calc((2px + var(--folder-lift, 0) * 16px) * var(--folder-scale))
-      calc((5px + var(--folder-lift, 0) * 26px) * var(--folder-scale))
-      rgba(0, 0, 0, calc(0.1 + var(--folder-lift, 0) * 0.14));
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 calc(2px * var(--folder-scale)) calc(4px * var(--folder-scale)) rgba(0, 0, 0, 0.08),
+    0 calc((3px + var(--folder-lift, 0) * 18px) * var(--folder-scale))
+      calc((8px + var(--folder-lift, 0) * 30px) * var(--folder-scale))
+      rgba(0, 0, 0, calc(0.12 + var(--folder-lift, 0) * 0.16));
   outline: none;
+  transition: box-shadow 0.2s ease;
+  touch-action: none;
 }
 
 .folder-root[data-open] .folder-item {

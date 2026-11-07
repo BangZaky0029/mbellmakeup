@@ -36,6 +36,7 @@ export interface DriftWallProps {
     className?: string;
     style?: CSSProperties;
     onItemClick?: (item: DriftWallItem) => void;
+    shiftX?: number;
 }
 
 interface ColumnMeta {
@@ -86,7 +87,8 @@ const DriftWall = ({
     overlayColor = '#2A2121',
     className = '',
     style,
-    onItemClick
+    onItemClick,
+    shiftX = 0
 }: DriftWallProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const planeRef = useRef<HTMLDivElement>(null);
@@ -204,12 +206,13 @@ const DriftWall = ({
         (px: number, py: number) => {
             const plane = planeRef.current;
             if (!plane) return;
+            const xOffset = shiftX ? `calc(-50% + ${shiftX}px)` : '-50%';
             plane.style.transform =
-                `translate(-50%, -50%) scale(1.15) ` +
+                `translate(${xOffset}, -50%) scale(1.15) ` +
                 `rotateX(${tilt + py}deg) rotateY(${turn + px}deg) rotateZ(${roll}deg) ` +
                 `translateZ(${-depth}px)`;
         },
-        [tilt, turn, roll, depth]
+        [tilt, turn, roll, depth, shiftX]
     );
 
     useEffect(() => {

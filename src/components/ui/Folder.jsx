@@ -31,7 +31,7 @@ const SPREAD_TURN = [4, -5, 3, -6, 5, -3];
 const SPREAD_DROP = [0.03, -0.04, 0.05, -0.02, 0.04, -0.05];
 const DROP_TURN = [-6, 4, -3, 7, -5, 3];
 const BOOK_ANGLES = { open: -180, receive: -24, peek: -13, rest: 0 };
-const FLAP_ANGLES = { open: -64, receive: -30, peek: -15, rest: 0 };
+const FLAP_ANGLES = { open: -68, receive: -32, peek: -24, rest: 0 };
 const LAYERS = { out: 50, drag: 80, focus: 90 };
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
@@ -727,7 +727,7 @@ const placeFlap = (rank, count, phase, layout, g, pointer) => {
   const floor = g.tabH + g.h - 5 * g.scale - g.docH / 2;
   const mid = (count - 1) / 2;
   if (phase === 'open') {
-    const lift = g.tabH - g.h * 0.02;
+    const lift = g.tabH - g.h * 0.04;
     if (layout === 'stack') {
       const strip = Math.min(30 * g.scale, (g.h * 0.62) / Math.max(1, count - 1));
       const fit = 1.04 - rank * 0.05;
@@ -740,15 +740,18 @@ const placeFlap = (rank, count, phase, layout, g, pointer) => {
         s: fit
       };
     }
-    const gap = 12 * g.scale;
-    const fit = Math.min(0.94, (g.w * 2.3 - gap * (count - 1)) / (count * g.docW));
+    const gap = 14 * g.scale;
+    const fit = Math.min(0.92, (g.w * 2.25 - gap * (count - 1)) / (count * g.docW));
     const step = g.docW * fit + gap;
     const tidy = layout === 'row';
+    const t = mid > 0 ? (rank - mid) / mid : 0;
+    const arcTurn = t * 6.5;
+    const arcRise = (1 - Math.abs(t) * 0.45) * (-g.h * 0.16);
     return {
       x: g.w / 2 + (rank - mid) * step,
-      y: lift + (tidy ? 0 : SPREAD_DROP[rank] * g.h * 0.7),
-      z: 0,
-      r: tidy ? 0 : SPREAD_TURN[rank] * 0.55,
+      y: lift + (tidy ? 0 : arcRise),
+      z: -Math.abs(t) * 6 * g.scale,
+      r: tidy ? 0 : arcTurn,
       ry: 0,
       s: fit
     };
@@ -757,8 +760,8 @@ const placeFlap = (rank, count, phase, layout, g, pointer) => {
   const x = g.w / 2 + rest.x * g.w * part;
   if (phase === 'rest') return { x, y: floor - rest.rise * g.h, z: 0, r: rest.r, ry: 0, s: 1 };
   const near = phase === 'peek' && pointer != null ? Math.max(0, 1 - Math.abs(pointer - x) / (g.w * 0.32)) : 0;
-  const rise = rest.rise + (phase === 'receive' ? 0.03 : 0.1);
-  return { x, y: floor - rise * g.h - near * near * g.h * 0.09, z: 0, r: rest.r * 1.6, ry: 0, s: 1 };
+  const rise = rest.rise + (phase === 'receive' ? 0.05 : 0.15);
+  return { x, y: floor - rise * g.h - near * near * g.h * 0.09, z: 0, r: rest.r * 1.5, ry: 0, s: 1 };
 };
 
 const Folder = ({
@@ -898,6 +901,7 @@ const Folder = ({
       last: 0,
       ready: false,
       hovered: false,
+      hoverEnteredAt: 0,
       pressed: false,
       pointerX: 0,
       pointerY: 0,
@@ -1068,7 +1072,12 @@ const Folder = ({
     };
 
     const phaseOf = (s, time) => {
-      if (s.open) return 'open';
+      if (s.open) {
+        if (s.openOn === 'hover' && state.hoverEnteredAt && performance.now() - state.hoverEnteredAt < 220) {
+          return 'peek';
+        }
+        return 'open';
+      }
       if (state.receiving || time < state.receiveUntil) return 'receive';
       if (s.peek && state.hovered && !state.drag?.active) return 'peek';
       return 'rest';
@@ -1107,7 +1116,7 @@ const Folder = ({
         state.changedAt = now;
       }
       const elapsed = (now - state.changedAt) / 1000;
-      let busy = time < state.receiveUntil;
+      let busy = time < state.receiveUntil || (state.hoverEnteredAt > 0 && performance.now() - state.hoverEnteredAt < 260);
 
       const ranks = [];
       state.items.forEach((item, index) => {
@@ -1613,6 +1622,7 @@ const Folder = ({
       }
       if (!state.hovered) {
         state.hovered = true;
+        state.hoverEnteredAt = performance.now();
         if (settingsRef.current.openOn === 'hover') setOpenRef.current(true);
       }
       wake();
@@ -1621,6 +1631,7 @@ const Folder = ({
     const onLeave = event => {
       if (event.pointerType === 'touch' || state.drag?.active) return;
       state.hovered = false;
+      state.hoverEnteredAt = 0;
       state.pressed = false;
       state.hoveredItem = -1;
       if (settingsRef.current.openOn === 'hover') setOpenRef.current(false);

@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import type { BookedDay } from '../types';
 import termConditionImg from '../assets/term-condition.jpeg';
 import RandomTextReveal from './ui/RandomTextReveal';
+import InteractiveImageZoom, { CLOSE_BACKDROP_CURSOR } from './ui/InteractiveImageZoom';
 
 const SERVICES = [
   'Wedding / Akad Nikah',
@@ -42,8 +43,6 @@ const Contact: React.FC = () => {
   // Terms & Conditions confirmation modal state
   const [showTermsConfirmModal, setShowTermsConfirmModal] = useState(false);
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
-  const [termsZoom, setTermsZoom] = useState(100);
-  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
 
   // ── Fetch booked dates from Supabase ──────────────────────────────
   const fetchBookedDates = useCallback(async () => {
@@ -510,6 +509,7 @@ Terima kasih!`;
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            style={{ cursor: CLOSE_BACKDROP_CURSOR }}
             className="fixed inset-0 z-[1200] bg-mbell-ink/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
             onClick={() => setShowTermsConfirmModal(false)}
           >
@@ -517,7 +517,7 @@ Terima kasih!`;
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-mbell-canvas rounded-3xl max-w-2xl w-full my-auto max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-mbell-border text-left"
+              className="bg-mbell-canvas rounded-3xl max-w-2xl w-full my-auto max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-mbell-border text-left cursor-default"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-5 py-4 bg-mbell-surface border-b border-mbell-border flex items-center justify-between">
@@ -538,29 +538,13 @@ Terima kasih!`;
                 </button>
               </div>
 
-              {/* Modal Body Gambar S&K */}
-              <div
-                className="flex-1 overflow-auto p-4 bg-mbell-surface/30 flex flex-col items-center"
-                onTouchMove={(e) => {
-                  if (e.touches.length === 2) {
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
-                    if (lastTouchDistance !== null) {
-                      const delta = dist - lastTouchDistance;
-                      setTermsZoom(z => Math.min(Math.max(z + delta * 0.5, 50), 300));
-                    }
-                    setLastTouchDistance(dist);
-                  }
-                }}
-                onTouchEnd={() => setLastTouchDistance(null)}
-                onTouchCancel={() => setLastTouchDistance(null)}
-              >
-                <img
+              {/* Modal Body Gambar S&K dengan Zoom Interaktif */}
+              <div className="flex-1 p-3 bg-mbell-surface/30 flex items-center justify-center min-h-[300px] max-h-[60vh] overflow-hidden">
+                <InteractiveImageZoom
                   src={termConditionImg}
                   alt="Syarat & Ketentuan Booking MBell MakeUp"
-                  className="rounded-xl shadow border border-mbell-border max-w-full h-auto"
-                  style={{ width: `${termsZoom}%` }}
+                  objectFit="contain"
+                  containerClassName="min-h-[300px] max-h-[58vh]"
                 />
               </div>
 

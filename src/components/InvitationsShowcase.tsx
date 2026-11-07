@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import type { InvitationTemplate } from '../types';
 import RandomTextReveal from './ui/RandomTextReveal';
+import InteractiveImageZoom, { CLOSE_BACKDROP_CURSOR } from './ui/InteractiveImageZoom';
 
 const SUPABASE_MOCKUP_BASE = 'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/invitations/mock-up_Template';
 const INVITATIONS_WEB_URL = 'https://mbellinvitations.my.id';
@@ -592,6 +593,7 @@ export const InvitationsShowcase: React.FC = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.24, ease: "easeOut" }}
               onClick={() => setSelectedPreview(null)}
+              style={{ cursor: CLOSE_BACKDROP_CURSOR }}
               className="fixed inset-0 z-[10000] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
             >
               <motion.div
@@ -601,7 +603,7 @@ export const InvitationsShowcase: React.FC = () => {
                 exit={{ scale: 0.94, opacity: 0, y: 14 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-3xl max-h-[90vh] bg-mbell-canvas rounded-2xl shadow-2xl border border-mbell-border overflow-hidden flex flex-col md:flex-row transform-gpu will-change-transform"
+                className="relative w-full max-w-3xl max-h-[90vh] bg-mbell-canvas rounded-2xl shadow-2xl border border-mbell-border overflow-hidden flex flex-col md:flex-row transform-gpu will-change-transform cursor-default"
               >
                 {/* Tombol Tutup Silang */}
                 <button
@@ -616,16 +618,15 @@ export const InvitationsShowcase: React.FC = () => {
                   </svg>
                 </button>
 
-                {/* Sisi Kiri: Mockup Smartphone Zoom */}
+                {/* Sisi Kiri: Mockup Smartphone Zoom Interaktif */}
                 <div className="w-full md:w-1/2 bg-gradient-to-b from-mbell-surface to-mbell-canvas flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-mbell-border overflow-hidden">
                   <div className="relative max-w-[240px] sm:max-w-[260px] w-full min-h-[260px] rounded-2xl overflow-hidden shadow-xl border border-mbell-border bg-mbell-canvas flex items-center justify-center">
-                    <img
-                      src={selectedPreview.mockup_url || selectedPreview.thumbnail_url}
+                    <InteractiveImageZoom
+                      src={selectedPreview.mockup_url || selectedPreview.thumbnail_url || ''}
                       alt={selectedPreview.name}
                       onError={handleImageError}
-                      loading="eager"
-                      decoding="async"
-                      className="w-full h-auto object-cover max-h-[50vh] md:max-h-[65vh]"
+                      objectFit="cover"
+                      containerClassName="min-h-[260px] max-h-[50vh] md:max-h-[65vh]"
                     />
                   </div>
                 </div>

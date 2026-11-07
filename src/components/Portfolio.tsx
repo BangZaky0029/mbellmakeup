@@ -167,7 +167,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
       if (!alreadyListed) {
         options.push({
           key: rawCat,
-          label: rawCat.charAt(0).toUpperCase() + rawCat.slice(1),
+          label: (rawCat.charAt(0).toUpperCase() + rawCat.slice(1)).replace(/_/g, ' '),
           count: countMap.get(norm) || 1
         });
       }
@@ -285,55 +285,15 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
             </div>
           </div>
 
-          {/* Split Stage Area */}
+          {/* Unified Stage Canvas: DriftWall Background + Soft Gradient Mask + Floating OptionWheel */}
           <div 
             data-scroll-isolated="true"
-            className="relative flex flex-row h-[520px] sm:h-[580px] md:h-[640px] lg:h-[700px] w-full overflow-hidden [overscroll-behavior:contain]"
+            className="relative h-[520px] sm:h-[580px] md:h-[640px] lg:h-[700px] w-full overflow-hidden [overscroll-behavior:contain]"
           >
-            {/* LEFT COLUMN: OptionWheel (Category Picker) */}
+            {/* LAYER 1: Full-Width DriftWall Canvas (Spans entire container width from left to right) */}
             <div 
               data-scroll-isolated="true"
-              className="w-[38%] sm:w-[32%] md:w-[28%] lg:w-[26%] h-full relative border-r border-mbell-border/80 bg-gradient-to-r from-mbell-surface/70 via-mbell-surface/40 to-transparent flex flex-col justify-between py-4 sm:py-6 z-10 [overscroll-behavior:contain]"
-            >
-              {/* OptionWheel Component */}
-              <div className="flex-1 w-full h-full relative overflow-hidden">
-                <OptionWheel
-                  items={categoryOptions.map(c => c.label)}
-                  defaultSelected={0}
-                  selectedIndex={activeCategoryIndex}
-                  onChange={handleWheelChange}
-                  side="left"
-                  textColor="#786866"
-                  activeColor="#9E5A54"
-                  fontSize={isMobile ? 1.25 : isTablet ? 1.85 : 2.25}
-                  spacing={isMobile ? 1.35 : 1.38}
-                  curve={isMobile ? 0.75 : 0.9}
-                  tilt={isMobile ? 5.5 : 7}
-                  blur={isMobile ? 1.2 : 1.8}
-                  fade={0.3}
-                  minOpacity={0.06}
-                  smoothing={210}
-                  inset={isMobile ? 14 : isTablet ? 26 : 36}
-                  draggable={true}
-                  className="h-full"
-                />
-              </div>
-
-              {/* Bottom Wheel Status Info */}
-              <div className="px-3 sm:px-6 pt-2 z-10 flex flex-col gap-0.5 text-left border-t border-mbell-border/40">
-                <span className="text-[9px] sm:text-[10px] uppercase font-sans tracking-widest text-mbell-muted/80">
-                  Foto Terkatalog
-                </span>
-                <span className="font-serif text-sm sm:text-base font-semibold text-mbell-primary">
-                  {filteredItems.length} Look Cantik
-                </span>
-              </div>
-            </div>
-
-            {/* RIGHT COLUMN: DriftWall (Infinite 3D Drifting Tiles) */}
-            <div 
-              data-scroll-isolated="true"
-              className="flex-1 h-full relative overflow-hidden bg-gradient-to-br from-transparent to-mbell-surface/20 [overscroll-behavior:contain]"
+              className="absolute inset-0 w-full h-full overflow-hidden [overscroll-behavior:contain]"
             >
               {loading ? (
                 <div className="h-full w-full flex flex-col items-center justify-center gap-3 text-mbell-muted">
@@ -353,32 +313,80 @@ const Portfolio: React.FC<PortfolioProps> = ({ onOpenGallery, onItemClick }) => 
                     <DriftWall
                       items={driftItems}
                       columns={isMobile ? 2 : isTablet ? 3 : 4}
-                      tileWidth={isMobile ? 120 : isTablet ? 155 : 185}
-                      tileHeight={isMobile ? 165 : isTablet ? 215 : 255}
+                      tileWidth={isMobile ? 125 : isTablet ? 160 : 195}
+                      tileHeight={isMobile ? 170 : isTablet ? 220 : 270}
                       gap={isMobile ? 10 : 14}
                       radius={isMobile ? 12 : 16}
-                      tilt={isMobile ? 10 : 13}
-                      turn={isMobile ? -8 : -11}
-                      perspective={isMobile ? 850 : 1100}
-                      depth={isMobile ? 60 : 85}
-                      speed={isMobile ? 26 : 34}
-                      lift={isMobile ? 28 : 48}
-                      dim={0.62}
-                      fade={0.55}
+                      tilt={isMobile ? 8 : 12}
+                      turn={isMobile ? -6 : -10}
+                      perspective={isMobile ? 800 : 1100}
+                      depth={isMobile ? 50 : 85}
+                      speed={isMobile ? 24 : 32}
+                      lift={isMobile ? 26 : 46}
+                      dim={0.88}
+                      fade={0.32}
                       overlayColor="#2A2121"
                       pauseOnHover={true}
                       onItemClick={handleTileClick}
+                      shiftX={isMobile ? 55 : isTablet ? 85 : 120}
                       className="h-full w-full"
                     />
                   </motion.div>
                 </AnimatePresence>
               )}
+            </div>
 
-              {/* Floating Interaction Pill Guide on DriftWall */}
-              <div className="pointer-events-none absolute bottom-4 right-4 z-20 hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mbell-canvas/90 backdrop-blur-md border border-mbell-border text-[11px] font-sans text-mbell-ink shadow-md">
-                <span className="w-1.5 h-1.5 rounded-full bg-mbell-rose" />
-                <span>Klik foto mana pun untuk memperbesar & konsultasi look</span>
+            {/* LAYER 2: Soft Seamless Gradient Mask (Reduced opacity, no haze over photos) */}
+            <div 
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-mbell-canvas/75 via-mbell-canvas/25 via-16% sm:via-14% md:via-11% to-transparent" 
+            />
+
+            {/* LAYER 3: Floating Category Picker (Left Overlay) */}
+            <div 
+              data-scroll-isolated="true"
+              className="absolute left-0 top-0 bottom-0 z-20 w-[55%] sm:w-[42%] md:w-[32%] lg:w-[26%] max-w-[210px] sm:max-w-[270px] md:max-w-[310px] lg:max-w-[340px] flex flex-col justify-between py-4 sm:py-6 select-none [overscroll-behavior:contain]"
+            >
+              {/* OptionWheel Component */}
+              <div className="flex-1 w-full h-full relative overflow-hidden">
+                <OptionWheel
+                  items={categoryOptions.map(c => c.label)}
+                  defaultSelected={0}
+                  selectedIndex={activeCategoryIndex}
+                  onChange={handleWheelChange}
+                  side="left"
+                  textColor="#786866"
+                  activeColor="#9E5A54"
+                  fontSize={isMobile ? 1.2 : isTablet ? 1.8 : 2.15}
+                  spacing={isMobile ? 1.35 : 1.38}
+                  curve={isMobile ? 0.65 : 0.8}
+                  tilt={isMobile ? 4.5 : 6}
+                  blur={isMobile ? 1 : 1.5}
+                  fade={0.28}
+                  minOpacity={0.08}
+                  smoothing={210}
+                  inset={isMobile ? 14 : isTablet ? 26 : 34}
+                  draggable={true}
+                  className="h-full"
+                  itemClassName="drop-shadow-[0_2px_4px_rgba(252,249,246,0.95)]"
+                />
               </div>
+
+              {/* Bottom Wheel Status Info */}
+              <div className="px-3.5 sm:px-8 pt-2 z-20 flex flex-col gap-0.5 text-left pointer-events-none">
+                <span className="text-[9px] sm:text-[10px] uppercase font-sans tracking-widest text-mbell-muted/80">
+                  Foto Terkatalog
+                </span>
+                <span className="font-serif text-sm sm:text-base font-semibold text-mbell-primary drop-shadow-[0_1px_2px_rgba(252,249,246,0.95)]">
+                  {filteredItems.length} Look Cantik
+                </span>
+              </div>
+            </div>
+
+            {/* Floating Interaction Pill Guide on DriftWall */}
+            <div className="pointer-events-none absolute bottom-4 right-4 z-20 hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mbell-canvas/90 backdrop-blur-md border border-mbell-border text-[11px] font-sans text-mbell-ink shadow-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-mbell-rose" />
+              <span>Klik foto mana pun untuk memperbesar & konsultasi look</span>
             </div>
           </div>
         </div>

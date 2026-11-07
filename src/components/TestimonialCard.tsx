@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Testimonial } from '../types';
+import InteractiveImageZoom, { CLOSE_BACKDROP_CURSOR } from './ui/InteractiveImageZoom';
 
 interface TestimonialCardProps {
   item: Testimonial;
@@ -277,6 +278,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
+            style={{ cursor: CLOSE_BACKDROP_CURSOR }}
             className="fixed inset-0 z-[10000] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
             onClick={() => setIsLightboxOpen(false)}
           >
@@ -300,14 +302,15 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item }) => {
               exit={{ scale: 0.94, opacity: 0, y: 15 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as const }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-2xl w-full bg-mbell-canvas rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col max-h-[90vh]"
+              className="relative max-w-2xl w-full bg-mbell-canvas rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col max-h-[90vh] cursor-default"
             >
-              {/* Photo Viewport */}
+              {/* Photo Viewport with Interactive Zoom */}
               <div className="relative bg-[#1A1515] flex items-center justify-center overflow-hidden min-h-[260px] max-h-[62vh] sm:max-h-[66vh]">
-                <img
-                  src={item.image_url}
+                <InteractiveImageZoom
+                  src={item.image_url!}
                   alt={`Dokumentasi riasan ${item.name}`}
-                  className="w-full h-full object-contain max-h-[62vh] sm:max-h-[66vh]"
+                  objectFit="contain"
+                  containerClassName="min-h-[260px] max-h-[62vh] sm:max-h-[66vh]"
                 />
               </div>
 

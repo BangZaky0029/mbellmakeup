@@ -95,7 +95,7 @@ const OptionWheel = ({
     const onChangeRef = useRef(onChange);
     const selectedRef = useRef(defaultSelected);
     const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const dragRef = useRef<{ y: number; start: number; id: number } | null>(null);
+    const dragRef = useRef<{ y: number; start: number; id: number; target?: EventTarget | null } | null>(null);
     const dragMovedRef = useRef(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const audioUrlRef = useRef('');
@@ -261,7 +261,7 @@ const OptionWheel = ({
 
     const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
         if (!cfgRef.current.draggable) return;
-        dragRef.current = { y: e.clientY, start: targetRef.current, id: e.pointerId };
+        dragRef.current = { y: e.clientY, start: targetRef.current, id: e.pointerId, target: e.target };
         dragMovedRef.current = false;
         setIsDragging(true);
     }, []);
@@ -282,12 +282,36 @@ const OptionWheel = ({
         [applyTarget]
     );
 
-    const handlePointerEnd = useCallback(() => {
+    const handlePointerEnd = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
         if (!dragRef.current) return;
+        const wasDrag = dragMovedRef.current;
+        const startTarget = dragRef.current.target;
         dragRef.current = null;
         setIsDragging(false);
-        if (dragMovedRef.current) applyTarget(targetRef.current, true);
+        if (wasDrag) {
+            applyTarget(targetRef.current, true);
+        } else if (startTarget === rootRef.current || e.target === rootRef.current) {
+            // Forward tap/click to underlying DriftWall photo tile if tapped on transparent area
+            if (typeof document !== 'undefined') {
+                const elements = document.elementsFromPoint(e.clientX, e.clientY);
+                const tile = elements.find(el => el.closest('[data-tile-id]'))?.closest('[data-tile-id]') as HTMLElement;
+                if (tile) {
+                    tile.click();
+                }
+            }
+        }
     }, [applyTarget]);
+
+    const handleRootClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        if (dragMovedRef.current) return;
+        if (e.target === rootRef.current && typeof document !== 'undefined') {
+            const elements = document.elementsFromPoint(e.clientX, e.clientY);
+            const tile = elements.find(el => el.closest('[data-tile-id]'))?.closest('[data-tile-id]') as HTMLElement;
+            if (tile) {
+                tile.click();
+            }
+        }
+    }, []);
 
     const handleItemClick = useCallback(
         (index: number) => {
@@ -355,6 +379,7 @@ const OptionWheel = ({
             onPointerUp={handlePointerEnd}
             onPointerCancel={handlePointerEnd}
             onKeyDown={handleKeyDown}
+            onClick={handleRootClick}
         >
             {items.map((label, index) => (
                 <div
