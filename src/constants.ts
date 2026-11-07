@@ -5,19 +5,7 @@ import type { Category, NavLink } from './types';
 export const SHOW_PORTFOLIO_PHOTOS = true;
 
 // Kategori “logika” = sesuai JSON/folder
-export const CATEGORIES: Category[] = [
-  'akad',
-  'akadTanpaSiger',
-  'BeautyShoot',
-  'pesta',
-  'wisuda',
-  'preWedding',
-  'siraman',
-  'Lamaran',
-  'Bridesmaid',
-  'kelas_makeup',
-  'MakeupTari',
-];
+export const CATEGORIES: Category[] = [];
 
 // Label kategori untuk tampil di UI (user-friendly)
 export const CATEGORY_LABELS: Record<Category, string> = {
