@@ -1,13 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { BookedDay } from '../../types';
-import termConditionImg from '../../assets/term-condition.jpeg';
+
+const DEFAULT_TERMS_URL =
+  'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/images_mbell/catalogue/S&K.jpeg';
 
 interface BookingCalendarProps {
   bookedDays: BookedDay[];
   selectedDate: string; // 'YYYY-MM-DD'
   onSelectDate: (date: string) => void;
   isLoading?: boolean;
+  termsImageUrl?: string;
 }
 
 const DAYS_OF_WEEK = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
@@ -21,6 +24,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
   selectedDate,
   onSelectDate,
   isLoading = false,
+  termsImageUrl = DEFAULT_TERMS_URL,
 }) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -331,7 +335,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
               {/* Modal Body */}
               <div className="flex-1 overflow-auto p-4 bg-mbell-surface/30 flex flex-col items-center">
                 <img
-                  src={termConditionImg}
+                  src={termsImageUrl}
                   alt="Syarat & Ketentuan Booking MBell MakeUp"
                   className="rounded-xl shadow border border-mbell-border max-w-full h-auto"
                 />

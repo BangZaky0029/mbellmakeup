@@ -1,9 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import bellaProfile from '../assets/foto_2_opt.jpeg';
+import { supabase } from '../lib/supabase';
 import RandomTextReveal from './ui/RandomTextReveal';
 
+const DEFAULT_ABOUT_IMAGE =
+  'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/images_mbell/heroImages/foto_2_opt.jpeg';
+
 const About: React.FC = () => {
+  const [aboutData, setAboutData] = useState<{
+    image_url: string;
+    alt_text?: string;
+    description?: string;
+  }>({
+    image_url: DEFAULT_ABOUT_IMAGE,
+    alt_text: 'Bella Aprilian - Professional Makeup Artist',
+    description: '"Kecantikan alami adalah karakter terbaikmu."',
+  });
+
+  // Fetch About profile image dynamically from Supabase
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchAboutData = async () => {
+      try {
+        const { data } = await supabase
+          .from('hero_images')
+          .select('image_url, alt_text, description')
+          .eq('key', 'about_main')
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (data?.image_url && isMounted) {
+          setAboutData({
+            image_url: data.image_url,
+            alt_text: data.alt_text || 'Bella Aprilian - Professional Makeup Artist',
+            description: data.description || '"Kecantikan alami adalah karakter terbaikmu."',
+          });
+        }
+      } catch (err) {
+        console.warn('Gagal memuat foto about dari Supabase:', err);
+      }
+    };
+
+    fetchAboutData();
+
+    // Supabase Realtime Subscription untuk update instan
+    const channel = supabase
+      .channel('about_realtime_channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'hero_images' },
+        () => {
+          fetchAboutData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
   return (
     <section id="about" className="py-20 md:py-28 bg-mbell-surface/50 border-b border-mbell-border relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-5 sm:px-8">
@@ -19,8 +76,8 @@ const About: React.FC = () => {
           >
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-mbell-border bg-mbell-canvas shadow-[0_16px_40px_rgba(42,33,33,0.06)]">
               <img
-                src={bellaProfile}
-                alt="Bella Aprilian - Professional Makeup Artist"
+                src={aboutData.image_url}
+                alt={aboutData.alt_text || "Bella Aprilian - Professional Makeup Artist"}
                 className="w-full h-full object-cover object-[center_18%] transition-transform duration-700 hover:scale-105"
                 loading="lazy"
               />

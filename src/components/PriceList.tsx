@@ -2,10 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, Download, Calendar, MessageCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import price01 from '../assets/price_01.webp';
-import price02 from '../assets/price_02.png';
-import price03 from '../assets/price_03.png';
-import termsImg from '../assets/term-condition.jpeg';
 import RandomTextReveal from './ui/RandomTextReveal';
 import Folder from './ui/Folder';
 import './ui/Folder.css';
@@ -21,39 +17,42 @@ interface PackageItem {
   badge?: string;
 }
 
-const PACKAGES: PackageItem[] = [
+const SUPABASE_CATALOGUE_BUCKET_URL =
+  'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/images_mbell/catalogue';
+
+const INITIAL_PACKAGES: PackageItem[] = [
   {
-    id: 'paket-1',
+    id: '1',
     label: 'Katalog Paket 1',
     shortTitle: 'Wedding & Akad',
-    image: price01,
+    image: `${SUPABASE_CATALOGUE_BUCKET_URL}/price_01.webp`,
     desc: 'Paket riasan pengantin, prosesi akad nikah, resepsi, dan riasan pendamping keluarga.',
     waQuery: 'Halo MBell MakeUp, saya ingin konsultasi mengenai Paket 1 (Wedding & Akad). Boleh minta info detail ketersediaan tanggal dan layanannya?',
     badge: 'Popular'
   },
   {
-    id: 'paket-2',
+    id: '2',
     label: 'Katalog Paket 2',
     shortTitle: 'Wisuda & Lamaran',
-    image: price02,
+    image: `${SUPABASE_CATALOGUE_BUCKET_URL}/price_02.png`,
     desc: 'Pilihan riasan wisuda, sesi lamaran (engagement), pre-wedding, dan acara pesta spesial.',
     waQuery: 'Halo MBell MakeUp, saya tertarik dengan Paket 2 (Wisuda, Lamaran, & Pesta). Apakah ada slot kosong untuk tanggal acara saya?',
     badge: 'Favorite'
   },
   {
-    id: 'paket-3',
+    id: '3',
     label: 'Katalog Paket 3',
     shortTitle: 'Layanan Tambahan',
-    image: price03,
+    image: `${SUPABASE_CATALOGUE_BUCKET_URL}/price_03.png`,
     desc: 'Riasan keluarga, bridesmaid, hijab do / hair do, dan paket rombongan acara.',
     waQuery: 'Halo MBell MakeUp, saya mau tanya rincian Paket 3 (Layanan Tambahan & Bridesmaid). Mohon info lengkapnya ya kak.',
     badge: 'Lengkap'
   },
   {
-    id: 'ketentuan',
+    id: '4',
     label: 'Syarat & Ketentuan',
     shortTitle: 'Ketentuan & DP',
-    image: termsImg,
+    image: `${SUPABASE_CATALOGUE_BUCKET_URL}/S&K.jpeg`,
     desc: 'Panduan tata cara booking jadwal, ketentuan uang muka (DP), pelunasan, dan kebijakan layanan.',
     waQuery: 'Halo MBell MakeUp, saya sudah membaca Syarat & Ketentuan dan ingin melakukan booking jadwal makeup.',
     badge: 'Penting'
@@ -61,8 +60,8 @@ const PACKAGES: PackageItem[] = [
 ];
 
 export const PriceList: React.FC = () => {
-  const [packages, setPackages] = useState<PackageItem[]>(PACKAGES);
-  const [activeTab, setActiveTab] = useState<PackageItem>(PACKAGES[0]);
+  const [packages, setPackages] = useState<PackageItem[]>(INITIAL_PACKAGES);
+  const [activeTab, setActiveTab] = useState<PackageItem>(INITIAL_PACKAGES[0]);
   const [zoomItem, setZoomItem] = useState<PackageItem | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
   const [windowWidth, setWindowWidth] = useState<number>(

@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import BookingCalendar from './ui/BookingCalendar';
 import { supabase } from '../lib/supabase';
 import type { BookedDay } from '../types';
-import termConditionImg from '../assets/term-condition.jpeg';
 import RandomTextReveal from './ui/RandomTextReveal';
 import InteractiveImageZoom, { CLOSE_BACKDROP_CURSOR } from './ui/InteractiveImageZoom';
+
+const DEFAULT_TERMS_URL =
+  'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/images_mbell/catalogue/S&K.jpeg';
 
 const SERVICES = [
   'Wedding / Akad Nikah',
@@ -43,6 +45,27 @@ const Contact: React.FC = () => {
   // Terms & Conditions confirmation modal state
   const [showTermsConfirmModal, setShowTermsConfirmModal] = useState(false);
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
+  const [termsImageUrl, setTermsImageUrl] = useState<string>(DEFAULT_TERMS_URL);
+
+  // Fetch S&K flyer dynamically from Supabase catalogue table
+  useEffect(() => {
+    const fetchTermsImage = async () => {
+      try {
+        const { data } = await supabase
+          .from('catalogue')
+          .select('image_url')
+          .ilike('label', '%Syarat%')
+          .maybeSingle();
+
+        if (data?.image_url) {
+          setTermsImageUrl(data.image_url);
+        }
+      } catch (err) {
+        console.warn('Gagal memuat flyer S&K dari Supabase:', err);
+      }
+    };
+    fetchTermsImage();
+  }, []);
 
   // ── Fetch booked dates from Supabase ──────────────────────────────
   const fetchBookedDates = useCallback(async () => {
@@ -360,6 +383,7 @@ Terima kasih!`;
                 selectedDate={formData.date}
                 onSelectDate={handleCalendarSelectDate}
                 isLoading={isCalendarLoading}
+                termsImageUrl={termsImageUrl}
               />
 
               {/* Time Picker (Ditampilkan saat tanggal sudah dipilih) */}
@@ -541,7 +565,7 @@ Terima kasih!`;
               {/* Modal Body Gambar S&K dengan Zoom Interaktif */}
               <div className="flex-1 p-3 bg-mbell-surface/30 flex items-center justify-center min-h-[300px] max-h-[60vh] overflow-hidden">
                 <InteractiveImageZoom
-                  src={termConditionImg}
+                  src={termsImageUrl}
                   alt="Syarat & Ketentuan Booking MBell MakeUp"
                   objectFit="contain"
                   containerClassName="min-h-[300px] max-h-[58vh]"

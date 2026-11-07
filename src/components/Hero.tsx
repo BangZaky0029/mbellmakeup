@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import bellaPortrait from '../assets/foto_1_opt.jpeg';
-import akadImage from '../assets/akad-makeup.jpeg';
+import { supabase } from '../lib/supabase';
 import RandomTextReveal from './ui/RandomTextReveal';
+
+const DEFAULT_HERO_IMAGE =
+  'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/images_mbell/heroImages/foto_1_opt.jpeg';
+const DEFAULT_SK_IMAGE =
+  'https://fsbvnkwxwvffghrdxnxr.supabase.co/storage/v1/object/public/images_mbell/catalogue/S&K.jpeg';
 
 interface HeroProps {
   onExploreClick?: () => void;
@@ -10,6 +14,79 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick }) => {
+  const [heroData, setHeroData] = useState<{
+    image_url: string;
+    subtitle?: string;
+    alt_text?: string;
+  }>({
+    image_url: DEFAULT_HERO_IMAGE,
+    subtitle: 'Certified MUA',
+    alt_text: 'Hasil riasan profesional oleh MBell MakeUp',
+  });
+
+  const [skThumbnailUrl, setSkThumbnailUrl] = useState<string>(DEFAULT_SK_IMAGE);
+
+  // Fetch Hero Main image & S&K Flyer thumbnail dynamically from Supabase
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchHeroData = async () => {
+      try {
+        const { data } = await supabase
+          .from('hero_images')
+          .select('image_url, subtitle, alt_text')
+          .eq('key', 'hero_main')
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (data?.image_url && isMounted) {
+          setHeroData({
+            image_url: data.image_url,
+            subtitle: data.subtitle || 'Certified MUA',
+            alt_text: data.alt_text || 'Hasil riasan profesional oleh MBell MakeUp',
+          });
+        }
+      } catch (err) {
+        console.warn('Gagal memuat foto hero dari Supabase:', err);
+      }
+    };
+
+    const fetchSKThumbnail = async () => {
+      try {
+        const { data } = await supabase
+          .from('catalogue')
+          .select('image_url')
+          .ilike('label', '%Syarat%')
+          .maybeSingle();
+
+        if (data?.image_url && isMounted) {
+          setSkThumbnailUrl(data.image_url);
+        }
+      } catch (err) {
+        console.warn('Gagal memuat flyer S&K hero dari Supabase:', err);
+      }
+    };
+
+    fetchHeroData();
+    fetchSKThumbnail();
+
+    // Supabase Realtime Subscription untuk update instan
+    const channel = supabase
+      .channel('hero_realtime_channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'hero_images' },
+        () => {
+          fetchHeroData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
   const scrollTo = (targetId: string, customCallback?: () => void) => {
     if (customCallback) {
       customCallback();
@@ -45,31 +122,33 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick }) =>
             {/* Main Portrait with Organic Arch */}
             <div className="relative aspect-[4/5] rounded-t-full rounded-b-3xl overflow-hidden border border-mbell-border bg-mbell-surface shadow-[0_20px_50px_rgba(200,138,130,0.15)]">
               <img
-                src={bellaPortrait}
-                alt="Hasil riasan profesional oleh MBell MakeUp"
+                src={heroData.image_url}
+                alt={heroData.alt_text || "Hasil riasan profesional oleh MBell MakeUp"}
                 className="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105"
                 loading="eager"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-mbell-ink/20 via-transparent to-transparent pointer-events-none" />
             </div>
 
-            {/* Thumbnail Pendukung (Akad/Bridal Detail) */}
+            {/* Thumbnail Pendukung (Flyer Syarat & Ketentuan dari Tabel Catalogue) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="hidden sm:block absolute -bottom-5 -left-6 w-32 aspect-square rounded-2xl overflow-hidden border-4 border-mbell-canvas bg-mbell-surface shadow-lg"
+              className="hidden sm:block absolute -bottom-5 -left-6 w-32 aspect-[3/4] rounded-2xl overflow-hidden border-4 border-mbell-canvas bg-mbell-surface shadow-xl cursor-pointer group"
+              onClick={() => scrollTo('pricelist', onExploreClick)}
+              title="Lihat Syarat & Ketentuan di Pricelist"
             >
               <img
-                src={akadImage}
-                alt="Riasan pengantin akad MBell MakeUp"
-                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                src={skThumbnailUrl}
+                alt="Syarat & Ketentuan MBell MakeUp"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
             </motion.div>
 
             {/* Subtle Signature Badge */}
             <div className="absolute top-4 right-4 bg-mbell-canvas/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-mbell-border shadow-sm text-[11px] font-sans font-medium text-mbell-muted">
-              Certified MUA
+              {heroData.subtitle || 'Certified MUA'}
             </div>
           </motion.div>
 
