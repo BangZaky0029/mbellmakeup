@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, Download, Calendar, MessageCircle } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import price01 from '../assets/price_01.webp';
 import price02 from '../assets/price_02.png';
 import price03 from '../assets/price_03.png';
@@ -60,6 +61,7 @@ const PACKAGES: PackageItem[] = [
 ];
 
 export const PriceList: React.FC = () => {
+  const [packages, setPackages] = useState<PackageItem[]>(PACKAGES);
   const [activeTab, setActiveTab] = useState<PackageItem>(PACKAGES[0]);
   const [zoomItem, setZoomItem] = useState<PackageItem | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
@@ -71,6 +73,57 @@ export const PriceList: React.FC = () => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Fetch Catalogue dynamically from Supabase
+  useEffect(() => {
+    let isMounted = true;
+    const fetchCatalogue = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('catalogue')
+          .select('*')
+          .order('order_index', { ascending: true });
+
+        if (!error && data && data.length > 0 && isMounted) {
+          const mapped: PackageItem[] = data.map((item: any) => ({
+            id: String(item.id),
+            label: item.label,
+            shortTitle: item.short_title,
+            image: item.image_url,
+            desc: item.description || '',
+            waQuery: item.wa_query || `Halo MBell MakeUp, saya ingin tanya mengenai ${item.label}`,
+            badge: item.badge || undefined,
+          }));
+          setPackages(mapped);
+          setActiveTab((prev) => {
+            const found = mapped.find((p) => p.id === prev.id || p.label === prev.label);
+            return found || mapped[0];
+          });
+        }
+      } catch (err) {
+        console.warn('Gagal memuat katalog dari Supabase, menggunakan data cadangan:', err);
+      }
+    };
+
+    fetchCatalogue();
+
+    // Supabase Realtime Subscription: Update otomatis saat ada perubahan di tabel catalogue
+    const channel = supabase
+      .channel('catalogue_realtime_channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'catalogue' },
+        () => {
+          fetchCatalogue();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const isMobile = windowWidth < 640;
@@ -161,7 +214,7 @@ export const PriceList: React.FC = () => {
 
   // Prepare custom letter cards for each package inside the 3D Folder
   const folderItems = useMemo(() => {
-    return PACKAGES.map((pkg) => ({
+    return packages.map((pkg) => ({
       title: pkg.label,
       content: (
         <div className="folder-letter-wrapper group/letter">
@@ -230,7 +283,7 @@ export const PriceList: React.FC = () => {
         </div>
       )
     }));
-  }, []);
+  }, [packages]);
 
   return (
     <section id="pricelist" className="py-16 md:py-24 bg-mbell-surface/60 border-b border-mbell-border relative overflow-hidden">
@@ -315,7 +368,7 @@ export const PriceList: React.FC = () => {
 
             {/* SISI KANAN: Kolom Tombol Pilihan Paket & S&K dengan Icon View (Mata) & Download */}
             <div className="w-full lg:w-auto shrink-0 flex flex-col gap-2 min-w-full sm:min-w-[320px] lg:min-w-[360px]">
-              {PACKAGES.map((item) => {
+              {packages.map((item) => {
                 const isActive = activeTab.id === item.id;
                 return (
                   <div
